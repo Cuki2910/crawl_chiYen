@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260924_235755",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [],
+  "error": "AssertionError: ",
+  "selected_url": "https://www.facebook.com/groups/125948028050014/posts/1999491540695644"
+}

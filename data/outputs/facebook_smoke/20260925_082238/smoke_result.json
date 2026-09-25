@@ -1,0 +1,21 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_082238",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [
+    {
+      "url": "https://www.facebook.com/photo?fbid=1480402354112487",
+      "resolved_url": "https://www.facebook.com/ThongtanxaVietNam/posts/pfbid02DeRTyVJf7pTeY8fB8mdxXK5YTUbEFyssH58pgFgCpzTUPqZrBgaztcLtBY6p1fjBl",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state"
+    },
+    {
+      "url": "https://www.facebook.com/photo?fbid=1035973915649677",
+      "resolved_url": "https://www.facebook.com/groups/296723051846634/permalink/1572179314300995",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state"
+    }
+  ],
+  "error": "RuntimeError: Không tìm thấy post accept trong 2 candidates: [{'url': 'https://www.facebook.com/photo?fbid=1480402354112487', 'resolved_url': 'https://www.facebook.com/ThongtanxaVietNam/posts/pfbid02DeRTyVJf7pTeY8fB8mdxXK5YTUbEFyssH58pgFgCpzTUPqZrBgaztcLtBY6p1fjBl', 'verdict': 'reject', 'reason': 'missing_group:flood_state'}, {'url': 'https://www.facebook.com/photo?fbid=1035973915649677', 'resolved_url': 'https://www.facebook.com/groups/296723051846634/permalink/1572179314300995', 'verdict': 'reject', 'reason': 'missing_group:flood_state'}]",
+  "selected_url": null
+}

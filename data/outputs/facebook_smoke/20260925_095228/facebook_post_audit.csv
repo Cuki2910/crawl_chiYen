@@ -1,0 +1,13 @@
+﻿platform,context_id,source_url,post_title,post_context,post_published_at_raw,post_published_at,verdict,reason,metadata_resolved,matched_groups,co_thanh_pho_khac,discovery_source,discovery_query,expected_comment_count,captured_comment_count,missing_comment_count,comment_capture_status,comment_retry_count,crawled_at
+facebook,1759927131965047,https://www.facebook.com/groups/360819065209201/posts/1759927131965047,(20+) TỨ TUYỆT THƠ | NGẬP ÚNG,"NGẬP ÚNG 
+
+Nước ở thành Hà Nội ngập sâu 
+Giao thông tắc nghẽn chẳng đông đâu
+Nhiều xe chết máy không đi được 
+Bách bộ mò đường cũng rất lâu 
+
+TG Nguyễn Đẩy BN 
+
+18.9.2026.
+
+Ảnh mạng","Thứ Sáu, 18 Tháng 9, 2026 lúc 14:19",2026-09-18T14:19:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,10,,unverified,1,2026-09-25T09:56:15.861554+07:00

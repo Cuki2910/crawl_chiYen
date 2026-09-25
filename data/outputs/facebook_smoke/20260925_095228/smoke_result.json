@@ -1,0 +1,120 @@
+{
+  "ok": true,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_095228",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=4622083648115942",
+      "resolved_url": "https://www.facebook.com/groups/yeuxebus/permalink/38617917904489845",
+      "skipped": "unsupported_group_permalink"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=122137466943356613",
+      "resolved_url": "https://www.facebook.com/photo?fbid=122137466943356613",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=1449814163573636",
+      "resolved_url": "https://www.facebook.com/groups/hanoixinnn/permalink/3699713560176419",
+      "skipped": "unsupported_group_permalink"
+    },
+    {
+      "query": "ngập úng Hà Nội đi",
+      "url": "https://www.facebook.com/photo?fbid=2288152315916306",
+      "resolved_url": "https://www.facebook.com/groups/360819065209201/posts/1759927131965047",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    }
+  ],
+  "selected_url": "https://www.facebook.com/groups/360819065209201/posts/1759927131965047",
+  "comments": 10,
+  "qc": {
+    "ok": true,
+    "issues": [],
+    "samples": [
+      {
+        "platform": "facebook",
+        "comment_id": "1760237691933991",
+        "context_id": "1759927131965047",
+        "text": "Day Nguyen"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760082401949520",
+        "context_id": "1759927131965047",
+        "text": "Hà Nội mùa nước ngập sâu Xe không đi được phải quay đầu …"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760188838605543",
+        "context_id": "1759927131965047",
+        "text": "Ty Le bạn bình luận vui"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760291511928609",
+        "context_id": "1759927131965047",
+        "text": "Tu Nguyen bạn bình luận hay"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760165211941239",
+        "context_id": "1759927131965047",
+        "text": "Zây ướt hết sao"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760222105268883",
+        "context_id": "1759927131965047",
+        "text": "Bài thơ bạn viết rất hay chúc mừng Thi Phẩm"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760089795282114",
+        "context_id": "1759927131965047",
+        "text": "Phạm Văn Tuấn bạn hoạ thơ hay"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760236761934084",
+        "context_id": "1759927131965047",
+        "text": "Ngap cho mat .có gì đâu nè..."
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760229685268125",
+        "context_id": "1759927131965047",
+        "text": "Vanthanh Tran bạn đã động viên"
+      },
+      {
+        "platform": "facebook",
+        "comment_id": "1760112125279881",
+        "context_id": "1759927131965047",
+        "text": "Ngâp nc thê nay ai mac vay do lên hêt ma lôi"
+      }
+    ]
+  },
+  "exports": {
+    "facebook_comments": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_095228\\facebook_comments.csv",
+      "rows": 10
+    },
+    "facebook_audit": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_095228\\facebook_post_audit.csv",
+      "rows": 1
+    },
+    "youtube_comments": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_095228\\youtube_comments.csv",
+      "rows": 0
+    },
+    "youtube_audit": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_095228\\youtube_post_audit.csv",
+      "rows": 0
+    }
+  },
+  "youtube_pids": []
+}

@@ -1,0 +1,19 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260924_110542",
+  "query": "ngập Hà Nội giao thông",
+  "candidates": [
+    {
+      "url": "https://www.facebook.com/KenhVOVGT/posts/pfbid021KKBwBfJK5JPcBQtGinmQ4PyCKFyvx8wxtcWQYQfAFLUDT4GKJhgEkJD1SFQCfbnl",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state"
+    },
+    {
+      "url": "https://www.facebook.com/groups/509031331243280/posts/1298841188928953",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    }
+  ],
+  "error": "AssertionError: ",
+  "selected_url": "https://www.facebook.com/groups/509031331243280/posts/1298841188928953"
+}

@@ -1,0 +1,451 @@
+﻿platform,context_id,source_url,post_title,post_context,post_published_at_raw,post_published_at,verdict,reason,metadata_resolved,matched_groups,co_thanh_pho_khac,discovery_source,discovery_query,expected_comment_count,captured_comment_count,missing_comment_count,comment_capture_status,comment_retry_count,crawled_at
+facebook,1006468148243621,https://www.facebook.com/watch?v=1006468148243621,,"Hiện tại Hà Nội đang có hơn 30 điểm nội đô ngập úng với mức nước phổ biến từ 10 đến 30 cm, có nơi lên tới hơn nửa mét, gây khó khăn lớn cho giao thông. Một số điểm ngập sâu nổi bật gồm:
+ • Phạm Hùng, đoạn gần bến xe Mỹ Đình: nước dâng cao 40–50 cm, nhiều xe máy chết máy, giao thông ùn tắc.
+ • Lê Quang Đạo gần sân vận động Mỹ Đình: nước có chỗ sâu hơn 50 cm, cả tuyến đường biến thành biển nước.
+ • Đường gom Đại lộ Thăng Long, khu vực trước Bảo tàng Lịch sử Quân sự: nước đọng nhiều, xe di chuyển khó khăn, lực lượng chức năng phải chặn cảnh báo.
+ • Các hầm chui số 5, số 6 trên Đại lộ Thăng Long (Km9): ngập sâu, xe cộ đi lại rất nguy hiểm.
+ • Đường Quang Trung, Hà Đông: nhiều đoạn ngập từ 10–30 cm, gây ùn tắc giờ cao điểm.
+ • Các tuyến phố Thái Hà, Thái Thịnh, Trần Quang Diệu (quận Đống Đa): ngập rất sâu, có đoạn đến bụng người, biến đường phố thành “dòng sông” khiến nhiều xe chết máy.
+ • Phố Phùng Hưng (Hoàn Kiếm): nước ngập diện rộng, xe ô tô và xe máy khó lưu thông.
+ • Nguyễn Huy Tưởng, Nguyễn Tuân: mưa lớn khiến toàn tuyến chìm trong biển nước.
+ • Châu Văn Liêm (ra Đại lộ Thăng Long): nước ngập khoảng 30–40 cm, xe máy phải dắt bộ hoặc quay đầu.
+
+Ngoài ra, một số điểm trong ngõ nhỏ, khu dân cư trũng thấp ở Thanh Xuân, Cầu Giấy, Nam Từ Liêm cũng bị ngập cục bộ, ảnh hưởng đến sinh hoạt.
+
+Hiện các trạm bơm lớn như Yên Sở, Cầu Bươu, Đồng Bông, Cổ Nhuế, Đa Sỹ đang vận hành hết công suất để hạ mực nước. Tuy nhiên, do hoàn lưu bão số 10, mưa có thể còn tiếp tục, nên tình trạng ngập sẽ kéo dài trong ngày.",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",1,flood_video_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:45:05.077937+07:00
+facebook,1071115000602538,https://www.facebook.com/watch?v=1071115000602538,,"Sáng nay, Hà Nội mưa to, nhiều tuyến phố đã ngập sâu.
+Trên facebook, rất nhiều người dùng chia sẻ video đường phố ""bập bềnh"" như sóng biển vỗ mỗi khi có xe đi qua.
+Cầu mong ""ác mộng"" ngập lụt mấy năm trước không trở lại!
+Dự báo đến chiều, khu vực nội thành Hà Nội và các vùng lân cận vẫn tiếp tục có mưa vừa đến mưa to với lượng mưa phổ biến trong khoảng từ 60-80mm, có nơi trên 100mm.",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_video_03,ngập lụt Hà Nội đi lại,,,,,,2026-09-25T10:53:52.199961+07:00
+facebook,1072549571829759,https://www.facebook.com/photo?fbid=1072549571829759,,"MƯA LỚN KHIẾN NHIỀU TUYẾN ĐƯỜNG Ở HÀ NỘI NGẬP NẶNG
+-----
+Suốt đêm qua, mưa lớn trút xuống nhiều xã, phường ở Hà Nội, với lượng mưa phổ biến 50–120 mm. Đến sáng 15/9, một số tuyến đường bị ngập, gây khó khăn cho người dân đi lại.
+
+Mưa hiện tạm ngớt, song đợt mưa vẫn chưa kết thúc. Trong ngày, Hà Nội còn khả năng có mưa to đến rất to. Các khu vực trũng thấp, những nơi nước chưa rút hết có nguy cơ ngập trở lại.
+
+Đáng chú ý ở các thành phố khác như Sài Gòn, Cần Thơ, Đồng Nai... những ngày gân cũng xảy ra tình trạng ngập nặng ở nhiều tuyến đường sau mưa lớn, có nơi ngập qua bánh xe.
+-----
+Ảnh: Người dân ghi lại",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",1,flood_post_05,đường ngập Hà Nội lưu thông,,,,,,2026-09-25T11:07:28.741279+07:00
+facebook,1083535966675281,https://www.facebook.com/watch?v=1083535966675281,(20+) Video,"Xót Xa Hà Nội: 1000 cú Sét Đánh Dồn Dập suốt 1 Giờ trong đêm tối, Mưa như trút nước, Loạt Phố ngập thành Sông sâu, Giao Thông hỗn loạn .",2024-08-23T06:47:12.000Z,2024-08-23T06:47:12+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_01,ngập nước Hà Nội giao thông,,,,,,2026-09-25T10:32:24.402073+07:00
+facebook,1092457640148042,https://www.facebook.com/watch?v=1092457640148042,(20+) Video,"Miền Bắc đặc biệt là Hà Nội những ngày gần đây mưa lớn khiến cho nhiều tuyến đường ngập lụt, lưu thông rất khó khăn.
+
+Vậy, cần phải lưu ý gì khi lái xe qua vùng ngập nước?
+Hãy cùng tham khảo các lưu ý từ Toyota Mỹ Đình nhé!",2026-09-17T08:19:53.000Z,2026-09-17T08:19:53+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,flood_video_03,ngập lụt Hà Nội đi lại,1,2,0,complete,0,2026-09-25T10:54:26.186854+07:00
+facebook,1128641326038338,https://www.facebook.com/watch?v=1128641326038338,(20+) Video,"‼ Mưa như trút nước suốt 24 giờ, Hà Nội ngập khắp nơi, giao thông tê liệt
+
+Cơn mưa lớn kéo dài từ tối 29/9 đến tối nay đã làm gần như toàn bộ đường, phố Hà Nội ngập sâu, giao thông tê liệt, người dân đi lại vô cùng khó khăn.
+
+(Video: Nhóm PV)",2025-09-30T12:55:09.000Z,2025-09-30T12:55:09+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,1,,unverified,1,2026-09-25T10:34:01.661244+07:00
+facebook,1130923255924416,https://www.facebook.com/watch?v=1130923255924416,(20+) Video,"Hôm nay có việc, mưa to cũng phải lên đường!
+Ngoài trời mưa trắng xóa, đường phố thì chỗ nào cũng ùn tắc, nước ngập lưng bánh xe… tham gia giao thông đúng là một hành trình thử thách. 😅
+
+Có người bảo: “Không phải ngập đâu, chỉ là nước dềnh lên thôi!” 😂
+Ừ thì gọi là dềnh cho nhẹ nhàng, chứ bánh xe đã gần “bơi” rồi thì chắc cá cũng đang tìm đường về nhà! 🐟🤣
+
+Mưa thì vẫn mưa, đường thì vẫn tắc, thôi cứ bình tĩnh, đi chậm và an toàn. Hà Nội những ngày mưa — vất vả một chút nhưng cũng có thêm những câu chuyện vui để nhớ! 🌧️🚗",2026-09-17T03:28:55.000Z,2026-09-17T03:28:55+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,59,,unverified,1,2026-09-25T11:25:06.024356+07:00
+facebook,1142082214465139,https://www.facebook.com/watch?v=1142082214465139,(20+) Video,"Hà Nội có 36 điểm ngập lụt lớn, giao thông hỗn loạn
+
+Sáng 26/8, Hà Nội ghi nhận 36 điểm ngập lụt nghiêm trọng sau mưa lớn do ảnh hưởng hoàn lưu bão số 5. Giao thông nhiều tuyến đường rơi vào tình trạng hỗn loạn, ùn tắc, nhiều ô tô chết máy, xe buýt tê liệt.
+
+Theo Đài khí tượng Thủy văn Bắc Bộ, lượng mưa từ đêm 25/8 đến sáng 26/8 phổ biến 100–200mm, nhiều nơi vượt 200mm như Thạch Thất (287,6mm), An Khánh (254,6mm), Thường Tín và Thanh Trì (216,2mm).
+
+Các tuyến đường ngập nặng gồm QL70, Quang Trung (Ba La – Yên Nghĩa), Tố Hữu, Nguyễn Trãi, Đỗ Đức Dục, Quan Nhân, nhiều điểm trung tâm như ngõ 165 Thái Hà, chợ Xanh Thành Công, hầm chui Thiên Đức… Công ty Thoát nước Hà Nội đang khẩn trương vận hành các trạm bơm Yên Sở, Cổ Nhuế, Đồng Bông 1 để hạ mực nước, giải tỏa giao thông.
+
+#HaNoi #NgapLut #BaoSo5 #GiaoThongHonLoan #UnTac #ThoiTietHaNoi #MuaBao",2025-08-27T03:30:58.000Z,2025-08-27T03:30:58+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",1,flood_video_05,đường ngập Hà Nội lưu thông,,2,,unverified,1,2026-09-25T11:10:06.596295+07:00
+facebook,122117674983369894,https://www.facebook.com/photo?fbid=122117674983369894,,"**NỖI ĐAU TỘT CÙNG: TÌM THẤY THI THỂ NAM SINH NĂM NHẤT DƯỚI CHÂN CẦU PHỐ VIÊN**
+
+Những ngày qua, thông tin về một nam sinh viên trẻ tuổi mất tích trong bối cảnh ngập lụt diện rộng đã thu hút sự quan tâm và lo lắng lớn từ cộng đồng.
+
+Sau nhiều giờ tích cực quần thảo các khu vực có nguy cơ cao, lực lượng chức năng cùng người dân đã tìm thấy thi thể của nam sinh này tại khu vực dưới chân cầu phố Viên.
+
+Ngay khi nhận được tin dữ xác nhận về sự việc, người mẹ đã ngã quỵ và khóc ngất giữa không gian tang thương, liên tục gọi tên con trong tuyệt vọng. Sự việc để lại niềm tiếc thương vô hạn cho gia đình, người thân và những người chứng kiến.
+
+Trước diễn biến phức tạp của mưa lũ và tình trạng ngập sâu tại nhiều tuyến đường, các cơ quan chức năng tiếp tục khuyến cáo người dân tuyệt đối cẩn trọng khi di chuyển qua các vùng nước lớn để đảm bảo an toàn tính mạng.
+
+**Nguồn:** Báo Sức khỏe & Đời sống",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_04,lụt Hà Nội di chuyển,,,,,,2026-09-25T10:23:03.186536+07:00
+facebook,122123648313378753,https://www.facebook.com/photo?fbid=122123648313378753,,"Hà Nội: Ngập sâu nhiều tuyến đường, chuẩn bị kịch bản học sinh phải ở lại trường qua đêm vì mưa bão kéo dài. Chi tiết vụ việc 👇.
+
+---------------------------------------
+
+Trưa 17/9, Sở GD&ĐT Hà Nội phát thông báo yêu cầu các cơ sở giáo dục chủ động triển khai phương án ứng phó theo phương châm “4 tại chỗ”. Các trường được quyền linh hoạt điều chỉnh hình thức dạy học, hoãn dạy trực tiếp chuyển sang trực tuyến nếu xảy ra ngập úng hoặc nguy cơ mất an toàn.
+
+Đối với các trường có học sinh bán trú, cơ sở phải rà soát, chuẩn bị chu đáo nơi nghỉ ngơi, lương thực và nước uống dự phòng cho trường hợp học sinh phải lưu trú lại trường do thời tiết nguy hiểm. Quá trình di chuyển và bàn giao học sinh cần được phối hợp chặt chẽ cùng gia đình để bảo đảm an toàn tuyệt đối.
+
+Nội dung bài viết này được xử lý đồ họa và tóm tắt với sự hỗ trợ của AI. Mọi thông tin đã được kiểm chứng.
+
+Nguồn bài báo gốc: Báo Dân Trí
+
+Tuân thủ nghiêm ngặt Nghị định 237/2026/NĐ-CP.",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_01,ngập nước Hà Nội giao thông,,,,,,2026-09-25T10:26:53.482852+07:00
+facebook,122139278625146234,https://www.facebook.com/photo?fbid=122139278625146234,,"MƯA LỚN, SÔNG BÙI DÂNG CAO, HÀNG TRĂM NGƯỜI DÂN HÀ NỘI SƠ TÁN KHẨN CẤP
+
+Theo bà Phùng Thị Hà, Trưởng thôn Ninh Kiều, thôn có 3.887 nhân khẩu, trong đó 632 người ở xóm Đồng Dâu bị ảnh hưởng do ngập lụt.
+
+Khoảng 16h ngày 15/9, khi nước bắt đầu dâng, chính quyền địa phương thông báo, đồng thời tổ chức di dời người dân tại những khu vực có nguy cơ ngập sâu đến nơi an toàn.
+
+Người già, trẻ nhỏ được ưu tiên sơ tán. “Đến nay, toàn bộ người già và trẻ nhỏ đã được chuyển đến nơi an toàn”, bà Hà cho biết.
+
+Cùng với việc di dời người dân, lực lượng chức năng phối hợp với các hộ dân kê cao, vận chuyển bàn ghế, đồ đạc và tài sản nhằm hạn chế thiệt hại.
+
+Bà Hà Thị Minh, người dân thôn Ninh Kiều, cho biết nước đã tràn vào sân và khu vực cổng của nhiều gia đình. Gia đình bà chủ động kê cao tài sản, đưa người thân đến nơi tránh trú an toàn. Bà ở lại trông coi nhà và cho biết sẽ di chuyển nếu mực nước tiếp tục dâng.
+
+Từ: Vietnamnet",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_04,lụt Hà Nội di chuyển,,,,,,2026-09-25T10:21:48.297926+07:00
+facebook,122146597767352809,https://www.facebook.com/photo?fbid=122146597767352809,,"**Hà Nội chỉ đạo nóng: Xử lý dứt điểm nạn trộm cắp nắp hố ga, rà soát toàn bộ hệ thống thoát nước **
+
+Trước những hệ lụy nghiêm trọng từ tình trạng mất an toàn tại các công trình hạ tầng đô thị, chính quyền Thủ đô vừa có những động thái chỉ đạo quyết liệt nhằm siết chặt quản lý hệ thống thoát nước và phòng ngừa các sự cố đáng tiếc có thể xảy ra.
+
+Theo đó, Phó Chủ tịch UBND TP Hà Nội Trương Việt Dũng đã ký ban hành công văn yêu cầu nâng cao trách nhiệm trong công tác duy tu, duy trì hệ thống thoát nước, đặt nhiệm vụ bảo vệ tính mạng và tài sản của người dân lên ưu tiên hàng đầu. Động thái này được đưa ra ngay sau vụ việc đau lòng khi một nam sinh viên không may bị cuốn xuống cống tử vong.
+
+Thành phố giao Sở Xây dựng cùng các đơn vị liên quan phối hợp kiểm tra, nạo vét và khơi thông dòng chảy; đồng thời tổng rà soát toàn bộ các hố ga, miệng thu nước, tấm đan trên các tuyến đường, nhất là những khu vực trọng điểm thường xuyên xảy ra ngập úng hoặc tiềm ẩn nguy cơ mất an toàn. Các vị trí nắp đậy bị mất trộm, hư hỏng hoặc xuống cấp buộc phải được thay thế, sửa chữa ngay. Trong trường hợp chưa thể khắc phục tức thời, các đơn vị có trách nhiệm dựng rào chắn, đặt biển cảnh báo và cắt cử lực lượng túc trực để hướng dẫn người dân di chuyển an toàn.
+
+Song song với công tác duy tu hạ tầng, UBND TP Hà Nội đã giao Công an Thành phố khẩn trương vào cuộc, tập trung điều tra và xử lý thật nghiêm các đối tượng có hành vi trộm cắp, tiêu thụ nắp hố ga, nắp cống trên vỉa hè cũng như lòng đường. Biện pháp cứng rắn này nhằm lập lại trật tự đô thị, răn đe tội phạm và bảo vệ tuyệt đối an toàn cho người cũng như phương tiện khi tham gia giao thông.
+
+**Nguồn: Báo Tiền Phong **",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_06,phố ngập Hà Nội tham gia giao thông,,,,,,2026-09-25T11:16:27.799262+07:00
+facebook,122227659866047355,https://www.facebook.com/photo?fbid=122227659866047355,,"VÒNG TAY YÊU THƯƠNG – KẾT NỐI NHỮNG TRÁI TIM NHÂN ÁI ❤️
+🌻 Sẻ chia để yêu thương nhân lên, trao đi để nhận lại những nụ cười!
+Chiều ngày 15/9/2026, Trường THCS Vạn Điểm – Phân hiệu Thống Nhất đã tổ chức một buổi gặp gỡ, giao lưu đầy xúc động cùng các thành viên đến từ Trung tâm Dạy nghề Nhân đạo cho các em tàn tật Việt Nam.
+🤝 Buổi giao lưu diễn ra trong bầu không khí ấm cúng, gần gũi và tràn ngập tình người. Được lắng nghe những câu chuyện vượt lên số phận, chứng kiến nghị lực sống phi thường của các anh chị và các bạn tại Trung tâm, thầy và trò phân hiệu Thống Nhất không khỏi xúc động và khâm phục. Đây là bài học thực tế vô cùng giá trị, giúp các em học sinh nuôi dưỡng lòng nhân ái, biết trân trọng cuộc sống và thêm thấu hiểu, sẻ chia với những mảnh đời bất hạnh.
+💝 Nhằm hưởng ứng tinh thần ""Lá lành đùm lá rách"", nhà trường đã phát động quyên góp, ủng hộ Trung tâm. Những tình cảm thiết thực từ các thầy cô giáo, các bậc phụ huynh và toàn thể các em học sinh chính là nguồn cổ vũ tinh thần to lớn, tiếp thêm niềm tin, ý chí vươn lên cho những số phận kém may mắn trên chặng đường phía trước.
+🌈 Mỗi hành động đẹp, mỗi tấm lòng sẻ chia hôm nay đã thắp lên ngọn lửa của niềm tin và hy vọng, làm rực rỡ thêm truyền thống nhân ái của mái trường THCS Vạn Điểm.
+Xin trân trọng ghi nhận và gửi lời cảm ơn sâu sắc đến các thầy cô giáo, các bậc phụ huynh cùng toàn thể các em học sinh Phân hiệu Thống Nhất đã đồng hành để làm nên sự thành công và ý nghĩa của buổi giao lưu!
+🌻 THCS VẠN ĐIỂM – PHÂN HIỆU THỐNG NHẤT
+Cùng học tập – Cùng sẻ chia – Cùng lan tỏa yêu thương!",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_05,đường ngập Hà Nội lưu thông,,,,,,2026-09-25T11:06:51.267449+07:00
+facebook,122274624896187417,https://www.facebook.com/photo?fbid=122274624896187417,,"⚠️ CÔNG AN PHƯỜNG HÀ ĐÔNG CHỦ ĐỘNG ỨNG PHÓ MƯA LỚN, BẢO ĐẢM AN TOÀN CHO NHÂN DÂN
+
+Trước diễn biến mưa lớn phức tạp, bám sát sự chỉ đạo của lãnh đạo Công an thành phố Hà Nội, Ban Chỉ huy Công an phường Hà Đông đã chủ động triển khai phương án ứng phó, phân công 100% cán bộ, chiến sĩ xuống địa bàn, bám sát tình hình, kịp thời phát hiện, xử lý các điểm ngập úng, ùn tắc và hỗ trợ người dân khi có sự cố.
+
+Qua nắm tình hình, một số khu vực trên địa bàn phường ghi nhận ngập úng cục bộ, ảnh hưởng đến việc đi lại của người dân. Cụ thể, cuối đường Nguyễn Khuyến, khu vực giáp Yên Xá, ngập sâu khoảng 50 cm; đoạn đường giữa hai hồ Văn Quán ngập sâu, phương tiện không thể di chuyển. Khu vực ngã tư Xa La đến cổng Bệnh viện 103 ngập khoảng 50 cm, các phương tiện vẫn lưu thông được cả hai chiều, chưa xảy ra ùn tắc; lực lượng hỗ trợ phân làn, điều tiết giao thông được bố trí tại khu vực.....
+
+Tại đường Trần Phú, hướng từ Cầu Trắng đi Thanh Xuân, lưu lượng phương tiện hiện rất đông, di chuyển chậm. Lực lượng Công an phường Hà Đông tiếp tục tăng cường nắm tình hình, chủ động phân luồng, điều tiết, hướng dẫn người dân lựa chọn lộ trình phù hợp, bảo đảm an toàn giao thông.
+
+Với tinh thần chủ động, trách nhiệm, Công an phường Hà Đông sẵn sàng có mặt khi Nhân dân cần, không để bị động, bất ngờ trước diễn biến thời tiết; tiếp tục theo dõi sát tình hình, điều chỉnh phương án, hạn chế thấp nhất ảnh hưởng của mưa lớn đến đời sống và việc đi lại của Nhân dân.
+
+📢 Khuyến cáo người dân: Chủ động theo dõi dự báo thời tiết, lựa chọn lộ trình phù hợp, hạn chế đi qua khu vực ngập sâu, nước chảy xiết hoặc có nguy cơ cây đổ. Khi tham gia giao thông trong mưa lớn, cần giảm tốc độ, giữ khoảng cách an toàn và chấp hành hướng dẫn của lực lượng chức năng. Khi gặp sự cố, nhanh chóng tìm vị trí an toàn, thông tin cho Công an phường Hà Đông để được hỗ trợ kịp thời.
+
+Công an phường Hà Đông – Chủ động ứng phó, tận tụy phục vụ, vì bình yên và an toàn của Nhân dân.
+
+Nguồn: Công an phường Hà Đông",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:39:40.765550+07:00
+facebook,1238348110625365,https://www.facebook.com/watch?v=1238348110625365,,"🔴 Người dân chật vật di chuyển do nước ngập sâu ở Đại lộ Thăng Long
+Do ảnh hưởng của cơn bão số 3 cộng thêm việc mưa lớn kéo dài nhiều ngày đã khiến một số điểm hầm chui trên đường Đại Lộ Thăng Long ngập sâu trong nước, gây khó khăn cho các phương tiện tham gia giao thông. Phần lớn xe ô tô đều quay đầu, người đi làm bằng xe máy thì phải thuê xe bò kéo vận chuyển qua khu vực nước sâu. Ghi nhận của phóng viên Đài Hà Nội. #giaothong #tintuc #hanoionline #daihanoi",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_video_01,ngập nước Hà Nội giao thông,,,,,,2026-09-25T10:32:16.880679+07:00
+facebook,1273548951126055,https://www.facebook.com/watch?v=1273548951126055,(20+) Video,"🛑   MƯA LỚN, HÀ NỘI CHỦ ĐỘNG ỨNG PHÓ NGẬP LỤT
+
+Hoàn lưu bão số 11 gây mưa lớn, dẫn đến ngập cục bộ và ùn tắc giao thông tại Hà Nội. Tuy nhiên, nhờ sự chủ động của chính quyền và các đơn vị chức năng, thành phố đã triển khai hiệu quả các giải pháp giảm thiệt hại. Đến 10h sáng, ghi nhận 122 điểm ngập, sâu 20-25cm, với gần 30 tuyến đường tê liệt. Nhưng đến chiều, nước tại các ""điểm đen"" ngập úng như đường Nguyễn Xiển, Nguyễn Trãi, Chùa Bộc đã rút, giao thông thông thoáng. Điều này thể hiện sự hiệu quả của Công ty Thoát nước và Ban Duy tu hạ tầng giao thông, giúp giao thông thành phố nhanh chóng trở lại bình thường.
+#tintuc #news #thoisu #hanoionline #daihanoi",2025-10-07T12:18:46.000Z,2025-10-07T12:18:46+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,0,,unverified,1,2026-09-25T11:14:54.337260+07:00
+facebook,1335637137946223,https://www.facebook.com/watch?v=1335637137946223,(20+) Video,"🛑  LƯỢNG MƯA QUÁ LỚN KÉO DÀI KHIẾN NHIỀU ĐƯỜNG PHỐ NGẬP SÂU
+
+Do ảnh hưởng của hoàn lưu cơn bão số 10, trong cả ngày hôm nay (30/9) tại Hà Nội đã có mưa rất to và kéo dài suốt từ đầu giờ sáng đến chiều tối khiến giao thông tại nhiều tuyến đường bị tê liệt. Đáng chú ý là mưa lớn trút xuống liên tiếp, gần như không có thời điểm ngừng trong cả ngày nên vượt quá khả năng tiêu thoát nước, tình trạng ngập úng vì thế càng thêm trầm trọng. Cơ quan chức năng của thành phố đã huy động các lựng lượng ứng trực, nỗ lực tiêu thoát nước và hướng dẫn người dân lưu thông.
+#giaothong #ngapung #news #thoisu #hanoionline",2025-09-30T14:44:46.000Z,2025-09-30T14:44:46+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,7,,unverified,1,2026-09-25T11:13:48.512296+07:00
+facebook,1415912760740883,https://www.facebook.com/watch?v=1415912760740883,(20+) Video,"Hà Nội sáng 17/9: Cập nhật các điểm ngập, người đi làm cần lưu ý
+Hà Nội sáng 17/9 tiếp tục có mưa lớn, nguy cơ úng ngập tại một số khu vực. Cập nhật các tuyến đường, điểm ngập đáng chú ý để người dân chủ động lựa chọn lộ trình trong giờ cao điểm.
+
+Tạp chí Nông nghiệp và Môi trường tiếp tục cập nhật tình hình mưa lớn, ngập úng và giao thông tại Hà Nội.
+
+👉 Theo dõi Tạp chí Nông nghiệp và Môi trường để cập nhật nhanh các thông tin thời tiết, môi trường và đời sống.
+#HaNoi #NgapHaNoi #MuaLon #NgapUng #GiaoThongHaNoi #HaNoiSangNay #ThoiTietHaNoi #TapChiNongNghiepVaMoiTruong",2026-09-16T23:28:24.000Z,2026-09-16T23:28:24+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,192,,unverified,1,2026-09-25T10:49:49.602129+07:00
+facebook,1461303481749216,https://www.facebook.com/watch?v=1461303481749216,(20+) Video,"Sống ở Hà Nội đủ lâu để thấy được trận ngập lụt kinh hoàng như này. Từ công ty đi về, thị tự tin xông thẳng ra Tân Mai nhưng hỡi ôi Tân Mai thất thủ thị phải tìm cách mò mẫm mãi mới ra được Trương Định. Tới cuối Trương Định giao Giải Phóng thị đành quay lại vì Giải Phóng ngập. Cuối cùng thị quyết định vào bến xe Giáp Bát gửi xe và đi bộ về nhà! Nghe có vẻ điên rồ nhưng khi đi ra tới Giải Phóng, nhìn đoàn xe ùn tắc bì bõm lội nước thị đã thấy mình đúng. Thôi thì cuối tháng thể dục thể thao nâng cao sức khoẻ chào đón tháng mới cũng được nhỉ!
+Hà Nội ơi, xin hãy ngừng mưa đi!!!!",2025-09-30T10:31:32.000Z,2025-09-30T10:31:32+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,89,,unverified,1,2026-09-25T10:59:28.617278+07:00
+facebook,1566896380953748,https://www.facebook.com/watch?v=1566896380953748,,Di chuyển một vòng tại khu Đô Thị Thanh Hà ngày 7/10/2025 ngày mà Thủ đô Hà Nội đang ngập lụt khắp nơi. Về cơ bản Thanh Hà không ngập phương tiện lưu thông tốt,,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_video_04,lụt Hà Nội di chuyển,,,,,,2026-09-25T11:02:51.946821+07:00
+facebook,1616615353077336,https://www.facebook.com/watch?v=1616615353077336,(20+) Video,"HÀ NỘI: CÁC PHƯƠNG TIỆN THAM GIA GIAO THÔNG LƯU Ý HƠN 30 ĐIỂM NGẬP ÚNG  
+
+• Đường Nguyễn Khuyến (trước cổng THCS Lý Thường Kiệt)
+• Phố Hoa Bằng (từ số 91 – 97 và 54 – 56)
+• Ngã ba Cầu Giấy – Dịch Vọng (từ số 235 – 255 Cầu Giấy)
+• Phố Phan Văn Trường
+• Dương Đình Nghệ – Phạm Hùng (sau tòa Keangnam)
+• Phố Trần Bình (trước UBND phường Mai Dịch – Bệnh viện 19/8)
+• Ngã tư Phan Bội Châu – Lý Thường Kiệt; ngã năm Đường Thành – Bát Đàn – Nhà Hỏa
+• Phố Tông Đản (cổng phụ Thành ủy Hà Nội)
+• Phố Đinh Tiên Hoàng (đài phun nước, bến xe điện)
+• Số 155 Phùng Hưng
+• Phố Cao Bá Quát (trước Công ty Môi trường đô thị Hà Nội)
+• Phố Thụy Khuê (dốc La Pho)
+• Phố Minh Khai (chân cầu Vĩnh Tuy)
+• Phố Nguyễn Chính (từ ngõ 74 đến cống hóa mương Tân Mai)
+• Phố Mạc Thị Bưởi
+• Đại lộ Thăng Long (ngã ba Lê Trọng Tấn, hầm chui số 356, nút giao An Khánh)
+• Phố Đỗ Đức Dục
+• Phố Ngọc Lâm (từ ngã ba Long Biên 1 đến trụ sở Xí nghiệp Môi trường đô thị Gia Lâm)
+• Hoàng Như Tiếp (từ Trường Tiểu học Ngọc Lâm đến ngã ba Hoàng Như Tiếp – Ái Mộ)
+• Đường Cổ Linh – Đàm Quang Trung (đoạn trước siêu thị Aeon Mall)
+• Phố Quan Nhân
+• Phố Cự Lộc
+• Nguyễn Trãi (trước Đại học KHXH&NV)
+• Nguyễn Xiển
+• Phố Kẻ Vẽ (ngã ba chợ Vẽ)
+• Ecohome 3
+• KĐT Resco
+• Quốc lộ 3 (qua xã Mai Lâm)
+• Đường 23B (qua thôn Cổ Điển)
+
+Do ảnh hưởng của hoàn lưu bão số 10, Hà Nội mưa lớn kéo dài từ đêm 29 đến sáng 30/9. Nhiều tuyến phố trung tâm và khu vực ngoại thành ngập sâu. Cụ thể, theo VnExpress, tại cầu vượt Mai Dịch - nút giao đường Hồ Tùng Mậu, Phạm Văn Đồng, Xuân Thủy, Phạm Hùng, nơi có mật độ giao thông lớn, hiện đang mênh mông nước. Nước ngập nửa bánh xe, phương tiện di chuyển khó khăn.  Cảnh sát giao thông khuyến cáo người dân thận trọng khi tham gia giao thông theo hướng Phạm Văn Đồng đi bến xe Mỹ Đình.
+
+Theo Công ty TNHH MTV Thoát nước Hà Nội, lượng mưa đo được tại một số xã, phường từ 7 giờ ngày 29/9 đến 7 giờ ngày 30/9 như sau: Phường Hai Bà Trưng 84 mm, Ba Đình 44 mm, Hoàn Kiếm 37 mm, Ô Chợ Dừa 104 mm, Phú Lương 118 mm, Hoàng Liệt 57 mm, Thanh Liệt 79 mm...
+
+Theo VOV1 
+Video:",2025-09-30T06:35:35.000Z,2025-09-30T06:35:35+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,flood_video_06,phố ngập Hà Nội tham gia giao thông,,15,,unverified,1,2026-09-25T11:18:33.104099+07:00
+facebook,1641268784286524,https://www.facebook.com/watch?v=1641268784286524,,"Chiều 18 tháng 9, Mai Anh, nhân viên Câu lạc bộ Ngựa Phú Cát tại xã Phú Cát, Hà Nội, được bạn bè và người quen gửi clip ghi lại cảnh cô điều khiển con ngựa vượt qua khu vực đường ngập. Trong video, phía sau cô là một người phụ nữ được hỗ trợ đi nhờ qua vùng nước sâu khoảng 40cm trước hầm chui dân sinh số 18. Đoạn clip do nhóm Mai Anh quay vào chiều 17 tháng 9 tại cầu chui dân sinh số 18, cách nơi cô ở khoảng 3-4km khi Hà Nội mưa lớn gây ngập úng. Mai Anh cho biết việc hỗ trợ người phụ nữ diễn ra trong vài phút vì thấy người đi bộ gặp nguy hiểm trước vùng nước sâu. Cô khẳng định nhóm đang luyện tập thì bất chợt nảy ý định giúp đỡ sau đó nhanh chóng đưa ngựa về câu lạc bộ. Mai Anh cũng lưu ý chưa được huấn luyện làm quen với ngựa thì không nên học theo hành động này. Trước đó từ đêm 16 đến sáng 17 tháng 9, mưa lớn khiến nhiều khu vực Hà Nội ngập sâu, nước dâng 40-50cm tại tuyến phố và lên tới khoảng 1m ở ngoại thành. Tình trạng ngập kéo dài gây khó khăn cho đi lại của xe máy ô tô, ảnh hưởng sinh hoạt với nước tràn vào nhà và mất điện.
+
+Nguồn: Dân Trí - Trang chủ
+
+Hiền Thục Media — bản tin do AI tổng hợp từ báo chí.
+
+#thoisu #tintuc #ainews #hienthucmedia",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_video_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:43:46.229114+07:00
+facebook,1649230313572492,https://www.facebook.com/photo?fbid=1649230313572492,(20+) Facebook,"Đoạn đường từ Tân Lập ra ngã tư Trôi (Hoài Đức, Hà Nội) hiện đang ngập rất nặng, người dân nên tránh đi vào khu vực này để không bị kẹt xe hay hỏng xe.
+Tình hình ngập úng
+Vị trí: Đoạn từ khu vực Tân Lập đến ngã tư Trôi (Quốc lộ 32).
+Mức độ: Nước dâng cao gây khó khăn lớn cho các phương tiện giao thông.
+Nguy cơ: Nhiều xe máy và ô tô có thể bị chết máy, kẹt xe kéo dài.
+Lời khuyên cho người tham gia giao thông
+Hạn chế di chuyển: Không đi qua đoạn đường này nếu không có việc thực sự cần thiết.
+Tìm đường tránh: Chủ động chọn các tuyến đường khác cao ráo hơn để đảm bảo an toàn.
+Kiểm tra phương tiện: Nếu bắt buộc phải đi qua vùng ngập, hãy quay đầu hoặc tìm đường khác ngay khi thấy nước ngập sâu qua ống xả xe.",2026-09-17T01:46:01.000Z,2026-09-17T01:46:01+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,2,,unverified,1,2026-09-25T10:28:33.563030+07:00
+facebook,1976311006525764,https://www.facebook.com/watch?v=1976311006525764,(20+) Video,"Nhiều tuyến phố Hà Nội ngập sâu gây khó khăn cho người dân tham gia giao thông
+
+#hanoi    #ngaplut    #ngapluthanoi",2025-09-30T12:02:20.000Z,2025-09-30T12:02:20+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,0,,unverified,1,2026-09-25T11:22:53.648454+07:00
+facebook,2089192871903856,https://www.facebook.com/watch?v=2089192871903856,(20+) Video,"Hà Nội ngập lụt sau trận mưa kỷ lục, người dân vất vả di chuyển!
+Nguồn tham khảo: Kenh14
+
+#can #hanoi #thoitiet #mualon #tintuc #tinnong",2026-09-15T10:50:20.000Z,2026-09-15T10:50:20+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,17,,unverified,1,2026-09-25T11:04:53.106942+07:00
+facebook,2153749572192454,https://www.facebook.com/watch?v=2153749572192454,(20+) Video,"Hy vọng đây sẽ là lần cập nhật cuối cùng trong chuỗi cập nhật ngập lụt lần 1 năm 2026 tại Tây Mỗ nhà em ạ! 🙏🏻
+Ngày hôm nay đúng là một phen “thử thách” với bà con khu vực mình 😅 Nước lên, đường ngập, việc đi lại và sinh hoạt của mọi người đều bị ảnh hưởng.
+
+Mong rằng từ giờ nước sẽ rút hẳn, trời thương cho Hà Nội những ngày bình yên, Tây Mỗ nhà em không phải cập nhật thêm lần nào nữa. 🙏🏻❤️
+Hết ngập rồi thì chúng ta lại trở về với những ngày bình thường thôi! 💪🏻❤️
+
+#TayMo #HaNoi #NgapLut2026 #CapNhatTayMo #MongMoiNguoiBinhAn",2026-09-17T11:28:23.000Z,2026-09-17T11:28:23+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,30,,unverified,1,2026-09-25T10:58:21.825508+07:00
+facebook,2168799127402219,https://www.facebook.com/watch?v=2168799127402219,(20+) Video,"😰😰😰Chuẩn bị vào năm học tuyến đường qua nhà em  là Đường428 A tại khu vực thôn Dương Khê Xã Vân Đình  Thành phố Hà Nội rất đông từ lúc đường senco thông.Toàn xe to chở vật liệu đi qua đường nhiều lúc gây tắc đoạn nhà em là đường vừa bé vừa xấu.Mưa liên tục làm đường xuống cấp gây mất an toàn nghiêm trọng cho người dân tham gia giao thông.Đặc biệt chuẩn bị đón năm học mới lượng các em học sinh đi lại rất nhiều gây nghuy hiểm cho các em và ổ gà rất nhiều ảnh hưởng đến việc đi lại của người dân, đặc biệt là những hôm trời mưa to nước ngập hết, người đi lại không nhìn thấy ổ gà để tránh, rất nhiều xe máy  xe đạp bị ngã tại khu vực này Trong mấy ngày mưa hôm nay.
+Sau vài trận mưa những chỗ nay xe tải to đi qua là thành 1 cái hố to hơn nước băn tung toé. Kính đề nghị cơ quan chức năng kiểm tra, yêu câu đơn vị thi công sớm sửa chữa, hoàn trả mặt đường đế đảm bảo an toàn cho người dân.Mà trường học cấp 1 cấp 2 cách 1 đoạn thấy nguy hiểm quá.Cả nhà cho em 1 lượt chia se để các cấp biết được sửa chữa nâng cấp mọi người đi cho an toàn.🥲🥲🥲🥲",2026-08-22T17:22:58.000Z,2026-08-22T17:22:58+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,flood_video_06,phố ngập Hà Nội tham gia giao thông,,25,,unverified,1,2026-09-25T11:21:59.756298+07:00
+facebook,2172953363633190,https://www.facebook.com/watch?v=2172953363633190,(20+) Video,"Cập nhật mưa lụt miền bắc ngày 17/9 trời vẫn tiếp tục mưa to nhiều nơi, ngập nhiều vùng ở miền bắc như Hà Nội, Ninh Bình, Thanh Hoá.. mọi người tham gia giao thông chú ý các tuyến phố ngập... 
+
+#NguyễnVănLương #HàNộingậphếtđường #HàLội #NgậpđườngHàNội #Mưatoquá  Shop Công Nghệ TLD  Nguyễn Văn Lương  Bệnh Viện Laptop Hà Nội",2026-09-17T05:35:02.000Z,2026-09-17T05:35:02+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,15,,unverified,1,2026-09-25T11:23:56.285246+07:00
+facebook,2269228537163265,https://www.facebook.com/watch?v=2269228537163265,(20+) Video,"Công chúa nào hè chưa được trở về biển thì tranh thủ ra ngay bờ biển Hawai của Mỹ nhé, anh chị ở Hà Nội có ổn không, cập nhật tình hình ngập úng lụt lội ở khu mình đi các bác ơi  🏊🏻‍♀️🏊🏻‍♀️🏊🏻‍♀️
+
+Sân vận động quốc gia Mỹ Đình ngày 17.9.2026
+#sanvandongquocgiamydinh #bienoi #BAO92026",2026-09-17T05:38:56.000Z,2026-09-17T05:38:56+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,54,,unverified,1,2026-09-25T10:50:55.353390+07:00
+facebook,2296646104433075,https://www.facebook.com/photo?fbid=2296646104433075,,"BAN CHQS PHƯỜNG TỪ LIÊM PHỐI HỢP HỖ TRỢ NHÂN DÂN
+KHẮC PHỤC HẬU QUẢ MƯA LỚN, NGẬP ÚNG
+
+ Trong hai ngày 17 và 18/9/2026, do ảnh hưởng của mưa lớn kéo dài, trên địa bàn phường Từ Liêm xuất hiện tình trạng ngập úng cục bộ tại một số khu vực, gây khó khăn cho việc đi lại và sinh hoạt của người dân.
+ Trước tình hình đó, Ban CHQS phường đã chủ động phối hợp với các lực lượng chức năng triển khai lực lượng, phương tiện tổ chức khắc phục hậu quả, hỗ trợ, hướng dẫn người dân di chuyển qua các khu vực bị ngập, góp phần bảo đảm an toàn cho Nhân dân.
+ Tại các khu vực Chợ Phú Đô, đường Lê Quang Đạo, đường Mỹ Đình và một số khu vực cán bộ, chiến sĩ Ban CHQS phường cùng các lực lượng đã có mặt tại những vị trí ngập úng, tổ chức phân luồng, hướng dẫn phương tiện và người dân di chuyển an toàn; đồng thời hỗ trợ người dân, nhất là những trường hợp gặp khó khăn trong quá trình đi lại do ảnh hưởng của ngập úng.
+ Với tinh thần “vì Nhân dân phục vụ”, cán bộ, chiến sĩ Ban CHQS phường Từ Liêm luôn nêu cao tinh thần trách nhiệm, chủ động, khẩn trương phối hợp với các lực lượng trong thực hiện nhiệm vụ phòng, chống, khắc phục hậu quả thiên tai. Sự có mặt kịp thời của lực lượng quân sự địa phương đã góp phần hạn chế những ảnh hưởng do mưa lớn, bảo đảm an toàn cho người dân và giữ gìn an ninh, trật tự, an toàn giao thông trên địa bàn.
+ Trong thời gian tới, Ban CHQS phường tiếp tục duy trì lực lượng, chủ động nắm tình hình, kịp thời báo cáo, tham mưu đề xuất với lãnh đạo địa phường đồng thời phối hợp với các lực lượng chức năng sẵn sàng xử lý các tình huống phát sinh, nhất là khi thời tiết diễn biến phức tạp; qua đó góp phần bảo vệ tính mạng, tài sản của Nhà nước và Nhân dân, thực hiện tốt nhiệm vụ quốc phòng, quân sự địa phương.
+#BanCHQSphuongTuLiem
+#BoTulenhThudoHaNoi",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:38:26.438300+07:00
+facebook,2299099390888497,https://www.facebook.com/photo?fbid=2299099390888497,(20+) Facebook,"CẦU MONG
+Thơ : Nghĩa Công Bội. 
+Ảnh : Internet ( st ).
+               *****
+Trời cao có thấu cho đời
+Trung Thu sắp đến sân chơi tuổi hồng 
+Mây tràn nước đổ mênh mông 
+Đường đi ngập úng giữa đồng lúa kêu
+
+Nước tiêu máy chạy rất đều
+Sầm sập tuần lễ tiếng kêu mái nhà
+Ông trời xin hãy vị tha
+Để cho trăng tỏa thắm quà trẻ thơ
+
+Chờ mong mưa tạnh từng giờ
+Trăng vì trẻ nhỏ mộng mơ tiệc rằm
+Tưng bừng ngày tết của năm 
+Tuổi thơ thổn thức đêm nằm vẫn mưa
+
+Trời ơi nước đã dư thừa
+Nhiều nơi sạt lở chẳng ưa chút nào 
+Đêm về thiếu những vì sao
+Sầm sập không ngớt lúc nào nước rơi
+
+Ngàn năm vẫn chuyện ông trời
+Hãy vì trẻ nhỏ ngừng rơi tức thì
+Trăng vàng tỏa sáng nhịp đi
+Ngàn năm khát vọng mãi vì trẻ thơ.
+20/9/2026",2026-09-19T23:22:00.000Z,2026-09-19T23:22:00+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,1,,unverified,1,2026-09-25T10:41:18.640849+07:00
+facebook,2328208344659053,https://www.facebook.com/photo?fbid=2328208344659053,,"🇻🇳 BÍ THƯ ĐẢNG ỦY XÃ AN KHÁNH KIỂM TRA CÔNG TÁC ỨNG PHÓ VỚI MƯA LỚN
+🔹 Ngày 17/9, đồng chí Phùng Bá Nhân, Bí thư Đảng ủy xã An Khánh trực tiếp kiểm tra công tác ứng phó với mưa lớn, ngập úng trên địa bàn.
+
+🔹 Cùng đi có đồng chí Nguyễn Duy Giang, Ủy viên BTV Đảng ủy, Phó Chủ tịch UBND xã; Thượng tá Đồng Minh Mạnh, Ủy viên BTV Đảng ủy, Chỉ huy trưởng Ban CHQS xã cùng lãnh đạo các cơ quan chuyên môn.
+
+🔹 Đoàn đã kiểm tra tại Trường Tiểu học An Khánh, cầu 72 và một số điểm ngập úng. Đồng chí Bí thư Đảng ủy xã yêu cầu các lực lượng tiếp tục chủ động phòng, chống ngập úng; duy trì trực, cập nhật tình hình, kịp thời xử lý các điểm phát sinh; tăng cường phân luồng, hướng dẫn người dân không di chuyển vào khu vực nguy hiểm.
+
+🔹 Ban CHQS xã An Khánh phối hợp với các lực lượng duy trì quân số trực tại các điểm xung yếu, nhất là khu vực các cầu bắc qua sông Đáy; tổ chức cảnh báo, lập chốt, hướng dẫn giao thông, góp phần bảo đảm an toàn cho người dân.
+
+🔹 Đối với các trường học, xã yêu cầu theo dõi sát tình hình, chủ động phương án cho học sinh nghỉ học khi điều kiện đi lại và tổ chức dạy học không bảo đảm an toàn.
+
+🔹 Trước đó, từ 14 giờ ngày 16/9/2026, UBND xã An Khánh đã tạm dừng hoàn toàn việc lưu thông của người và phương tiện qua cầu 72, cầu Đại Thành, cầu Tân Phú, cầu Cù Sơn và cầu Gồ cho đến khi có thông báo mới
+
+#BTLThudoHaNoi
+
+#BanCHQSXaAnKhanh",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:40:17.151607+07:00
+facebook,2434913556882304,https://www.facebook.com/watch?v=2434913556882304,(20+) Video,"🔴 NHIỀU TUYẾN PHỐ HÀ NỘI NGẬP SAU TRẬN MƯA LỚN
+
+Chiều 14/7/2025, cơn mưa lớn đã khiến nhiều tuyến phố trên địa bàn Hà Nội bị ngập cục bộ. Tại một số tuyến phố, nước ngập từ 20-40cm gây khó khăn cho người tham gia giao thông.
+
+🎥 Chỉ sau khoảng 15 phút mưa lớn, các tuyến phố như Nguyễn Trãi, Nguyễn Tuân, Nguyễn Xiển, Hoàng Văn Thái... đã ngập nước. 
+Nguồn video:  Tiền Phong
+#thôngtinphòngchốngthiêntai",2025-07-14T11:31:03.000Z,2025-07-14T11:31:03+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_06,phố ngập Hà Nội tham gia giao thông,,,,,,2026-09-25T11:19:35.895724+07:00
+facebook,2486455708231299,https://www.facebook.com/watch?v=2486455708231299,(20+) Video,"Cảnh ngập tại đường Tân Triều mới, Hà Nội trong giờ cao điểm sáng 10/9
+
+Được biết có một số đoạn ngập sâu tới 60 cm, nhiều phương tiện không thể lưu thông qua đây.
+
+Video: PV Khắc Chính 
+
+—-
+Nếu có thông tin cần chia sẻ, thính giả đừng ngại bình luận, inbox hoặc gọi hotline:
+- Hà Nội: 024.37.91.91.91
+- TP. Hồ Chí Minh: 028.39.91.91.91
+#vovgt #vovgiaothong",2024-09-10T02:30:35.000Z,2024-09-10T02:30:35+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",1,flood_video_05,đường ngập Hà Nội lưu thông,,,,,,2026-09-25T11:11:49.303187+07:00
+facebook,2824753657918145,https://www.facebook.com/photo?fbid=2824753657918145,,"🌹15h40(17/8) - CẬP NHẬT MƯA DÔNG CHIỀU 
+
+🌹HÀ NỘI: vùng mưa dông mạnh đang bao phủ Nam Phú Thọ (Hoà Bình cũ) có hướng dịch về phía Hà Nội. Khoảng 1h tới có thể ảnh hưởng đến phía Nam Hà Nội như Xuân Mai, Trần Phú, Hồng Sơn,... sau lan sang các khu vực khác. Nội thành Hà Nội cũng có thể xuất hiện mưa dông nhưng muộn hơn. 
+
+🌹 Mưa dông gần Thủ phủ Thanh Hoá sẽ lan dần ra phía biển sau đó ảnh hưởng Ninh Bình. 
+
+🌹Mưa dông ở Bắc Quảng Ninh ít di chuyển ảnh hưởng ảnh hưởng về phía Đầm Hà, Mông Dương, Hải Hoà, Vân Đồn, Cẩm Phả,...
+
+🌹Tây Nghệ An, Tây Thanh Hoá, Lai Châu, Điện Biên mưa dông cũng phát triển dần sau mở sang Sơn La, biên giới Lào Cai, Tuyên Quang (Hà Giang cũ), lác đác biên giới Cao Bằng. 
+
+🌹Cao Nguyên Trung Bộ và Đồng Nai mưa nhiều trong chiều nay nhưng lượng ko đồng đều. 
+
+🌹 Biên giới An Giang và Tây Đồng Tháp, Tây Long An cũng có vài điểm mưa dông
+
+⚠️Các khu vực ko kể tên khác của Nam Bộ mưa muộn thiên về tối và mưa ko nhiều, lác đác là chính. Tập trung miền Đông và biên giới phía Tây. 
+Bắc Bộ lưu ý càng về tối và đêm mưa dông càng có thể tăng dần lên có điểm mưa to.
+Nguồn: Thời tiết VN",,,reject,date_unresolved,1,"transport_impact,hanoi_location",0,flood_post_04,lụt Hà Nội di chuyển,,,,,,2026-09-25T10:22:31.126601+07:00
+facebook,28348059474856459,https://www.facebook.com/watch?v=28348059474856459,,"Sáng 17 tháng 9 năm 2026, sau nhiều giờ mưa lớn liên tục từ sáng 14 tháng 9, đường phố Hà Nội bị ngập sâu nghiêm trọng. Tại đoạn giao cắt đường Tố Hữu và Lương Thế Vinh, nước bủa vây phủ kín mặt đường khiến giao thông tê liệt. Theo báo cáo của Trung tâm Quản lý hạ tầng kỹ thuật TP.Hà Nội, mưa tích lũy tại Yên Sở vượt mức 570 milimét, Hai Bà Trưng đạt hơn 550 milimét. Các điểm như Tây Mỗ, Xuân Phương ngập sâu khoảng 35 centimet; trên đại lộ Thăng Long các hầm 2, 5, 6 và Km 9+656 ngập từ 20 đến 30 centimet. Cổng chào An Khánh cũng ngập trung bình 30 centimet. Hệ thống sông hồ tại Hà Nội đang ở mức cao với Sông Nhuệ vượt báo động hai, Sông Tích và Bùi vượt báo động ba lần lượt 24 đến 45 centimet. Trước tình hình này, hơn 2.500 lao động cùng trên 200 thiết bị đã được huy động để khơi thông dòng chảy, vận hành trạm bơm và phân luồng giao thông. Tuy nhiên, do mực nước sông tiếp nhận cao hạn chế khả năng tiêu thoát tự nhiên, nhiều khu vực trũng thấp vẫn đang ngập úng kéo dài. Người dân phải di chuyển khó khăn trong giờ cao điểm, một số phương tiện bị rơi mất biển số và xe máy chết máy khi cố lưu thông qua vùng ngập sâu.
+
+Nguồn: Tổng hợp từ 3 nguồn: Thanh Niên - Trang chủ, Tuổi Trẻ - Trang chủ, Soha - Trang chủ
+
+Hiền Thục Media — bản tin do AI tổng hợp từ báo chí.
+
+#thoisu #tintuc #ainews #hienthucmedia",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_video_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:44:25.050633+07:00
+facebook,2866688097017408,https://www.facebook.com/watch?v=2866688097017408,(20+) Video,"🚫  𝐓𝐀̣𝐌 𝐃𝐔̛̀𝐍𝐆 𝐗𝐄 𝐓𝐑𝐔𝐍𝐆 𝐂𝐇𝐔𝐘𝐄̂̉𝐍 𝐃𝐎 𝐍𝐆𝐀̣̂𝐏 𝐋𝐔̣𝐓
+
+Do ảnh hưởng của mưa lớn, nhiều tuyến đường vào khu vực văn phòng Mỹ Đình hiện đang bị ngập lụt sâu , nên xe không thể di chuyển được  
+
+Vì lý do an toàn, trước mắt trong hôm nay (17/9) , xe trung chuyển Mỹ Đình của nhà xe Hải Hà sẽ tạm dừng hoạt động.
+ 👉 Các chuyến xe tại bến Giáp Bát vẫn hoạt động bình thường.
+
+👉 Quý khách lưu ý: nếu tình hình ngập rút, nhà xe sẽ thông báo trung chuyển trở lại bình thường . 
+
+👉 Hành khách di chuyển tại cả hai đầu Thanh Hóa – Hà Nội vui lòng chủ động sắp xếp 
+
+Nhà xe rất mong Quý khách thông cảm và theo dõi thêm thông báo tiếp theo để cập nhật tình hình.
+
+Xin cảm ơn sự đồng hành của Quý khách!
+
+*******************************************
+  ⚜️ NHÀ XE HẢI HÀ ⚜️ 
+☎ 𝐇𝐨𝐭𝐥𝐢𝐧𝐞 : 0966.223.966 - 0966.723.966
+📍 𝐖𝐞𝐛𝐬𝐢𝐭𝐞 : https://www.facebook.com/HaiHaHauLoc",2026-09-17T00:51:42.000Z,2026-09-17T00:51:42+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,flood_video_04,lụt Hà Nội di chuyển,,1,,unverified,1,2026-09-25T11:02:10.166946+07:00
+facebook,287601777466631,https://www.facebook.com/watch?v=287601777466631,(20+) Video,"🛑 HÀ NỘI: LỤT TỪ NGÃ TƯ ĐƯỜNG PHỐ 
+Trận mưa lớn sáng nay đã gây ngập trên 30 tuyến phố, làm ảnh hưởng không nhỏ đến đời sống của người dân Thủ đô. Hàng loạt tuyến phố tại Hà Nội ngập sâu, nhiều đoạn đường ngập qua bánh xe, người dân chật vật di chuyển trên đường.
+
+#ngaplut #hanoimualon #hanoingaplut #hanoionline #hanoitv #tintuc #tinnong #htv #tintuc24h #truyenhinhhanoi #daihanoi #tv24h",2023-09-28T06:01:06.000Z,2023-09-28T06:01:06+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_04,lụt Hà Nội di chuyển,,,,,,2026-09-25T11:01:01.910335+07:00
+facebook,28969024612695151,https://www.facebook.com/photo?fbid=28969024612695151,,"📍 **Vị trí:** Nguyên Khê, Đông Anh, Hà Nội (Ngay sát trục đường lớn, giao thông đi lại thuận tiện). vuông vắn, sạch sẽ). Sân đường rộng, xe tải lớn và XE CONTAINER ra vào, lùi tự do tận nơi.
+
+📐 **Diện tích:** 700m² (Mới xây dựng 100%, vuông vắn, sạch sẽ). Kết cấu khung thép hộp kiên cố, cao ráo, thoáng đãng. Mái tôn cách nhiệt chống nóng thế hệ mới, không lo hầm bí. Nền bê tông chịu lực tải trọng lớn, cao ráo, **TUYỆT ĐỐI KHÔNG NGẬP LỤT**. Trang bị điện 3 pha phục vụ sản xuất, nước sinh hoạt đầy đủ.
+
+🎯 **Phù hợp:** Làm xưởng cơ khí, máy CNC, kho trung chuyển hàng hóa, các ngành sản xuất không ô nhiễm, không xả thải.
+
++ Cho thuê lâu dài, hợp đồng minh bạch, chủ nhà cực kỳ thiện chí.
+💰 **Giá thuê hạt dẻ:** Chỉ 55k/m² (Thanh toán thỏa thuận trực tiếp).
+
+📞 **Liên hệ xem xưởng ngay kẻo lỡ:** **0888624134 - 0912188010** (Alo trước để xem xưởng trực tiếp).
+
+#khoxuongdonganh #khoxuongnguyenkhe #xuhuongbds #trending #viral",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_post_03,ngập lụt Hà Nội đi lại,,,,,,2026-09-25T10:52:23.739291+07:00
+facebook,3224096434414623,https://www.facebook.com/watch?v=3224096434414623,(20+) Video,"🆘CẬP NHẬT CÁC TUYỀN ĐƯỠNG ĐÃ NGẬP TẠI HÀ NỘI SÁNG NAY 7/10🆘
+
+-Đàm Quang Trung qua Aeon mall, Long Biên
+-Linh Đàm, Keangnam, Nguyễn Chí Thanh, Liễu Giai, -Văn Cao, dọc đường Láng Hạ và Thái Hà
+• Đoạn qua bến xe Mỹ Đình
+-Đại lộ Thăng Long rẽ ra Khuất Duy Tiến, Nguyễn Xiến
+-Phố Phan Văn Trường, Cầu Giấy
+- Bến xe Yên Nghĩa
+-Ngã tư Xuân Thuỷ - Hồ Tùng Mậu
+-Nguyễn Cảnh Dị - Định Công
+& Đường Nguyễn Khánh Toàn trước công viên Nghĩa Đô đã ngập
+- Cầu vượt Mai dịch ùn cục bộ cả trên và dưới từ Phạm Văn Đồng về bến xe Mỹ Đình
+-Nút Tố Hữu- Vũ Trọng Khánh ngập sâu, di chuyển khó khăn; đã có lực lượng chức năng;!
+-Nút Quang Trung- Lê Trọng Tấn (Hà Đông) ngập, di chuyến khó khăn
+- Đường Đào Tấn. Ngã 4 Liêu Giai - Đào Tấn ngập sâu cả 2 chiều sâu. Phương tiện không di chuyến được.
+• Nút Phạm Tu- Câu Bươu ngập 50cm; các phương tiên chọn lộ trình khác; các xe gâm thâp và xe mô tô không cô di chuyên.
+Đội Cảnh sát giao thông số 6 thông tin:
+- Vành đai 3 trên cao (đoạn Keangnam đến Cung thiếu nhi)
+ngập 30cm
+- Lê Đức Thọ - Tân Mỹ: ngập 40cm
+- Lê Quang Đạo - trước quảng trường SVĐ: ngập 40cm
+- Đường gom Đại lộ Thăng Long - trước bảo tàng quân sự: ngập 50cm
+- Cả 2 chiều đường Phạm Hùng (đoạn chân cầu vượt Mai
+Dịch): ngập 40cm
+
+** Ảnh: Nút giao ngã 4 BigC Thăng Long, vành đai 3 Phạm Hùng hiện đã chìm trong biển nước   #hungthammy #buimanhhung #PhongThuyThamMy #xemtay",2025-10-07T06:00:30.000Z,2025-10-07T06:00:30+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,9,,unverified,1,2026-09-25T10:36:57.464455+07:00
+facebook,3254701274795804,https://www.facebook.com/watch?v=3254701274795804,(20+) Video,"Do ảnh hưởng của hoàn lưu bão số 2 gây mưa lớn kéo dài từ đêm đến sáng 12/8 khiến nhiều tuyến đường Hà Nội ngập sâu, người tham gia giao thông di chuyển khó khăn trên những còn đường ngập nước.
+
+#vtc1 #vtc1tintuc",2022-08-12T08:54:48.000Z,2022-08-12T08:54:48+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_06,phố ngập Hà Nội tham gia giao thông,,,,,,2026-09-25T11:19:52.767586+07:00
+facebook,417521604422832,https://www.facebook.com/watch?v=417521604422832,(20+) Video,"PHỐ BÙI XƯƠNG TRẠCH (KHƯƠNG ĐÌNH) NGẬP TRONG NƯỚC SAU TRẬN MƯA LỚN
+
+Cơn mưa cường độ lớn kéo dài trong nhiều giờ đã khiến nhiều tuyến đường, phố ở Hà Nội chìm trong biển nước.
+
+Khoảng 19 giờ ngày 12/5, cơn mưa với cường độ lớn bắt đầu xuất hiện trên địa bàn TP. Hà Nội. Mưa lớn kéo dài trong nhiều giờ đã khiến một tuyến đường, phố ở Khương Đình ngập sâu, gây khó khăn cho người và phương tiện khi tham gia giao thông.",2024-05-12T15:21:04.000Z,2024-05-12T15:21:04+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_06,phố ngập Hà Nội tham gia giao thông,,,,,,2026-09-25T11:21:07.562544+07:00
+facebook,4193671504210756,https://www.facebook.com/watch?v=4193671504210756,(20+) Video,"Nóng: Nước cống đen ngòm tràn vào nhà dân sau mưa lớn tại Hà Nội - Nhiều tuyến đường ngập trong biển nước, giao thông hỗn loạn. H.",2025-05-25T08:47:57.000Z,2025-05-25T08:47:57+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_01,ngập nước Hà Nội giao thông,,,,,,2026-09-25T10:32:32.621267+07:00
+facebook,4716550778621889,https://www.facebook.com/photo?fbid=4716550778621889,(20+) Facebook,""" chẳng lẽ đường cụt không phải là đường ư Ông?
+Hay chỉ là "" Nước Dềnh"" thôi, nước dềnh đã cướp đi sinh mạng  một người, nước dềnh cuốn trôi tuổi trẻ và ước mơ của bạn SV năm thứ nhất. 
+
+LÝ DO KHÔNG CÓ NGƯỜI TRỰC TẠI ĐIỂM NGẬP 
+
+Trưa 18/9, lực lượng tìm kiếm phát hiện một th.i th.ể nam giới tại khu vực miệng cống thoát nước ra sông Nhuệ, cách nơi na.m sin.h N.Đ.S. mất tích khoảng 1km. Người nhà xác nhận đây là S., sinh viên năm nhất Trường Đại học Mỏ - Địa chất, mới lên Hà Nội học hơn 2 tuần.
+
+Liên quan khu vực xảy ra sự việc, ông Lê Quang Lực, đại diện Công ty cổ phần đô thị Việt Úc, xác nhận đơn vị phụ trách duy trì thoát nước tại đây. Ông cho biết thời điểm xảy ra sự việc không có công nhân ứng trực để hỗ trợ tiêu thoát nước hoặc cảnh báo tại điểm ngập.
+
+Theo ông Lực, do tình trạng ngập diễn ra trên diện rộng, lực lượng được ưu tiên xử lý các tuyến giao thông chính trước. Khu vực này là đường cụt, không liên quan giao thông chính nên được bố trí xử lý sau. “Thời điểm đấy không có người ở đấy, có người thì đã hỗ trợ và không để xảy ra sự việc đau lòng như thế”, ông Lực nói.
+
+Đơn vị cho biết sẽ cố gắng hỗ trợ gia đình trong khả năng, gồm hỗ trợ hậu sự và chi phí thuê thợ lặn.
+
+"" chẳng lẽ đường cụt không phải là đường ư Ông?
+Hay chỉ là "" Nước Dềnh"" thôi, nước dềnh đã cướp đi sinh mạng  một người, nước dềnh cuốn trôi tuổi trẻ và ước mơ của bạn SV năm thứ nhất. 
+
+Nam mô A Di Đà Phật 🙏🙏🙏
+Cầu mong cho con sớm được siêu thoát 🙏🙏🙏
+
+ #ThoatNuoc #DiemNgap #DongNgac",2026-09-19T00:55:36.000Z,2026-09-19T00:55:36+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,6,,unverified,1,2026-09-25T11:08:30.303207+07:00
+facebook,491353398001705,https://www.facebook.com/watch?v=491353398001705,(20+) Video,"TIN QUAN TRỌNG : HÀ NỘI SẴN SÀNG DI CHUYỂN HÀNG NGHÌN HỘ DÂN ĐÊM NAY ĐỂ TRÁNH LỤT 
+
+Mực nước sông Bùi (huyện Chương Mỹ, Hà Nội) dâng cao, đe dọa sự an toàn của đê tả Bùi. Đến 19 giờ tối nay 30.7, Chánh VP Ban Chỉ huy Phòng chống thiên tai và Tìm kiếm cứu nạn HN Đỗ Đức Thịnh đang có mặt cùng Chủ tịch UBND TP Hà Nội Nguyễn Đức Chung trên đê tả Bùi để kiểm tra và chỉ đạo công tác hộ đê.
+
+Mực nước ở sông Bùi đoạn Yên Duyệt hiện đang là 7,52m; nếu đúng như dự báo, nước lên khoảng nửa mét nữa thì tình hình sẽ hết sức nghiêm trọng đối với huyện Chương Mỹ.
+
+“Nếu không giữ được đê tả Bùi thì nước sẽ vào toàn bộ huyện Chương Mỹ và đi ngược lên các khu vực sâu bên trong Hà Nội, kể cả quận Hà Đông và một số quận nội thành. Các tuyến giao thông ra phía tây sẽ bị chia cắt rất nghiêm trọng. Theo dự báo của Trung tâm dự báo khí tượng thủy văn quốc gia, đêm nay tại Hòa Bình sẽ có mưa to và nước từ Hòa Bình sẽ dồn về ép vào sông Bùi, khả năng lên cao hơn cả ngày hôm nay. Hà Nội đang rất khẩn trương triển khai các biện pháp hộ đê và chuẩn bị tình huống di dời dân khẩn cấp.
+
+Nguồn : VTC news/MC Huy Anh",2018-07-31T15:13:45.000Z,2018-07-31T15:13:45+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_04,lụt Hà Nội di chuyển,,,,,,2026-09-25T11:02:58.615368+07:00
+facebook,679691518021275,https://www.facebook.com/watch?v=679691518021275,(20+) Video,"Hà Nội cứ có tí mưa là trông thật thê thảm! Chẳng nhẽ mọi người cứ chấp nhận cái cảnh này mãi sao? Đã đến lúc thành phố nên thuê đơn vị nước ngoài họ đánh giá, tư vấn, thiết kế và xây dựng lại mạng lưới tiêu nước đi thôi. Việc trước sau cũng phải làm, làm sớm thì hưởng thái bình sớm.",2025-10-07T01:03:50.000Z,2025-10-07T01:03:50+00:00,reject,missing_group:flood_state,1,"transport_impact,hanoi_location",0,flood_video_03,ngập lụt Hà Nội đi lại,,,,,,2026-09-25T10:53:17.727124+07:00
+facebook,728212266944687,https://www.facebook.com/watch?v=728212266944687,,"Một ngày khó quên ở Hà Nội: Người dân vật lộn giữa ‘dòng đời’ ngập nước, ô tô trôi, xe máy bơi
+TPO - Từ rạng sáng 7/10, mưa lớn kéo dài đã khiến nhiều tuyến phố Hà Nội ngập sâu, giao thông tê liệt. Có nơi nước dâng cao tới nửa mét, người dân phải dùng thuyền và bè tự chế để di chuyển qua dòng nước cuồn cuộn giữa lòng Thủ đô.
+#tienphong #hanoi #ngaplut",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_video_01,ngập nước Hà Nội giao thông,,,,,,2026-09-25T10:31:02.141438+07:00
+facebook,785093512443825,https://www.facebook.com/watch?v=785093512443825,(20+) Video,"Do ảnh hưởng của trận mưa lớn vào sáng 23-5, nhiều tuyến đướng ở Hà Nội đã bị ngập lụt, đặc biệt tại khu vực Đại Lộ Thăng Long, nước ngập úng nhiều giờ khiến các phương tiện đi qua đây gặp nhiều khó khăn.",2022-05-23T08:00:01.000Z,2022-05-23T08:00:01+00:00,reject,out_of_window,1,"flood_state,transport_impact,hanoi_location",0,flood_video_03,ngập lụt Hà Nội đi lại,,,,,,2026-09-25T10:55:43.349001+07:00
+facebook,824508433224990,https://www.facebook.com/watch?v=824508433224990,(20+) Video,"Theo ghi nhận của phóng viên trong sáng ngày 10/9, mực nước sông Hồng dâng cao khiến toàn bộ khu vực dân cư ngõ 46, ngõ 139 đường Chương Dương Độ chìm trong biển nước. Từ trên cao nhìn xuống, khu vực này chỉ còn những nóc nhà tôn hiện hữu. Phương tiện duy nhất có thể sử dụng để di chuyển là xuồng nhỏ và thuyền.",2024-09-10T09:24:57.000Z,2024-09-10T09:24:57+00:00,reject,out_of_window,1,"transport_impact,hanoi_location",0,flood_video_04,lụt Hà Nội di chuyển,,,,,,2026-09-25T11:02:16.975892+07:00
+facebook,830550806167627,https://www.facebook.com/watch?v=830550806167627,(20+) Video,"Tại Hà Nội, nhiều tuyến đường trong thôn An Lạc (xã Trung Giã) ngập sâu, lực lượng cứu hộ đã huy động nhiều phương tiện chuyên dụng, di chuyển người dân đến nơi an toàn.",2025-10-09T01:45:16.000Z,2025-10-09T01:45:16+00:00,accept,flood_transport_hanoi,1,"flood_state,transport_impact,hanoi_location",0,comment_reconciliation,,,14,,unverified,1,2026-09-25T11:03:56.413582+07:00
+facebook,884043941371331,https://www.facebook.com/watch?v=884043941371331,,"Trời mưa to thế?
+Vậy Noble Palace Tây Thăng Long có bị ngập úng không?
+Không ngập anh chị nhé.
+
+An tâm mua ở hay đầu tư tại dự án Noble Palace Tây Thăng Long.
+Xã Ô Diên, Tp Hà Nội.
+
+Giữa vành đai 3.5-4, cách Ngoại Giao Đoàn - Hồ Tây chỉ 15-20p di chuyển.
+Cách ngã tư Xuân Thuỷ - Phạm Văn Đông 9.5km.
+
+Quỹ hàng liền kề giá 11-12-13-14-15-16-17 tỷ
+Căn Vip mặt công viên 23.5 tỷ căn 97m2 xây 5 tầng, diện tích xây dựng 358m2.
+
+Liên hệ em Tú: 035 848 5678
+
+#nobleplacetaythanglong",,,reject,date_unresolved,1,"flood_state,transport_impact,hanoi_location",0,flood_video_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:47:28.229918+07:00
+facebook,954197963757393,https://www.facebook.com/reel/954197963757393,,"🎉 TƯNG BỪNG KHAI TRƯƠNG - BÁNH MÌ BƠ Ú 🎉
+Anh em ơi, ngày mai Bánh Mì Bơ Ú chính thức đi vào hoạt động ngay mai 20/09
+Mời cả nhà ghé thưởng thức những chiếc bánh mì giòn rụm, thơm phức vị bơ và ngập tràn nhân ngon lành.
+🔥 CHƯƠNG TRÌNH ƯU ĐÃI KHAI TRƯƠNG:
+ Mua 1 bánh tặng 1 nước
+ Thời gian áp dụng: 20/09-24/09
+📍 Địa chỉ: 124 phố Xốm, Phú Lương( Hà Đông cũ), Hà Nội
+📞 Hotline/Zalo đặt hàng: 0986247196
+Trân trọng kính mời quý khách ghé ủng hộ quán!",,,reject,date_unresolved,1,"transport_impact,hanoi_location",0,flood_video_02,ngập úng Hà Nội đi,,,,,,2026-09-25T10:45:41.305166+07:00

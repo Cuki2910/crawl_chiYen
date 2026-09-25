@@ -1,0 +1,33 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260924_110728",
+  "query": "ngập Hà Nội giao thông",
+  "candidates": [
+    {
+      "url": "https://www.facebook.com/KenhVOVGT/posts/pfbid021KKBwBfJK5JPcBQtGinmQ4PyCKFyvx8wxtcWQYQfAFLUDT4GKJhgEkJD1SFQCfbnl",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state",
+      "post_published_at": "2026-09-21T10:05:00"
+    },
+    {
+      "url": "https://www.facebook.com/KenhVOVGT/posts/pfbid0RexxyKuPgytCGu8Y2k6qKm1x4yZJ6qfgkRPwy6ryXx419XitMKE52HNWKgeUhu9tl",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state",
+      "post_published_at": "2026-09-17T12:40:00"
+    },
+    {
+      "url": "https://www.facebook.com/groups/509031331243280/posts/1298841188928953",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi",
+      "post_published_at": ""
+    },
+    {
+      "url": "https://www.facebook.com/KenhVOVGT/posts/pfbid02uy3jMRCXDqi6Rnpz3ZscRK1aQvTkoriW8FssQGAwJcDueGhZLcCi5ggBAsJJmDP7l",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi",
+      "post_published_at": "2026-09-17T11:48:00"
+    }
+  ],
+  "error": "AssertionError: expected 1 context, got 0",
+  "selected_url": "https://www.facebook.com/KenhVOVGT/posts/pfbid02uy3jMRCXDqi6Rnpz3ZscRK1aQvTkoriW8FssQGAwJcDueGhZLcCi5ggBAsJJmDP7l"
+}

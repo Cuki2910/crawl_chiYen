@@ -1,0 +1,30 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_082720",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=122132394674882287",
+      "resolved_url": "https://www.facebook.com/photo?fbid=122132394674882287",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=1449814163573636",
+      "resolved_url": "https://www.facebook.com/groups/hanoixinnn/permalink/3699713560176419",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=4622083648115942",
+      "resolved_url": "https://www.facebook.com/groups/yeuxebus/permalink/38617917904489845",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    }
+  ],
+  "error": "AssertionError: expected 1 context, got 0",
+  "selected_url": "https://www.facebook.com/groups/yeuxebus/permalink/38617917904489845"
+}

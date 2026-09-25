@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260924_100016",
+  "query": "ngập Hà Nội giao thông",
+  "candidates": [],
+  "error": "RuntimeError: Facebook auth required (login_form); chạy python -m crawlers.facebook.facebook_session --interactive rồi retry smoke. screenshot=None",
+  "selected_url": null
+}

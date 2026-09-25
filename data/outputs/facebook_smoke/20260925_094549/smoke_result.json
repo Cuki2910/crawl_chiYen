@@ -1,0 +1,16 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_094549",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=4622083648115942",
+      "resolved_url": "https://www.facebook.com/groups/yeuxebus/permalink/38617917904489845",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    }
+  ],
+  "error": "AssertionError: expected 1 context, got 0",
+  "selected_url": "https://www.facebook.com/groups/yeuxebus/permalink/38617917904489845"
+}

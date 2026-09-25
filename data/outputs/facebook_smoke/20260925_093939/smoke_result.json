@@ -1,0 +1,44 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_093939",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=1449814163573636",
+      "resolved_url": "https://www.facebook.com/groups/hanoixinnn/permalink/3699713560176419",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=122143619757347656",
+      "resolved_url": "https://www.facebook.com/photo?fbid=122143619757347656",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập úng Hà Nội đi",
+      "url": "https://www.facebook.com/photo?fbid=3708476455968778",
+      "resolved_url": "https://www.facebook.com/groups/1074044186907872/permalink/1911514413160841",
+      "verdict": "reject",
+      "reason": "metadata_unresolved"
+    },
+    {
+      "query": "ngập úng Hà Nội đi",
+      "url": "https://www.facebook.com/photo?fbid=2192784887971190",
+      "resolved_url": "https://www.facebook.com/groups/789358571581789/permalink/2578661812651447",
+      "verdict": "reject",
+      "reason": "metadata_unresolved"
+    },
+    {
+      "query": "ngập úng Hà Nội đi",
+      "url": "https://www.facebook.com/photo?fbid=4687376434824113",
+      "resolved_url": "https://www.facebook.com/groups/230542984710108/permalink/1686195962478129",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    }
+  ],
+  "error": "AssertionError: expected 1 context, got 0",
+  "selected_url": "https://www.facebook.com/groups/230542984710108/permalink/1686195962478129"
+}

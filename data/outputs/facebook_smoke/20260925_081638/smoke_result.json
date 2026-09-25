@@ -1,0 +1,19 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_081638",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [
+    {
+      "url": "https://www.facebook.com/photo?fbid=1480402354112487",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "url": "https://www.facebook.com/photo?fbid=2222978621824893",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state"
+    }
+  ],
+  "error": "RuntimeError: Không tìm thấy post accept trong 2 candidates: [{'url': 'https://www.facebook.com/photo?fbid=1480402354112487', 'verdict': 'accept', 'reason': 'flood_transport_hanoi'}, {'url': 'https://www.facebook.com/photo?fbid=2222978621824893', 'verdict': 'reject', 'reason': 'missing_group:flood_state'}]",
+  "selected_url": null
+}

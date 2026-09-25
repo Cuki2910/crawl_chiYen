@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260924_094816",
+  "query": "ngập Hà Nội giao thông",
+  "candidates": [],
+  "error": "RuntimeError: Thiếu file credentials: D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\.secrets\\facebook.env",
+  "selected_url": null
+}

@@ -1,0 +1,89 @@
+{
+  "ok": true,
+  "base_dir": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_083231",
+  "query": "ngập nước Hà Nội giao thông",
+  "candidates": [
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=1449814163573636",
+      "resolved_url": "https://www.facebook.com/groups/hanoixinnn/permalink/3699713560176419",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=122143619757347656",
+      "resolved_url": "https://www.facebook.com/photo?fbid=122143619757347656",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=1035973915649677",
+      "resolved_url": "https://www.facebook.com/groups/296723051846634/permalink/1572179314300995",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=3387410118112124",
+      "resolved_url": "https://www.facebook.com/groups/j2team.community/posts/3178813702450728",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state+transport_impact+hanoi_location"
+    },
+    {
+      "query": "ngập nước Hà Nội giao thông",
+      "url": "https://www.facebook.com/photo?fbid=1395417326115670",
+      "resolved_url": "https://www.facebook.com/KenhVOVGT/posts/pfbid02j3X98yd1bL9zxBrRXUW63Wgw1N2HJdLH1uTw4jf8hUuAjoFuWDNKBDngSuAJzDn2l",
+      "verdict": "reject",
+      "reason": "missing_group:flood_state"
+    },
+    {
+      "query": "ngập úng Hà Nội đi",
+      "url": "https://www.facebook.com/photo?fbid=2251337025789709",
+      "resolved_url": "https://www.facebook.com/photo?fbid=2251337025789709",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    },
+    {
+      "query": "ngập úng Hà Nội đi",
+      "url": "https://www.facebook.com/photo?fbid=122125975113167404",
+      "resolved_url": "https://www.facebook.com/groups/3156598254370721/posts/29005298662407326",
+      "verdict": "accept",
+      "reason": "flood_transport_hanoi"
+    }
+  ],
+  "selected_url": "https://www.facebook.com/groups/3156598254370721/posts/29005298662407326",
+  "comments": 1,
+  "qc": {
+    "ok": true,
+    "issues": [],
+    "samples": [
+      {
+        "platform": "facebook",
+        "comment_id": "29005504112386781",
+        "context_id": "29005298662407326",
+        "text": "đường liên xã hạ bằng sáng nay tắc trật cứng ,mong nước rút nhanh để mn đi lại thuận tiện hơn"
+      }
+    ]
+  },
+  "exports": {
+    "facebook_comments": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_083231\\facebook_comments.csv",
+      "rows": 1
+    },
+    "facebook_audit": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_083231\\facebook_post_audit.csv",
+      "rows": 1
+    },
+    "youtube_comments": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_083231\\youtube_comments.csv",
+      "rows": 0
+    },
+    "youtube_audit": {
+      "path": "D:\\GREEN-X\\Crawl_Hanoi_Flood_Transport\\data\\outputs\\facebook_smoke\\20260925_083231\\youtube_post_audit.csv",
+      "rows": 0
+    }
+  },
+  "youtube_pids": []
+}
