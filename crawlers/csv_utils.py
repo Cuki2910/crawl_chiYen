@@ -1,7 +1,6 @@
 """Helper dùng chung cho các crawler ghi output CSV (facebook, youtube).
 
-Vì sao tách riêng: 3 crawler (crawl_facebook, crawl_youtube, crawl_curated) từng copy-paste
-y hệt logic flatten + header-check này. Sửa 1 chỗ, chỗ khác quên sửa là bug chờ sẵn.
+Tách riêng để Facebook và YouTube dùng chung logic flatten + header-check.
 """
 import csv
 import os

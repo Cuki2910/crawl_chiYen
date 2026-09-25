@@ -2,6 +2,7 @@ import csv
 import inspect
 import json
 import os
+import shutil
 import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
@@ -17,23 +18,25 @@ SECOND_COMMENT_TIME = "Thứ Tư, 1 Tháng 7, 2026 lúc 12:57"
 
 SOURCE = {
     "kind": "search",
-    "label": "access_barriers_hcm",
-    "source_class": "access_search",
-    "query": "xe buýt TP.HCM CCCD VNeID điện thoại thẻ ngân hàng người lớn tuổi khuyết tật thu nhập thấp",
+    "label": "hanoi_flood_transport",
+    "source_class": "topic_search",
+    "query": "ngập Hà Nội giao thông",
     "max_posts": 8,
 }
 
 
 class FacebookCrawlerTests(unittest.TestCase):
     def test_canonical_identity_matches_permalink_variants(self):
-        a = "https://www.facebook.com/gtcctphcm/posts/pfbid02abc?comment_id=1"
-        b = "https://m.facebook.com/gtcctphcm/posts/pfbid02abc/"
-        other = "https://www.facebook.com/gtcctphcm/posts/pfbid02other"
+        a = "https://www.facebook.com/hanoi_traffic/posts/pfbid02abc?comment_id=1"
+        b = "https://m.facebook.com/hanoi_traffic/posts/pfbid02abc/"
+        other = "https://www.facebook.com/hanoi_traffic/posts/pfbid02other"
+        group_permalink = "https://www.facebook.com/groups/125948028050014/permalink/1999491540695644"
         self.assertEqual(fb.canonical_post_identity(a), fb.canonical_post_identity(b))
         self.assertNotEqual(fb.canonical_post_identity(a), fb.canonical_post_identity(other))
-        self.assertEqual(fb.canonical_post_url(a), "https://www.facebook.com/gtcctphcm/posts/pfbid02abc")
+        self.assertEqual(fb.canonical_post_url(a), "https://www.facebook.com/hanoi_traffic/posts/pfbid02abc")
         self.assertTrue(fb.url_matches_target(b, a))
         self.assertFalse(fb.url_matches_target(other, a))
+        self.assertEqual(fb.canonical_post_identity(group_permalink), "1999491540695644")
 
     def test_video_canonicalization_distinguishes_reel_and_watch_urls(self):
         reel = "https://m.facebook.com/reel/123456789/?comment_id=42"
@@ -63,14 +66,14 @@ class FacebookCrawlerTests(unittest.TestCase):
             self.assertIn("closest('[role=\"button\"], button')", script)
 
     def test_extract_creation_story_message_text_decodes_vietnamese(self):
-        html = r'<script>{"creation_story":{"message":{"text":"Xe bu\u00fdt TP.HCM mi\u1ec5n ph\u00ed"}}}</script>'
-        self.assertEqual(fb.extract_creation_story_message_text(html), "Xe bu\u00fdt TP.HCM mi\u1ec5n ph\u00ed")
+        html = r'<script>{"creation_story":{"message":{"text":"Hà Nội ngập đường, xe buýt chậm"}}}</script>'
+        self.assertEqual(fb.extract_creation_story_message_text(html), "Hà Nội ngập đường, xe buýt chậm")
 
     def test_reel_metadata_prefers_creation_story_body(self):
         captured = {"resolved": True, "body": "title fallback", "published_at_raw": "2026-07-01T10:30:00Z"}
-        response = _FakeResponse(captured, r'{"creation_story":{"message":{"text":"Xe bu\u00fdt HCM mi\u1ec5n ph\u00ed"}}}')
+        response = _FakeResponse(captured, r'{"creation_story":{"message":{"text":"Hà Nội ngập đường, xe buýt chậm"}}}')
         metadata = fb._metadata_from_response(response, "https://www.facebook.com/reel/123")
-        self.assertEqual(metadata["post_context"], "Xe buýt HCM miễn phí")
+        self.assertEqual(metadata["post_context"], "Hà Nội ngập đường, xe buýt chậm")
         self.assertTrue(metadata["metadata_resolved"])
         self.assertEqual(metadata["post_published_at"], "2026-07-01T10:30:00+00:00")
 
@@ -87,7 +90,7 @@ class FacebookCrawlerTests(unittest.TestCase):
         raw = "Đã chia sẻ: 25/07/2026 14:30"
         self.assertEqual(fb._parse_absolute_post_time(raw), "2026-07-25T14:30:00")
         response = _FakeResponse({
-            "resolved": True, "title": "Xe buýt miễn phí", "body": "TP.HCM",
+            "resolved": True, "title": "Hà Nội ngập đường", "body": "xe buýt chậm",
             "published_at_candidates": ["2 giờ", raw],
         })
         metadata = fb._metadata_from_response(response, "https://www.facebook.com/example/posts/123")
@@ -98,12 +101,19 @@ class FacebookCrawlerTests(unittest.TestCase):
 
     def test_photo_metadata_uses_creation_story_body(self):
         response = _FakeResponse(
-            {"resolved": False, "body": "", "published_at_raw": ""},
-            r'{"creation_story":{"message":{"text":"Xe buýt miễn phí TP.HCM"}}}',
+            {
+                "resolved": False,
+                "body": "",
+                "published_at_candidates": ["2026-09-18T05:13:34.000Z"],
+                "published_at_raw": "2026-09-18T05:13:34.000Z",
+            },
+            r'{"creation_story":{"message":{"text":"Hà Nội ngập đường, xe buýt chậm"}}}',
         )
         metadata = fb._metadata_from_response(response, "https://www.facebook.com/photo?fbid=123")
         self.assertTrue(metadata["metadata_resolved"])
-        self.assertEqual(metadata["post_context"], "Xe buýt miễn phí TP.HCM")
+        self.assertEqual(metadata["post_context"], "Hà Nội ngập đường, xe buýt chậm")
+        self.assertEqual(metadata["post_published_at"], "2026-09-18T05:13:34+00:00")
+        self.assertIn('"creation_time":', fb._CAPTURE_POST_METADATA_JS)
 
     def test_reject_and_unresolved_metadata_never_fetch_comments(self):
         for metadata, reason in (
@@ -144,11 +154,11 @@ class FacebookCrawlerTests(unittest.TestCase):
     def test_is_on_topic_rejects_off_topic(self):
         rejects = [
             "tour du lịch đảo cuối tuần",
-            "VNeID là ứng dụng định danh điện tử mới",
+            "Ứng dụng định danh điện tử mới",
             "người lớn tuổi cần được hỗ trợ y tế",
             "sale vé ca nhạc giải trí",
         ]
-        neutral = {"kind": "search", "label": "generic", "source_class": "generic", "query": "VNeID", "max_posts": 3}
+        neutral = {"kind": "search", "label": "generic", "source_class": "generic", "query": "ứng dụng định danh", "max_posts": 3}
         for text in rejects:
             ok, _ = fb.is_on_topic(text, neutral)
             self.assertFalse(ok, text)
@@ -196,8 +206,8 @@ class FacebookCrawlerTests(unittest.TestCase):
     def test_to_record_keeps_legacy_fields_adds_provenance_and_full_text_ids(self):
         first = {"comment_text": "a" * 50 + " one", "posted_at_raw": COMMENT_TIME, "likes_count": 2}
         second = {"comment_text": "a" * 50 + " two", "posted_at_raw": COMMENT_TIME, "likes_count": 2}
-        r1 = fb.to_record("https://www.facebook.com/gtcctphcm/posts/pfbid02abc?x=1", "ctx", first, "batch", SOURCE, "flood_transport_hanoi")
-        r2 = fb.to_record("https://www.facebook.com/gtcctphcm/posts/pfbid02abc", "ctx", second, "batch", SOURCE, "flood_transport_hanoi")
+        r1 = fb.to_record("https://www.facebook.com/hanoi_traffic/posts/pfbid02abc?x=1", "ctx", first, "batch", SOURCE, "flood_transport_hanoi")
+        r2 = fb.to_record("https://www.facebook.com/hanoi_traffic/posts/pfbid02abc", "ctx", second, "batch", SOURCE, "flood_transport_hanoi")
 
         for key in ("id", "platform", "source_url", "post_context", "comment_text", "posted_at_raw", "posted_at", "likes_count", "crawled_at", "crawl_batch_id"):
             self.assertIn(key, r1)
@@ -206,8 +216,8 @@ class FacebookCrawlerTests(unittest.TestCase):
         self.assertEqual(r1["capture_scope"], "target_permalink_article")
         self.assertEqual(r1["content_type"], "post")
         self.assertEqual(r1["source_kind"], "search")
-        self.assertEqual(r1["source_class"], "access_search")
-        self.assertEqual(r1["source_label"], "access_barriers_hcm")
+        self.assertEqual(r1["source_class"], "topic_search")
+        self.assertEqual(r1["source_label"], "hanoi_flood_transport")
         self.assertEqual(r1["discovery_query"], SOURCE["query"])
         self.assertEqual(r1["topic_rule"], "flood_transport_hanoi")
         self.assertNotEqual(r1["id"], r2["id"])
@@ -215,16 +225,16 @@ class FacebookCrawlerTests(unittest.TestCase):
     def test_to_record_marks_reel_metadata(self):
         source = {"kind": "public_page", "label": "future_reel_page", "source_class": "official_page", "url": "https://www.facebook.com/example/reels/", "max_posts": 8}
         comment = {"comment_text": "Xe buyt rat tien", "posted_at_raw": COMMENT_TIME, "likes_count": 1}
-        record = fb.to_record("https://www.facebook.com/reel/123456789?x=1", "ctx", comment, "batch", source, "transport_service_hcm")
+        record = fb.to_record("https://www.facebook.com/reel/123456789?x=1", "ctx", comment, "batch", source, "flood_transport_hanoi")
         self.assertEqual(record["content_type"], "reel")
         self.assertEqual(record["capture_scope"], "target_reel_comments")
         self.assertEqual(record["source_kind"], "public_page")
         self.assertEqual(record["source_url"], "https://www.facebook.com/reel/123456789")
 
     def test_to_record_marks_watch_video_metadata(self):
-        source = {"kind": "video_search", "label": "reels_bus_hcm", "source_class": "service_search", "query": "xe buyt TP.HCM", "max_posts": 8}
+        source = {"kind": "video_search", "label": "hanoi_flood_video", "source_class": "topic_search", "query": "ngap Ha Noi giao thong", "max_posts": 8}
         comment = {"comment_text": "Xe buyt rat tien", "posted_at_raw": COMMENT_TIME, "likes_count": 1}
-        record = fb.to_record("https://www.facebook.com/watch/?v=987654321", "ctx", comment, "batch", source, "transport_service_hcm")
+        record = fb.to_record("https://www.facebook.com/watch/?v=987654321", "ctx", comment, "batch", source, "flood_transport_hanoi")
         self.assertEqual(record["content_type"], "video")
         self.assertEqual(record["capture_scope"], "target_video_comments")
         self.assertEqual(record["source_kind"], "video_search")
@@ -233,9 +243,9 @@ class FacebookCrawlerTests(unittest.TestCase):
     def test_to_record_same_text_different_posted_at_raw_ids_differ(self):
         same_text = {"comment_text": "same comment text", "posted_at_raw": COMMENT_TIME, "likes_count": 0}
         same_text_later = {"comment_text": "same comment text", "posted_at_raw": SECOND_COMMENT_TIME, "likes_count": 0}
-        url = "https://www.facebook.com/gtcctphcm/posts/pfbid02abc"
-        r1 = fb.to_record(url, "ctx", same_text, "batch", SOURCE, "transport_service_hcm")
-        r2 = fb.to_record(url, "ctx", same_text_later, "batch", SOURCE, "transport_service_hcm")
+        url = "https://www.facebook.com/hanoi_traffic/posts/pfbid02abc"
+        r1 = fb.to_record(url, "ctx", same_text, "batch", SOURCE, "flood_transport_hanoi")
+        r2 = fb.to_record(url, "ctx", same_text_later, "batch", SOURCE, "flood_transport_hanoi")
         self.assertNotEqual(r1["id"], r2["id"])
 
     def test_fetch_reuses_injected_browser_session(self):
@@ -307,6 +317,45 @@ class FacebookCrawlerTests(unittest.TestCase):
             with self.assertRaises(fbs.FacebookProfileBusyError):
                 browser.start()
 
+    def test_session_loads_optional_env_cookies(self):
+        engine = MagicMock()
+        captured = {}
+
+        def factory(**kwargs):
+            captured.update(kwargs)
+            return engine
+
+        profile_dir = tempfile.mkdtemp()
+        try:
+            with patch.dict(fbs.os.environ, {"FB_COOKIE_C_USER": "user", "FB_COOKIE_XS": "session"}, clear=False):
+                browser = fbs.FacebookSession(profile_dir=profile_dir, session_factory=factory)
+                browser.start()
+            self.assertEqual(captured["cookies"][0]["name"], "c_user")
+            self.assertEqual(captured["cookies"][1]["name"], "xs")
+            browser.close()
+        finally:
+            shutil.rmtree(profile_dir, ignore_errors=True)
+
+    def test_session_preserves_existing_profile_cookies(self):
+        engine = MagicMock()
+        captured = {}
+
+        def factory(**kwargs):
+            captured.update(kwargs)
+            return engine
+
+        profile_dir = tempfile.mkdtemp()
+        os.makedirs(os.path.join(profile_dir, "Default", "Network"))
+        open(os.path.join(profile_dir, "Default", "Network", "Cookies"), "a").close()
+        try:
+            with patch.dict(fbs.os.environ, {"FB_COOKIE_C_USER": "user", "FB_COOKIE_XS": "session"}, clear=False):
+                browser = fbs.FacebookSession(profile_dir=profile_dir, session_factory=factory)
+                browser.start()
+            self.assertNotIn("cookies", captured)
+            browser.close()
+        finally:
+            shutil.rmtree(profile_dir, ignore_errors=True)
+
     def test_auth_challenge_keeps_browser_open(self):
         engine = MagicMock()
         page = MagicMock()
@@ -323,6 +372,22 @@ class FacebookCrawlerTests(unittest.TestCase):
         engine.close.assert_not_called()
         browser.close()
         engine.close.assert_called_once()
+
+    def test_authenticated_profile_does_not_require_login_credentials(self):
+        engine = MagicMock()
+        page = MagicMock()
+        page.is_closed.return_value = False
+        page.url = "https://www.facebook.com/"
+        page.evaluate.return_value = fbs.AUTH_OK
+        engine.context.new_page.return_value = page
+        browser = fbs.FacebookSession(session_factory=lambda **kwargs: engine)
+        with patch.object(fbs, "load_credentials") as load_credentials:
+            browser.start()
+            state, detail = browser.ensure_login()
+        self.assertEqual(state, fbs.AUTH_OK)
+        self.assertIsNone(detail["challenge_shot"])
+        load_credentials.assert_not_called()
+        browser.close()
 
     def test_worker_auth_loss_requeues_task(self):
         store = MagicMock()

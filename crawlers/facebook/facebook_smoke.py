@@ -14,9 +14,10 @@ from crawlers.baseline_store import BaselineStore
 from crawlers.facebook import crawl_facebook as fb
 from crawlers.facebook import facebook_session as fbs
 from crawlers.facebook import facebook_worker as worker
+from crawlers.hanoi_flood_transport.config import TOPIC_QUERIES
 
 PRODUCTION_DIR = os.path.abspath("data/outputs/baseline_gate_v2")
-QUERY = "xe buýt miễn phí TP.HCM"
+QUERY = TOPIC_QUERIES[0]
 
 
 def _file_hash(path):
@@ -84,8 +85,11 @@ def _assert_smoke(store, selected_url, max_comments):
     context = contexts[0]
     assert context["context_id"] == fb.canonical_post_identity(selected_url)
     assert fb.url_matches_target(context["source_url"], selected_url)
-    assert context["verdict"] == "accept" and context["reason"] == "du_3_nhom"
-    assert context["metadata_resolved"] == 1 and context["state"] == "comments_done"
+    assert context["verdict"] == "accept" and context["reason"] == "flood_transport_hanoi"
+    assert context["metadata_resolved"] == 1
+    # Facebook may hide the total comment count; worker marks that capture unverified.
+    assert context["state"] in ("comments_done", "comments_unverified")
+    assert context["comment_capture_status"] in ("complete", "unverified")
     assert 1 <= len(comments) <= max_comments, f"expected 1..{max_comments} comments, got {len(comments)}"
     assert all(row["comment_text"].strip() for row in comments)
     assert all(row["posted_at_raw"] for row in comments)
@@ -118,7 +122,6 @@ def run_smoke(base_dir, max_comments=10, timeout_seconds=900, max_candidates=5, 
 
     production_before = _production_snapshot()
     youtube_before = _youtube_pids()
-
     store = BaselineStore(base_dir=base_dir)
     browser = None
     selected_url = None
@@ -143,23 +146,55 @@ def run_smoke(base_dir, max_comments=10, timeout_seconds=900, max_candidates=5, 
         else:
             original_scroll_rounds = fb.SCROLL_ROUNDS
             fb.SCROLL_ROUNDS = 3
+            candidates = []
+            searched_queries = []
             try:
-                candidates = fb.search_posts(QUERY, max_candidates)
+                for query in TOPIC_QUERIES:
+                    if time.monotonic() >= deadline:
+                        break
+                    searched_queries.append(query)
+                    query_candidates = fb.search_posts(query, max_candidates)
+                    candidates.extend(query_candidates)
+                    for candidate_url in query_candidates:
+                        try:
+                            metadata_url = candidate_url
+                            if fb.canonical_post_url(candidate_url).startswith("https://www.facebook.com/photo?"):
+                                resolved_url = fb._resolve_permalink_via_photo(candidate_url)
+                                if resolved_url and fb.canonical_post_identity(resolved_url) not in ("/reel", "/videos", "/watch"):
+                                    if "/groups/" in resolved_url and "/permalink/" in resolved_url:
+                                        result["candidates"].append({
+                                            "query": query,
+                                            "url": candidate_url,
+                                            "resolved_url": resolved_url,
+                                            "skipped": "unsupported_group_permalink",
+                                        })
+                                        continue
+                                    metadata_url = resolved_url
+                            metadata = fb.fetch_post_metadata(metadata_url)
+                            verdict, reason = fb.gate_metadata(metadata)
+                            result["candidates"].append({
+                                "query": query,
+                                "url": candidate_url,
+                                "resolved_url": metadata_url,
+                                "verdict": verdict,
+                                "reason": reason,
+                            })
+                        except Exception as exc:
+                            result["candidates"].append({
+                                "query": query,
+                                "url": candidate_url,
+                                "error": f"{type(exc).__name__}: {str(exc)[:200]}",
+                            })
+                            continue
+                        if verdict == "accept" and metadata.get("post_published_at") and fb.post_in_window(metadata["post_published_at"]):
+                            selected_url = metadata_url
+                            break
+                    if selected_url:
+                        break
             finally:
                 fb.SCROLL_ROUNDS = original_scroll_rounds
-            for candidate_url in candidates:
-                try:
-                    metadata = fb.fetch_post_metadata(candidate_url)
-                    verdict, reason = fb.gate_metadata(metadata)
-                    result["candidates"].append({"url": candidate_url, "verdict": verdict, "reason": reason})
-                except Exception as exc:
-                    result["candidates"].append({"url": candidate_url, "error": f"{type(exc).__name__}: {str(exc)[:200]}"})
-                    continue
-                if verdict == "accept":
-                    selected_url = candidate_url
-                    break
             if not selected_url:
-                raise RuntimeError(f"Không tìm thấy post accept trong {len(candidates)} candidates: {result['candidates']}")
+                raise RuntimeError(f"Không tìm thấy post accept trong {len(candidates)} candidates qua {len(searched_queries)} queries: {result['candidates']}")
 
         store.kv_set("facebook_seeded", True)
         store.enqueue(
@@ -169,7 +204,10 @@ def run_smoke(base_dir, max_comments=10, timeout_seconds=900, max_candidates=5, 
             priority=1,
         )
         while True:
-            status = worker.run_once(store, run, lambda: time.monotonic() >= deadline, "facebook_smoke", max_comments)
+            status = worker.run_once(
+                store, run, lambda: time.monotonic() >= deadline, "facebook_smoke", max_comments,
+                allow_revisit=False,
+            )
             if status["status"] == "queue_empty":
                 break
             if status["status"] == "auth_required":

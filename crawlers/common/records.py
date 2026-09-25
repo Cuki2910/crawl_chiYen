@@ -1,8 +1,8 @@
-"""Shared record helpers for the TikTok and newspaper crawlers.
+"""Shared record helpers for the YouTube and Facebook crawlers.
 
 Additive by design: the YouTube and Facebook crawlers keep their own inline
 helpers and are deliberately NOT refactored onto this module (see
-docs/plans/tiktok_crawler_plan.md §13).
+the platform workers keep their platform-specific capture logic here).
 
 Conventions encoded here, so every new crawler agrees on them:
 
@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 try:
-    # Loads .env into os.environ on import, so secrets like TIKTOK_HANDLE_SALT
+    # Loads .env into os.environ on import, so secrets like FB_HANDLE_SALT
     # only need to be set once in .env rather than re-exported every terminal
     # session. Never overrides a variable already set in the environment.
     #

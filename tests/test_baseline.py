@@ -240,7 +240,7 @@ class StoreTest(unittest.TestCase):
 class YouTubeWorkerTest(unittest.TestCase):
     def test_record_types_and_ids(self):
         from crawlers.youtube import youtube_worker as w
-        video = {"video_id": "vid1", "title": "xe buýt miễn phí Sài Gòn", "description": "TP.HCM", "published_at": "2026"}
+        video = {"video_id": "vid1", "title": "Hà Nội ngập đường", "description": "xe buýt chậm", "published_at": "2026"}
         top = w._record(video, {"textDisplay": "hay", "publishedAt": "t", "likeCount": 2}, "t1", "top_level", None, "t1", 0, "run", "b")
         rep = w._record(video, {"textDisplay": "ok", "publishedAt": "t", "likeCount": 0}, "r1", "reply", "t1", "t1", 1, "run", "b")
         self.assertEqual(top["id"], "youtube_c_t1")
@@ -258,8 +258,8 @@ class YouTubeWorkerTest(unittest.TestCase):
 class FacebookWorkerTest(unittest.TestCase):
     def test_records_parent_unresolved(self):
         from crawlers.facebook import facebook_worker as w
-        recs = w._to_records(None, "https://www.facebook.com/gtcctphcm/posts/123",
-                             "xe buýt miễn phí TP.HCM", {"post_published_at_raw": "", "post_published_at": ""},
+        recs = w._to_records(None, "https://www.facebook.com/hanoi_traffic/posts/123",
+                             "Hà Nội ngập đường, xe buýt chậm", {"post_published_at_raw": "", "post_published_at": ""},
                              [{"comment_text": "tốt", "posted_at_raw": COMMENT_TIME}], "run", "b")
         self.assertEqual(len(recs), 1)
         self.assertEqual(recs[0]["parent_unresolved"], 0)
@@ -274,8 +274,8 @@ class FacebookWorkerTest(unittest.TestCase):
             {"comment_text": "unresolved", "comment_id": "r2", "comment_type": "reply",
              "parent_unresolved": True, "posted_at_raw": COMMENT_TIME},
         ]
-        recs = w._to_records(None, "https://www.facebook.com/gtcctphcm/posts/123",
-                             "xe buýt miễn phí TP.HCM", {"post_published_at_raw": "", "post_published_at": ""},
+        recs = w._to_records(None, "https://www.facebook.com/hanoi_traffic/posts/123",
+                             "Hà Nội ngập đường, xe buýt chậm", {"post_published_at_raw": "", "post_published_at": ""},
                              comments, "run", "b")
         self.assertEqual(recs[0]["comment_type"], "reply")
         self.assertEqual(recs[0]["parent_comment_id"], "p1")
@@ -288,19 +288,19 @@ class FacebookWorkerTest(unittest.TestCase):
 
     def test_contamination_rejects_giant_text(self):
         from crawlers.facebook import facebook_worker as w
-        url = "https://www.facebook.com/gtcctphcm/posts/123"
+        url = "https://www.facebook.com/hanoi_traffic/posts/123"
         self.assertTrue(w._contamination_ok(url, [{"comment_text": "ngắn", "post_url": url}]))
         self.assertFalse(w._contamination_ok(url, [{"comment_text": "x" * 9000, "post_url": url}]))
         self.assertFalse(w._contamination_ok(url, [{"comment_text": "ngắn"}]))
         self.assertFalse(w._contamination_ok(url, [{"comment_text": "ngắn", "post_url": "https://www.facebook.com/other/posts/456"}]))
 
-    def test_combo_sources_use_approved_keywords(self):
-        from crawlers.facebook import facebook_worker as w
+    def test_facebook_sources_use_approved_keywords(self):
         from crawlers.facebook import crawl_facebook as fb
-        self.assertEqual(w._combo_sources(), [])
+        from crawlers.hanoi_flood_transport.config import TOPIC_QUERIES
         self.assertTrue(fb.SOURCES)
         self.assertTrue(all("query" in s for s in fb.SOURCES))
         self.assertTrue(all(s["source_class"] == "topic_search" for s in fb.SOURCES))
+        self.assertTrue(all(s["query"] in TOPIC_QUERIES for s in fb.SOURCES))
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ def _norm(text):
 
 def _to_regex(entry):
     pattern = entry["term"]
-    return pattern[3:] if entry["type"] == "regex" else re.escape(pattern)
+    return pattern[3:] if entry["type"] == "regex" else r"(?<!\w)" + re.escape(pattern) + r"(?!\w)"
 
 
 GROUP_RX = {

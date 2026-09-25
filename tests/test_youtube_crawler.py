@@ -12,11 +12,11 @@ yt = importlib.import_module("crawlers.youtube.crawl_youtube")
 
 class YouTubeCrawlerTests(unittest.TestCase):
     def test_search_keeps_metadata(self):
-        payload = {"items": [{"id": {"videoId": "v1"}, "snippet": {"title": "Xe buýt", "description": "miễn phí HCM", "publishedAt": "2026-01-01T00:00:00Z"}}]}
+        payload = {"items": [{"id": {"videoId": "v1"}, "snippet": {"title": "Hà Nội ngập đường", "description": "xe buýt chậm", "publishedAt": "2026-01-01T00:00:00Z"}}]}
         with patch.object(yt, "_api_get", return_value=payload), patch.object(yt.time, "sleep"):
             yt.reset_counters()
             video = yt.search_videos("q", "2025-01-01T00:00:00Z", "2027-01-01T00:00:00Z", max_pages=1)[0]
-        self.assertEqual(video["description"], "miễn phí HCM")
+        self.assertEqual(video["description"], "xe buýt chậm")
         self.assertEqual(video["published_at"], "2026-01-01T00:00:00Z")
 
     def test_worker_record_keeps_post_metadata_and_comment_labels(self):
@@ -113,7 +113,7 @@ class YouTubeCrawlerTests(unittest.TestCase):
                 store.upsert_context({
                     "platform": "youtube", "context_id": video_id, "source_url": "u",
                     "post_title": "t", "post_context": "t\nd", "post_published_at_raw": "t",
-                    "post_published_at": "t", "verdict": "accept", "reason": "du_3_nhom",
+                    "post_published_at": "t", "verdict": "accept", "reason": "flood_transport_hanoi",
                     "metadata_resolved": 1, "matched_groups": "", "co_thanh_pho_khac": 0,
                     "discovery_source": "search", "discovery_query": "q", "state": "comments_done",
                     "crawled_at": "now",
@@ -143,7 +143,7 @@ class YouTubeCrawlerTests(unittest.TestCase):
             store.upsert_context({
                 "platform": "youtube", "context_id": "v1", "source_url": "u",
                 "post_title": "t", "post_context": "t\nd", "post_published_at_raw": "t",
-                "post_published_at": "t", "verdict": "accept", "reason": "du_3_nhom",
+                "post_published_at": "t", "verdict": "accept", "reason": "flood_transport_hanoi",
                 "metadata_resolved": 1, "matched_groups": "", "co_thanh_pho_khac": 0,
                 "discovery_source": "search", "discovery_query": "q", "state": "comments_done",
                 "crawled_at": "now",
@@ -171,7 +171,7 @@ class YouTubeCrawlerTests(unittest.TestCase):
             store.upsert_context({
                 "platform": "youtube", "context_id": "v1", "source_url": "u",
                 "post_title": "t", "post_context": "t\nd", "post_published_at_raw": "t",
-                "post_published_at": "t", "verdict": "accept", "reason": "du_3_nhom",
+                "post_published_at": "t", "verdict": "accept", "reason": "flood_transport_hanoi",
                 "metadata_resolved": 1, "matched_groups": "", "co_thanh_pho_khac": 0,
                 "discovery_source": "search", "discovery_query": "q", "state": "comments_done",
                 "crawled_at": "now", "comment_retry_count": youtube_worker._MAX_REFRESH_RETRIES,
@@ -196,7 +196,7 @@ class YouTubeCrawlerTests(unittest.TestCase):
             store.upsert_context({
                 "platform": "youtube", "context_id": "v1", "source_url": "u",
                 "post_title": "t", "post_context": "t\nd", "post_published_at_raw": "t",
-                "post_published_at": "t", "verdict": "accept", "reason": "du_3_nhom",
+                "post_published_at": "t", "verdict": "accept", "reason": "flood_transport_hanoi",
                 "metadata_resolved": 1, "matched_groups": "", "co_thanh_pho_khac": 0,
                 "discovery_source": "search", "discovery_query": "q", "state": "comments_done",
                 "crawled_at": "now",
@@ -348,9 +348,9 @@ class YouTubeCrawlerTests(unittest.TestCase):
             run = store.get_or_create_run(24, 5000)
             store.upsert_context({
                 "platform": "youtube", "context_id": "v1", "source_url": "u",
-                "post_title": "xe buýt miễn phí TP.HCM", "post_context": "xe buýt miễn phí TP.HCM\nmô tả",
+                "post_title": "Hà Nội ngập đường", "post_context": "Hà Nội ngập đường\nxe buýt chậm",
                 "post_published_at_raw": "t", "post_published_at": "t", "verdict": "accept",
-                "reason": "du_3_nhom", "metadata_resolved": 1, "matched_groups": "",
+                "reason": "flood_transport_hanoi", "metadata_resolved": 1, "matched_groups": "",
                 "co_thanh_pho_khac": 0, "discovery_source": "search", "discovery_query": "q",
                 "state": "accepted", "crawled_at": "now",
             })
@@ -373,7 +373,7 @@ class YouTubeCrawlerTests(unittest.TestCase):
             store.upsert_context({
                 "platform": "youtube", "context_id": "v1", "source_url": "u",
                 "post_title": "t", "post_context": "t\nd", "post_published_at_raw": "t",
-                "post_published_at": "t", "verdict": "accept", "reason": "du_3_nhom",
+                "post_published_at": "t", "verdict": "accept", "reason": "flood_transport_hanoi",
                 "metadata_resolved": 1, "matched_groups": "", "co_thanh_pho_khac": 0,
                 "discovery_source": "search", "discovery_query": "q", "state": "accepted",
                 "crawled_at": "now",
@@ -398,7 +398,7 @@ class YouTubeCrawlerTests(unittest.TestCase):
             store.upsert_context({
                 "platform": "youtube", "context_id": "v1", "source_url": "u",
                 "post_title": "t", "post_context": "t\nd", "post_published_at_raw": "t",
-                "post_published_at": "t", "verdict": "accept", "reason": "du_3_nhom",
+                "post_published_at": "t", "verdict": "accept", "reason": "flood_transport_hanoi",
                 "metadata_resolved": 1, "matched_groups": "", "co_thanh_pho_khac": 0,
                 "discovery_source": "search", "discovery_query": "q", "state": "accepted",
                 "crawled_at": "now",

@@ -33,5 +33,6 @@ data/inputs/news/*
 
 .env
 .secrets/
+crawl.db
 data/outputs/baseline_gate_v2/
 data/outputs/facebook/

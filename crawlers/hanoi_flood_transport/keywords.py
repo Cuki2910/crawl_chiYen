@@ -11,7 +11,7 @@ Corrections applied against the raw workbook cells:
 """
 
 FLOOD_STATE = [
-    {"term": "ngập", "type": "literal"},
+    {"term": r"\bngập\b(?!\s*tràn)", "type": "regex"},
     {"term": "ngập nước", "type": "literal"},
     {"term": "ngập úng", "type": "literal"},
     {"term": "ngập lụt", "type": "literal"},

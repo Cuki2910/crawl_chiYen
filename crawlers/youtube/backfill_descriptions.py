@@ -130,7 +130,7 @@ def run_backfill(legacy_db_path, batch_size=50, limit=None, base_dir="data/outpu
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--legacy-db", default="data/outputs/baseline_gate_v2_legacy_20260731/crawl.db")
+    parser.add_argument("--legacy-db", required=True, help="Path to the legacy crawl.db to backfill.")
     parser.add_argument("--batch-size", type=int, default=50)
     parser.add_argument("--limit", type=int, default=None)
     args = parser.parse_args()

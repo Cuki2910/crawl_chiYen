@@ -17,11 +17,6 @@ from crawlers.facebook import crawl_facebook as fb
 from crawlers.facebook import facebook_session as fbs
 from crawlers.topics import co_thanh_pho_khac, matched_groups
 
-# Query mở rộng chỉ từ bộ từ khóa đã duyệt (A phương tiện + B chính sách + C địa danh).
-# Discovery-only; gate vẫn độc lập với query.
-_A = ["xe buýt", "xe bus", "buýt điện"]
-_B = ["miễn phí", "trợ giá", "vé 0 đồng", "hết miễn phí", "VNeID"]
-_C = ["TP.HCM", "Sài Gòn", "Thủ Đức"]
 _SESSIONS = threading.local()
 _MAX_COMMENT_RECONCILIATION_RETRIES = 3
 
@@ -50,25 +45,11 @@ def _auth_required(store, task=None, state=fbs.AUTH_LOGIN_FORM):
     return {"status": "auth_required", "state": state}
 
 
-def _combo_sources():
-    return []
-    out = []
-    for a in _A:
-        for b in _B:
-            for c in _C:
-                q = f"{a} {b} {c}"
-                out.append({"kind": "search", "label": "combo_post", "source_class": "policy_search", "query": q, "max_posts": 12})
-                out.append({"kind": "video_search", "label": "combo_video", "source_class": "policy_search", "query": q, "max_posts": 12})
-    return out
-
-
 def seed_queue(store):
     if not store.kv_get("facebook_seeded"):
         priority = 10
         for source in fb.SOURCES:
             store.enqueue("facebook", "discover", source, priority=priority)
-        for source in _combo_sources():
-            store.enqueue("facebook", "discover", source, priority=200)
         store.kv_set("facebook_seeded", True)
     if store.kv_get("facebook_comment_reconciliation_seeded"):
         return
@@ -90,9 +71,6 @@ def _revisit_sources(store):
     for source in fb.SOURCES:
         store.enqueue("facebook", "discover", source, priority=50,
                       dedup_key=f"facebook:revisit:{source['label']}:{stamp}")
-    for source in _combo_sources():
-        store.enqueue("facebook", "discover", source, priority=250,
-                      dedup_key=f"facebook:revisit:{source['kind']}:{source['query']}:{stamp}")
 
 
 def _contamination_ok(post_url, comments):
@@ -167,7 +145,7 @@ def _queue_reconciliation_retry(store, post_url, identity, retry_count):
     )
 
 
-def run_once(store, run, deadline_check, batch_id, max_comments=None):
+def run_once(store, run, deadline_check, batch_id, max_comments=None, allow_revisit=True):
     """Xử lý task discover cho tới khi hết queue/giờ hoặc gặp auth challenge."""
     try:
         browser = _session()
@@ -183,7 +161,7 @@ def run_once(store, run, deadline_check, batch_id, max_comments=None):
         return {"status": "auth_required", "detail": detail, "state": state}
     store.kv_set("facebook_status", "running")
     seed_queue(store)
-    store.kv_set("facebook_revisited_this_pass", False)
+    store.kv_set("facebook_revisited_this_pass", not allow_revisit)
     seen = set(store.kv_get("facebook_seen_posts", []))
 
     while True:
@@ -192,7 +170,7 @@ def run_once(store, run, deadline_check, batch_id, max_comments=None):
             return {"status": "deadline"}
         task = store.claim("facebook")
         if task is None:
-            if not store.kv_get("facebook_revisited_this_pass"):
+            if allow_revisit and not store.kv_get("facebook_revisited_this_pass"):
                 _revisit_sources(store)
                 store.kv_set("facebook_revisited_this_pass", True)
                 continue

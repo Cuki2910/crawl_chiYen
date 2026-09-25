@@ -42,45 +42,7 @@ while True:
 _key_index = 0
 BASE_URL = "https://www.googleapis.com/youtube/v3"
 
-# KEYWORDS v1 — cập nhật 2026-07-22, dùng cho đợt search P0/P1.
-# Sửa list này khi đổi giai đoạn nghiên cứu; ghi lại ngày cập nhật ở trên.
-KEYWORDS = [
-    # Nhóm chính sách miễn phí & ứng dụng (P0/P1)
-    "xe buýt miễn phí TP.HCM",
-    "VNeID xe buýt",
-    "MultiGo xe buýt",
-    "xe buýt miễn phí 1/7/2026",
-    "vé tháng xe buýt miễn phí TP.HCM",
-    "hoàn tiền vé tập xe buýt",
-    "thẻ xe buýt miễn phí TP.HCM",
-    "MultiGo xe buýt TP.HCM",
-    "thanh toán vé xe buýt MultiGo",
-    "VNeID xe buýt TP.HCM",
-    # Nhóm mở rộng: Trải nghiệm, review & dịch vụ buýt TP.HCM / Sài Gòn (tối đa hoá dữ liệu)
-    "xe buýt Sài Gòn",
-    "xe buýt TP HCM",
-    "buýt điện TP HCM",
-    "xe buýt điện Sài Gòn",
-    "VinBus TP HCM",
-    "thử đi xe buýt Sài Gòn",
-    "review xe buýt Sài Gòn",
-    "đi xe bus TPHCM",
-    "xe buýt công cộng TPHCM",
-    "buýt Sài Gòn trải nghiệm",
-    "xe bus miễn phí Sài Gòn",
-    "xe bus Sài Gòn 2026",
-    # Nhóm P2: định danh bắt buộc (1/10-31/12/2026) — VNeID/CCCD/MultiGo, RQ3 nhóm yếu thế
-    "xe buýt VNeID bắt buộc",
-    "xe buýt định danh CCCD",
-    "xe buýt xác thực VNeID MultiGo",
-    "quét mã xe buýt VNeID",
-    "MultiGo xe buýt định danh",
-    "người già xe buýt VNeID",
-    "người cao tuổi không có smartphone xe buýt",
-    "xe buýt miễn phí khó khăn định danh",
-    "xe buýt miễn phí tháng 10 định danh",
-    "xe buýt 1/10 VNeID",
-]
+# Single source of truth: the approved Hanoi flood-transport workbook terms.
 KEYWORDS = list(TOPIC_QUERIES)
 
 search_call_count = 0

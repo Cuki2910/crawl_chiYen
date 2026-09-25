@@ -4,6 +4,9 @@ import sys
 import threading
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from crawlers.csv_utils import load_env
+
+load_env()
 
 try:
     from scrapling.fetchers import StealthySession
@@ -45,6 +48,25 @@ def load_credentials():
     if not email or not password:
         raise RuntimeError("Credentials thiếu FB_LOGIN_EMAIL hoặc FB_LOGIN_PASSWORD")
     return email, password
+
+
+def load_session_cookies():
+    """Return optional Facebook cookies from .env for an already-authenticated session."""
+    user_id = os.environ.get("FB_COOKIE_C_USER", "").strip()
+    session_key = os.environ.get("FB_COOKIE_XS", "").strip()
+    if not user_id or not session_key:
+        return None
+    return [
+        {"name": "c_user", "value": user_id, "domain": ".facebook.com", "path": "/"},
+        {"name": "xs", "value": session_key, "domain": ".facebook.com", "path": "/"},
+    ]
+
+
+def has_persistent_cookies(profile_dir):
+    return any(
+        os.path.exists(os.path.join(profile_dir, relative_path))
+        for relative_path in ("Default/Network/Cookies", "Default/Cookies")
+    )
 
 
 def _classify_auth_js():
@@ -91,6 +113,35 @@ def _is_profile_busy(exc):
     return "processsingleton" in message or "profile is already in use" in message or "profile directory" in message and "in use" in message
 
 
+def _auth_state(page):
+    try:
+        return page.evaluate(_classify_auth_js())
+    except Exception as exc:
+        if "execution context was destroyed" in str(exc).lower():
+            return AUTH_LOGIN_FORM
+        raise
+
+
+def _continue_saved_profile(page):
+    try:
+        return bool(page.evaluate(r"""
+            () => {
+                const nodes = [...document.querySelectorAll('[role="button"], button, [aria-label]')];
+                const target = nodes.find(node => {
+                    const label = (node.getAttribute('aria-label') || '').trim();
+                    return /^(continue|tiếp tục)(\s|$)/i.test(label);
+                });
+                if (!target) return false;
+                target.click();
+                return true;
+            }
+        """))
+    except Exception as exc:
+        if "execution context was destroyed" in str(exc).lower():
+            return True
+        raise
+
+
 class FacebookSession:
     def __init__(self, profile_dir=PROFILE_DIR, session_factory=None, headless=True):
         self.profile_dir = profile_dir
@@ -106,7 +157,7 @@ class FacebookSession:
         if self.session_factory is None:
             raise RuntimeError("Thiếu scrapling; cài requirements trước khi crawl live.")
         os.makedirs(self.profile_dir, exist_ok=True)
-        session = self.session_factory(
+        session_options = dict(
             headless=self.headless,
             user_data_dir=self.profile_dir,
             locale="vi-VN",
@@ -115,8 +166,12 @@ class FacebookSession:
             block_ads=True,
             hide_canvas=True,
             block_webrtc=True,
-            extra_flags=["--start-minimized"],
+            extra_flags=["--start-minimized"] if self.headless else [],
         )
+        cookies = load_session_cookies()
+        if cookies and not has_persistent_cookies(self.profile_dir):
+            session_options["cookies"] = cookies
+        session = self.session_factory(**session_options)
         try:
             session.start()
         except Exception as exc:
@@ -158,17 +213,27 @@ class FacebookSession:
         return self.auth_page
 
     def ensure_login(self):
-        email, password = load_credentials()
         page = self._page()
         if page.url == "about:blank":
             page.goto("https://www.facebook.com/", wait_until="domcontentloaded")
             page.wait_for_timeout(3000)
-        state = page.evaluate(_classify_auth_js())
+        state = _auth_state(page)
         if state == AUTH_OK:
             return state, {"challenge_shot": None}
         if state == AUTH_CHALLENGE:
             self._capture_challenge(page)
             return state, {"challenge_shot": CHALLENGE_SHOT}
+
+        if state == AUTH_LOGIN_FORM and _continue_saved_profile(page):
+            page.wait_for_timeout(5000)
+            state = _auth_state(page)
+            if state == AUTH_OK:
+                return state, {"challenge_shot": None}
+
+        try:
+            email, password = load_credentials()
+        except RuntimeError as exc:
+            return state, {"challenge_shot": None, "auth_error": str(exc)}
 
         if not page.locator('input[name="email"]').count():
             page.goto("https://www.facebook.com/login/", wait_until="domcontentloaded")
@@ -178,7 +243,7 @@ class FacebookSession:
         # Enter trên password tránh giữ locator submit cũ qua navigation/2FA redirect.
         page.locator('input[name="pass"]').press("Enter")
         page.wait_for_timeout(10000)
-        state = page.evaluate(_classify_auth_js())
+        state = _auth_state(page)
         if state != AUTH_OK:
             self._capture_challenge(page)
         return state, {"challenge_shot": CHALLENGE_SHOT if state == AUTH_CHALLENGE else None}

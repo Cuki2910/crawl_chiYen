@@ -49,104 +49,6 @@ CAPTURE_SCOPE = "target_permalink_article"
 REEL_CAPTURE_SCOPE = "target_reel_comments"
 VIDEO_CAPTURE_SCOPE = "target_video_comments"
 
-SOURCES_VERSION = "facebook_sources_v3_2026-07-24"
-SOURCES = [
-    {
-        "kind": "public_page",
-        "label": "gtcctphcm",
-        "source_class": "official_page",
-        "url": "https://www.facebook.com/gtcctphcm/",
-        "max_posts": 12,
-    },
-    {
-        "kind": "search",
-        "label": "free_fare_hcm",
-        "source_class": "policy_search",
-        "query": "xe buýt miễn phí TP.HCM",
-        "max_posts": 10,
-    },
-    {
-        "kind": "search",
-        "label": "vneid_bus_hcm",
-        "source_class": "policy_search",
-        "query": "VNeID xe buýt TP.HCM",
-        "max_posts": 10,
-    },
-    {
-        "kind": "search",
-        "label": "multigo_bus_hcm",
-        "source_class": "service_search",
-        "query": "MultiGo xe buýt TP.HCM",
-        "max_posts": 10,
-    },
-    {
-        "kind": "search",
-        "label": "commute_bus_hcm",
-        "source_class": "everyday_search",
-        "query": "đi bus đi làm đi học khám bệnh TP.HCM",
-        "max_posts": 8,
-    },
-    {
-        "kind": "search",
-        "label": "delay_crowding_hcm",
-        "source_class": "service_search",
-        "query": "xe buýt TP.HCM chờ lâu đông xe trạm tuyến",
-        "max_posts": 8,
-    },
-    {
-        "kind": "search",
-        "label": "access_barriers_hcm",
-        "source_class": "access_search",
-        "query": "xe buýt TP.HCM CCCD VNeID điện thoại thẻ ngân hàng người lớn tuổi khuyết tật thu nhập thấp",
-        "max_posts": 8,
-    },
-    # --- Video / Reel sources ---
-    # Keywords mới: người tạo Reel/Video dùng ngôn ngữ ngắn, catchy khác hẳn post text.
-    # Format phổ biến: hướng dẫn (tutorial), review, thử trải nghiệm, vlog.
-    {
-        "kind": "video_search",
-        "label": "video_guide_bus",
-        "source_class": "policy_search",
-        "query": "hướng dẫn đi xe buýt miễn phí",
-        "max_posts": 8,
-    },
-    {
-        "kind": "video_search",
-        "label": "video_review_bus",
-        "source_class": "everyday_search",
-        "query": "review xe buýt Sài Gòn",
-        "max_posts": 8,
-    },
-    {
-        "kind": "video_search",
-        "label": "video_try_bus",
-        "source_class": "everyday_search",
-        "query": "thử đi xe buýt Sài Gòn",
-        "max_posts": 8,
-    },
-    {
-        "kind": "video_search",
-        "label": "video_electric_bus",
-        "source_class": "service_search",
-        "query": "xe buýt điện Sài Gòn",
-        "max_posts": 8,
-    },
-    {
-        "kind": "video_search",
-        "label": "video_multigo_guide",
-        "source_class": "service_search",
-        "query": "hướng dẫn MultiGo xe buýt",
-        "max_posts": 8,
-    },
-    {
-        "kind": "video_search",
-        "label": "video_free_bus_short",
-        "source_class": "policy_search",
-        "query": "xe bus miễn phí",
-        "max_posts": 8,
-    },
-]
-
 SOURCES_VERSION = TOPIC_SOURCES_VERSION
 SOURCES = facebook_sources()
 
@@ -210,8 +112,16 @@ _CAPTURE_POST_METADATA_JS = r"""
             .filter(text => text.length >= 3);
         body = [...new Set(bodyParts)].join('\n').trim();
     }
+    const structuredCreationTime = (document.documentElement.innerHTML.match(/"creation_time":(\d+)/) || [])[1] || '';
     if (!body) {
-        document.documentElement.setAttribute('%s', JSON.stringify({resolved: false, title: cleanTitle, body: '', published_at_raw: ''}));
+        const publishedAtRaw = structuredCreationTime
+            ? new Date(Number(structuredCreationTime) * 1000).toISOString()
+            : '';
+        document.documentElement.setAttribute('%s', JSON.stringify({
+            resolved: false, title: cleanTitle, body: '',
+            published_at_candidates: publishedAtRaw ? [publishedAtRaw] : [],
+            published_at_raw: publishedAtRaw,
+        }));
         return;
     }
     if (!scope) scope = document;
@@ -228,6 +138,10 @@ _CAPTURE_POST_METADATA_JS = r"""
         for (const value of values) {
             if (!publishedAtCandidates.includes(value)) publishedAtCandidates.push(value);
         }
+    }
+    if (!publishedAtCandidates.length) {
+        const structuredTime = (document.documentElement.innerHTML.match(/"(?:creation_time|created_time)":(\d+)/) || [])[1] || '';
+        if (structuredTime) publishedAtCandidates.push(new Date(Number(structuredTime) * 1000).toISOString());
     }
     document.documentElement.setAttribute('%s', JSON.stringify({
         resolved: true, title: cleanTitle, body,
@@ -246,7 +160,7 @@ _INIT_COMMENT_CAPTURE_JS = r"""
     const identity = raw => {
         const u = new URL(raw, location.origin);
         const path = u.pathname.replace(/\/+$/, '');
-        for (const rx of [/\/posts\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
+        for (const rx of [/\/posts\/([^/]+)$/, /\/permalink\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
             const match = path.match(rx);
             if (match) return match[1];
         }
@@ -309,7 +223,7 @@ _CAPTURE_COMMENTS_JS = r"""
     const identity = raw => {
         const u = new URL(raw, location.origin);
         const path = u.pathname.replace(/\/+$/, '');
-        for (const rx of [/\/posts\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
+        for (const rx of [/\/posts\/([^/]+)$/, /\/permalink\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
             const match = path.match(rx);
             if (match) return match[1];
         }
@@ -368,7 +282,7 @@ _CAPTURE_COMMENTS_JS = r"""
         const identity = raw => {
             const u = new URL(raw, location.origin);
             const path = u.pathname.replace(/\/+$/, '');
-            for (const rx of [/\/posts\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
+            for (const rx of [/\/posts\/([^/]+)$/, /\/permalink\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
                 const match = path.match(rx);
                 if (match) return match[1];
             }
@@ -456,7 +370,7 @@ _INIT_REEL_COMMENT_CAPTURE_JS = r"""
     const identity = raw => {
         const u = new URL(raw, location.origin);
         const path = u.pathname.replace(/\/+$/, '');
-        for (const rx of [/\/posts\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
+        for (const rx of [/\/posts\/([^/]+)$/, /\/permalink\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
             const match = path.match(rx);
             if (match) return match[1];
         }
@@ -551,7 +465,7 @@ _CAPTURE_REEL_COMMENTS_JS = r"""
         const identity = raw => {
             const u = new URL(raw, location.origin);
             const path = u.pathname.replace(/\/+$/, '');
-            for (const rx of [/\/posts\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
+            for (const rx of [/\/posts\/([^/]+)$/, /\/permalink\/([^/]+)$/, /\/videos\/([^/]+)$/, /\/reel\/([^/]+)$/]) {
                 const match = path.match(rx);
                 if (match) return match[1];
             }
@@ -591,23 +505,6 @@ _CAPTURE_REEL_COMMENTS_JS = r"""
 }
 """ % _TARGET_RESOLVED_ATTR
 
-_TRANSPORT_TERMS = (
-    "xe buýt", "xe bus", "bus", "tuyến", "trạm", "bến", "vé", "đông xe", "chờ lâu",
-    "tài xế", "tiếp viên", "chất lượng", "multigo", "giao thông công cộng",
-)
-_HCM_TERMS = ("tp.hcm", "tp hcm", "hồ chí minh", "sài gòn", "tphcm", "thành phố hồ chí minh")
-_POLICY_TERMS = (
-    "miễn phí", "định danh", "vneid", "cccd", "căn cước", "thẻ ngân hàng",
-    "điện thoại", "smartphone", "quyền riêng tư", "privacy",
-)
-_ACCESS_TERMS = ("người lớn tuổi", "người già", "khuyết tật", "thu nhập thấp", "yếu thế")
-_REJECT_TERMS = (
-    "du lịch", "tour", "đảo", "sale", "giảm giá", "giải trí", "showbiz", "ca sĩ",
-    "bầu cử", "quốc hội", "đảng", "game", "livestream bán",
-)
-_TRANSPORT_SOURCE_CLASSES = {
-    "official_page", "policy_search", "service_search", "everyday_search", "access_search", "transport_group"
-}
 _CREATION_STORY_MESSAGE_TEXT_PATTERN = re.compile(
     r'"creation_story"\s*:\s*\{.*?"message"\s*:\s*\{.*?"text"\s*:\s*("(?:\\.|[^"\\])*")',
     re.DOTALL,
@@ -656,7 +553,7 @@ def canonical_post_identity(url):
     parsed = urllib.parse.urlparse(canonical_post_url(url))
     query = urllib.parse.parse_qs(parsed.query)
     path = re.sub(r"/+$", "", parsed.path)
-    for pattern in (r"/posts/([^/]+)$", r"/videos/([^/]+)$", r"/reel/([^/]+)$"):
+    for pattern in (r"/posts/([^/]+)$", r"/permalink/([^/]+)$", r"/videos/([^/]+)$", r"/reel/([^/]+)$"):
         match = re.search(pattern, path)
         if match:
             return match.group(1)
@@ -801,7 +698,7 @@ def _fb_cookies():
     ]
 
 
-# Baseline worker inject một long-lived session; legacy CLI không inject và giữ fetcher cũ.
+# Baseline worker injects one long-lived browser session.
 _BROWSER_SESSION = None
 
 
@@ -939,12 +836,16 @@ def _resolve_permalink_via_photo(photo_href):
     resp = _fetch(
         urllib.parse.urljoin(ROOT, photo_href),
         page_action=_scroll_page(1),
-        wait_selector='a[href*="/posts/"], a[href*="/permalink/"]',
     )
-    for link in resp.css("a[href]"):
-        href = link.attrib.get("href", "")
-        text = link.text.strip() if link.text else ""
-        if text in ("Xem bài viết", "View post") or SELECTORS["resolved_permalink"].search(href):
+    links = [
+        (link.attrib.get("href", ""), link.text.strip() if link.text else "")
+        for link in resp.css("a[href]")
+    ]
+    for href, _ in links:
+        if re.search(r"/posts/|/permalink\.php|/story\.php|story_fbid=", href):
+            return canonical_post_url(href)
+    for href, text in links:
+        if text in ("Xem bài viết", "View post") or re.search(r"/permalink/", href):
             return canonical_post_url(href)
     return None
 
