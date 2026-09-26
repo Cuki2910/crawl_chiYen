@@ -14,7 +14,7 @@ def _norm(text):
 
 def _to_regex(entry):
     pattern = entry["term"]
-    return pattern[3:] if entry["type"] == "regex" else r"(?<!\w)" + re.escape(pattern) + r"(?!\w)"
+    return pattern if entry["type"] == "regex" else r"(?<!\w)" + re.escape(pattern) + r"(?!\w)"
 
 
 GROUP_RX = {
@@ -23,7 +23,7 @@ GROUP_RX = {
 }
 _OTHER_CITY = re.compile(
     r"hồ chí minh|tp\.? ?hcm|sài gòn|đà nẵng|da nang|hải phòng|hai phong|"
-    r"cần thơ|can tho|nha trang|huế|hạ long|đà lạt|da lat",
+    r"cần thơ|can tho|nha trang|huế|hạ long|đà lạt|da lat|hà nam|ha nam",
     re.IGNORECASE,
 )
 
