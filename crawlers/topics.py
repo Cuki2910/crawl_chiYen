@@ -49,3 +49,29 @@ def gate_post(title="", body=""):
 
 def is_relevant(title="", body=""):
     return gate_post(title, body)[0] == "accept"
+
+
+# --------------------------------------------------------------------------
+# TikTok/News compatibility wrappers -- added when the TikTok/News crawlers
+# (originally a separate repo, their own gate/keyword module transcribed
+# independently from the same source spreadsheet) were merged in here.
+# gate_post() already takes two text blobs and concatenates them, so both
+# wrappers below just reshape their platform-specific inputs into that same
+# call rather than duplicating any gate logic.
+# --------------------------------------------------------------------------
+
+
+def is_on_topic_tiktok(caption, hashtags, source=None):
+    """TikTok wrapper: caption + a plain space-joined hashtag blob (hashtags
+    are matched as plain substrings by gate_post()'s word-boundary regex,
+    so no separate normalization step is needed here). ``source`` accepted
+    for call-site compatibility, not consulted."""
+    hashtag_blob = " ".join((hashtags or []))
+    return gate_post(caption or "", hashtag_blob)
+
+
+def is_on_topic_news(title, body="", source=None):
+    """News wrapper: same shape as gate_post(), just the platform-neutral
+    name the News crawler's call sites expect. ``source`` accepted for
+    call-site compatibility, not consulted."""
+    return gate_post(title, body)
