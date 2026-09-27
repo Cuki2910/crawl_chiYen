@@ -113,6 +113,60 @@ only the `in_date_window`/`keep` labeling differs. Getting more results
 from a specific historical window means raising `--max-per-keyword`, not
 re-running with different dates.
 
+## Output locations
+
+Everything lands under `data/outputs/`, one subdirectory per platform
+(`youtube/`, `facebook/`, `tiktok/`, `news/`). Almost all of it is
+gitignored (see `.gitignore`) -- only a handful of specific files are
+allowlisted as committed samples; everything else (browser profiles, spike
+dumps, other batches) stays local-only.
+
+**YouTube + Facebook (`baseline_runner.py`)** work differently from
+TikTok/News -- there's no per-run discovery/crawl file pair. Instead:
+- `data/outputs/baseline_gate_v2/crawl.db` -- the single running SQLite
+  store both platforms write into continuously while `baseline_runner run`
+  is active.
+- `progress.json` -- current run's live counters (`baseline_runner status`
+  regenerates it).
+- `final_report.md` -- written when a run finishes or is exported
+  (`baseline_runner export`), with the same counters as a readable summary.
+- `facebook_comments.csv` / `youtube_comments.csv` and the matching
+  `*_post_audit.csv` -- the actual exported rows, written by
+  `baseline_runner export`.
+- `data/outputs/facebook_smoke/<YYYYMMDD_HHMMSS>/` -- separate, timestamped
+  one-off smoke-test runs (`facebook_smoke.py`), not part of the main
+  pipeline's output; safe to ignore/delete.
+
+**TikTok and News (`discover_*.py` / `crawl_*.py`)** each run writes one
+timestamped file:
+- Discovery -> a CSV: `tiktok_flood_discovery_<batch>.csv` (TikTok) or
+  `discovery_news_flood_<batch>.csv` (News). One row per candidate
+  post/article, with the gate's `gate_verdict`/`gate_rule` and a `keep`
+  column for human review.
+- Crawl -> a JSONL: `tiktok_flood_<batch>.jsonl` or `news_flood_<batch>.jsonl`.
+  One line per comment/reply record.
+
+**`<batch>` is `YYYYMMDD_HHMM` in Asia/Ho_Chi_Minh time -- it's when that
+run happened, not which publication window it targeted.** The two
+publication windows (`2025-08-01`..`2025-10-31` and `2026-08-01`..now) are
+passed as `--since`/`--until` at run time but are **not** recorded in the
+output filename. Only rows inside the requested window are ever written
+(`in_date_window` filters before the CSV write), so within one platform,
+batches run in the order below -- earlier batch = first window, later
+batch = second window:
+
+| Platform | Order | Publication window | Discovery CSV | Crawl JSONL |
+|---|---|---|---|---|
+| TikTok | 1st | `2025-08-01` .. `2025-10-31` | `tiktok_flood_discovery_20260924_2120.csv` | `tiktok_flood_20260924_2307.jsonl` |
+| TikTok | 2nd | `2026-08-01` .. now | `tiktok_flood_discovery_20260924_2241.csv` | `tiktok_flood_20260925_0900.jsonl` |
+| News | 1st | `2025-08-01` .. `2025-10-31` | `discovery_news_flood_20260924_2302.csv` | `news_flood_20260925_1411.jsonl` |
+| News | 2nd | `2026-08-01` .. now | `discovery_news_flood_20260924_2304.csv` | `news_flood_20260925_1734.jsonl` |
+
+Nothing in the repo enforces or records this mapping automatically --
+future runs must be tracked the same way (note which `--since`/`--until`
+pair produced which batch file), or cross-checked against the file's own
+date column (`create_time` for TikTok, the article date column for News).
+
 ## Verification
 
 ```powershell
