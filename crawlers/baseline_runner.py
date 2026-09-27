@@ -27,6 +27,10 @@ from crawlers.csv_utils import load_env
 load_env()
 
 _STOP = threading.Event()
+CAMPAIGN_DIRS = {
+    "flood_transport": os.path.join(BASE_DIR, "flood_transport"),
+    "electric_bus": os.path.join(BASE_DIR, "electric_bus"),
+}
 
 
 def _notify(kind, msg):
@@ -38,12 +42,12 @@ def _batch_id(prefix):
     return f"{prefix}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M')}"
 
 
-def _worker_loop(platform, run_snapshot, run_worker, idle_wait):
+def _worker_loop(platform, run_snapshot, run_worker, idle_wait, base_dir, campaign):
     """Vòng lặp một worker: gọi run_once, xử lý status, chờ, lặp đến deadline.
 
     Mỗi worker có store riêng (connection SQLite riêng, an toàn cho thread).
     """
-    store = BaselineStore()
+    store = BaselineStore(base_dir=base_dir)
     run = store.active_run() or run_snapshot
 
     def deadline_check():
@@ -51,7 +55,7 @@ def _worker_loop(platform, run_snapshot, run_worker, idle_wait):
 
     while not deadline_check():
         try:
-            result = run_worker(store, run, deadline_check, _batch_id(platform))
+            result = run_worker(store, run, deadline_check, _batch_id(platform), campaign=campaign)
         except Exception as exc:  # worker crash không được kéo sập worker kia.
             store.log_event("worker_crash", platform, {"error": repr(exc)[:300]})
             _notify("crash", f"{platform} worker crash: {repr(exc)[:150]}")
@@ -96,8 +100,9 @@ def _sleep_until(store, run, seconds):
         time.sleep(min(5, end - time.time()))
 
 
-def run(hours, target, platform="all", resume=False):
-    store = BaselineStore()
+def run(hours, target, platform="all", resume=False, campaign="flood_transport"):
+    base_dir = CAMPAIGN_DIRS[campaign]
+    store = BaselineStore(base_dir=base_dir)
     if resume:
         run_obj = store.active_run()
         if not run_obj or store.deadline_passed(run_obj):
@@ -107,7 +112,7 @@ def run(hours, target, platform="all", resume=False):
     else:
         run_obj = store.get_or_create_run(hours=hours, target_minimum=target)
     _STOP.clear()
-    store.log_event("run_start", None, {"run_id": run_obj["run_id"], "deadline": run_obj["deadline_at"]})
+    store.log_event("run_start", None, {"run_id": run_obj["run_id"], "deadline": run_obj["deadline_at"], "campaign": campaign})
     _notify("start", f"Bắt đầu run {run_obj['run_id']}; deadline {run_obj['deadline_at']}; target {target}.")
 
     workers = []
@@ -118,7 +123,7 @@ def run(hours, target, platform="all", resume=False):
         from crawlers.facebook.facebook_worker import run_once as fb_run
         workers.append(("facebook", fb_run))
     threads = [
-        threading.Thread(target=_worker_loop, args=(name, run_obj, worker, 300), daemon=True)
+        threading.Thread(target=_worker_loop, args=(name, run_obj, worker, 300, base_dir, campaign), daemon=True)
         for name, worker in workers
     ]
     for t in threads:
@@ -174,7 +179,7 @@ def run(hours, target, platform="all", resume=False):
 
 
 def _write_final_report(store, run, progress):
-    path = os.path.join(BASE_DIR, "final_report.md")
+    path = os.path.join(store.base_dir, "final_report.md")
     lines = [
         f"# Baseline gate v2 — final report",
         "",
@@ -205,8 +210,8 @@ def _write_final_report(store, run, progress):
         f.write("\n".join(lines))
 
 
-def status():
-    store = BaselineStore()
+def status(campaign="flood_transport"):
+    store = BaselineStore(base_dir=CAMPAIGN_DIRS[campaign])
     run = store.active_run()
     if not run:
         print("Không có run đang chạy.")
@@ -217,8 +222,8 @@ def status():
     store.close()
 
 
-def export():
-    store = BaselineStore()
+def export(campaign="flood_transport"):
+    store = BaselineStore(base_dir=CAMPAIGN_DIRS[campaign])
     outs = store.export_csv()
     for name, (path, n) in outs.items():
         print(f"{name}: {n} rows -> {path}")
@@ -232,16 +237,20 @@ if __name__ == "__main__":
     p_run.add_argument("--hours", type=float, default=24)
     p_run.add_argument("--target", type=int, default=5000)
     p_run.add_argument("--platform", choices=("all", "facebook", "youtube"), default="all")
-    sub.add_parser("status")
-    sub.add_parser("export")
+    p_run.add_argument("--campaign", choices=tuple(CAMPAIGN_DIRS), default="flood_transport")
+    p_status = sub.add_parser("status")
+    p_status.add_argument("--campaign", choices=tuple(CAMPAIGN_DIRS), default="flood_transport")
+    p_export = sub.add_parser("export")
+    p_export.add_argument("--campaign", choices=tuple(CAMPAIGN_DIRS), default="flood_transport")
     p_resume = sub.add_parser("resume")
     p_resume.add_argument("--platform", choices=("all", "facebook", "youtube"), default="all")
+    p_resume.add_argument("--campaign", choices=tuple(CAMPAIGN_DIRS), default="flood_transport")
     args = parser.parse_args()
     if args.cmd == "run":
-        run(args.hours, args.target, args.platform)
+        run(args.hours, args.target, args.platform, campaign=args.campaign)
     elif args.cmd == "resume":
-        run(24, 5000, args.platform, resume=True)
+        run(24, 5000, args.platform, resume=True, campaign=args.campaign)
     elif args.cmd == "status":
-        status()
+        status(args.campaign)
     elif args.cmd == "export":
-        export()
+        export(args.campaign)

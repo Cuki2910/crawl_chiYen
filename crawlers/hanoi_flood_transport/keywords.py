@@ -1,7 +1,7 @@
 """Keyword data for Hanoi flood-transport trial crawl.
 
-Transcribed from `Danh mục từ khoá crawl dữ liệu.xlsx`, sheet "Ngập lụt"
-(cells B2/B3/B4). Sheet "Xe bus điện" is out of scope (empty, header-only).
+Transcribed from `Danh mục từ khoá crawl dữ liệu.xlsx`: sheet "Ngập lụt"
+(cells B2/B3/B4) and sheet "Xe bus điện" (cell B2).
 
 Corrections applied against the raw workbook cells:
 - B3 cell "grap"/"be" typo split into two separate literal terms, "grap"
@@ -198,10 +198,47 @@ HANOI_LOCATION = [
     {"term": "Cầu Bươu", "type": "literal"},
 ]
 
+ELECTRIC_BUS = [
+    {"term": "xe buýt điện", "type": "literal"},
+    {"term": "xe bus điện", "type": "literal"},
+    {"term": "xe buyt dien", "type": "literal"},
+    {"term": "xe buyt điện", "type": "literal"},
+    {"term": "xe buýt dien", "type": "literal"},
+    {"term": "bus điện", "type": "literal"},
+    {"term": "bus dien", "type": "literal"},
+    {"term": "buýt điện", "type": "literal"},
+    {"term": "buyt dien", "type": "literal"},
+    {"term": "electric bus", "type": "literal"},
+    {"term": "e-bus", "type": "literal"},
+    {"term": "ebus", "type": "literal"},
+    {"term": "VinBus", "type": "literal"},
+    {"term": "Vin Bus", "type": "literal"},
+    {"term": "vinbus", "type": "literal"},
+    {"term": "ô tô bus điện", "type": "literal"},
+    {"term": "ô tô buýt điện", "type": "literal"},
+    {"term": "xe điện công cộng", "type": "literal"},
+    {"term": "tuyến xe buýt điện", "type": "literal"},
+    {"term": "tuyến bus điện", "type": "literal"},
+    {"term": "trạm xe buýt điện", "type": "literal"},
+    {"term": "điểm dừng xe buýt điện", "type": "literal"},
+    {"term": "xe bus điện hài lòng", "type": "literal"},
+    {"term": "review bus điện", "type": "literal"},
+    {"term": "trải nghiệm xe buýt điện", "type": "literal"},
+    {"term": "vận hành xe điện vinbus", "type": "literal"},
+    {"term": "chất lượng vinbus", "type": "literal"},
+    {"term": "xe bus điện hài lòng", "type": "literal"},
+    {"term": "review bus điện", "type": "literal"},
+    {"term": "trải nghiệm xe buýt điện", "type": "literal"},
+    {"term": "vận hành xe điện vinbus", "type": "literal"},
+    {"term": "chất lượng vinbus", "type": "literal"},
+    {"term": "đánh giá xe buýt điện", "type": "literal"},
+]
+
 GROUPS = {
     "flood_state": FLOOD_STATE,
     "transport_impact": TRANSPORT_IMPACT,
     "hanoi_location": HANOI_LOCATION,
+    "electric_bus": ELECTRIC_BUS,
 }
 
 

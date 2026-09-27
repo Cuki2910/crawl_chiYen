@@ -6,6 +6,7 @@ import unicodedata
 from crawlers.hanoi_flood_transport.keywords import GROUPS
 
 REQUIRED_GROUPS = ("flood_state", "transport_impact", "hanoi_location")
+MATCH_GROUPS = (*REQUIRED_GROUPS, "electric_bus")
 
 
 def _norm(text):
@@ -19,7 +20,7 @@ def _to_regex(entry):
 
 GROUP_RX = {
     group: re.compile("|".join(_to_regex(entry) for entry in GROUPS[group]), re.IGNORECASE)
-    for group in REQUIRED_GROUPS
+    for group in MATCH_GROUPS
 }
 _OTHER_CITY = re.compile(
     r"hồ chí minh|tp\.? ?hcm|sài gòn|đà nẵng|da nang|hải phòng|hai phong|"
@@ -30,7 +31,7 @@ _OTHER_CITY = re.compile(
 
 def matched_groups(text):
     text = _norm(text)
-    return [group for group in REQUIRED_GROUPS if GROUP_RX[group].search(text)]
+    return [group for group in MATCH_GROUPS if GROUP_RX[group].search(text)]
 
 
 def co_thanh_pho_khac(title="", body=""):
@@ -45,6 +46,14 @@ def gate_post(title="", body=""):
     if missing:
         return "reject", "missing_group:" + "+".join(missing)
     return "accept", "flood_transport_hanoi"
+
+
+def gate_electric_bus(title="", body=""):
+    """Accept posts with an approved electric-bus term."""
+    blob = f"{_norm(title)} {_norm(body)}"
+    if not GROUP_RX["electric_bus"].search(blob):
+        return "reject", "missing_group:electric_bus"
+    return "accept", "electric_bus"
 
 
 def is_relevant(title="", body=""):

@@ -45,10 +45,16 @@ def _auth_required(store, task=None, state=fbs.AUTH_LOGIN_FORM):
     return {"status": "auth_required", "state": state}
 
 
-def seed_queue(store):
+def _sources(campaign):
+    if campaign == "electric_bus":
+        return [source for source in fb.SOURCES if source["source_class"] == "electric_bus_search"]
+    return [source for source in fb.SOURCES if source["source_class"] == "topic_search"]
+
+
+def seed_queue(store, campaign="flood_transport"):
     if not store.kv_get("facebook_seeded"):
         priority = 10
-        for source in fb.SOURCES:
+        for source in _sources(campaign):
             store.enqueue("facebook", "discover", source, priority=priority)
         store.kv_set("facebook_seeded", True)
     if store.kv_get("facebook_comment_reconciliation_seeded"):
@@ -59,7 +65,7 @@ def seed_queue(store):
     store.kv_set("facebook_comment_reconciliation_seeded", True)
 
 
-def _revisit_sources(store):
+def _revisit_sources(store, campaign="flood_transport"):
     """Nạp lại toàn bộ SOURCES + combo mỗi giờ để bắt bài mới đăng sau khi seed ban đầu.
 
     seed_queue() chỉ chạy 1 lần (flag facebook_seeded); không có vòng lặp này, worker
@@ -68,7 +74,7 @@ def _revisit_sources(store):
     liên tục trong cùng giờ. is_reconciliation-style seen-set vẫn lọc bài đã xử lý.
     """
     stamp = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).strftime("%Y%m%d%H")
-    for source in fb.SOURCES:
+    for source in _sources(campaign):
         store.enqueue("facebook", "discover", source, priority=50,
                       dedup_key=f"facebook:revisit:{source['label']}:{stamp}")
 
@@ -145,7 +151,7 @@ def _queue_reconciliation_retry(store, post_url, identity, retry_count):
     )
 
 
-def run_once(store, run, deadline_check, batch_id, max_comments=None, allow_revisit=True):
+def run_once(store, run, deadline_check, batch_id, max_comments=None, allow_revisit=True, campaign="flood_transport"):
     """Xử lý task discover cho tới khi hết queue/giờ hoặc gặp auth challenge."""
     try:
         browser = _session()
@@ -160,7 +166,7 @@ def run_once(store, run, deadline_check, batch_id, max_comments=None, allow_revi
         store.log_event("auth_required", "facebook", {"state": state, **detail})
         return {"status": "auth_required", "detail": detail, "state": state}
     store.kv_set("facebook_status", "running")
-    seed_queue(store)
+    seed_queue(store, campaign)
     store.kv_set("facebook_revisited_this_pass", not allow_revisit)
     seen = set(store.kv_get("facebook_seen_posts", []))
 
@@ -171,7 +177,7 @@ def run_once(store, run, deadline_check, batch_id, max_comments=None, allow_revi
         task = store.claim("facebook")
         if task is None:
             if allow_revisit and not store.kv_get("facebook_revisited_this_pass"):
-                _revisit_sources(store)
+                _revisit_sources(store, campaign)
                 store.kv_set("facebook_revisited_this_pass", True)
                 continue
             store.kv_set("facebook_status", "queue_empty")
@@ -199,7 +205,7 @@ def run_once(store, run, deadline_check, batch_id, max_comments=None, allow_revi
             if identity in seen and not is_reconciliation:
                 continue
             try:
-                metadata, verdict, reason, post_context, comments = fb.fetch_eligible_post(post_url, max_comments=max_comments)
+                metadata, verdict, reason, post_context, comments = fb.fetch_eligible_post(post_url, max_comments=max_comments, source=source)
             except fbs.FacebookAuthRequiredError as exc:
                 return _auth_required(store, task, exc.state)
             except fb.FacebookTargetUnresolvedError as exc:

@@ -248,11 +248,11 @@ class YouTubeWorkerTest(unittest.TestCase):
         self.assertEqual(rep["parent_comment_id"], "t1")
         self.assertEqual(rep["reply_depth"], 1)
 
-    def test_windows_desc_order(self):
+    def test_search_specs_keep_separate_windows(self):
         from crawlers.youtube import youtube_worker as w
-        wins = w._windows()
+        wins = [(spec["after"], spec["before"]) for spec in w._search_specs() if spec["topic"] == "flood_transport"]
         self.assertTrue(all(a < b for a, b in wins))
-        self.assertEqual(len(wins), 2)
+        self.assertTrue(wins)
 
 
 class FacebookWorkerTest(unittest.TestCase):
@@ -296,11 +296,11 @@ class FacebookWorkerTest(unittest.TestCase):
 
     def test_facebook_sources_use_approved_keywords(self):
         from crawlers.facebook import crawl_facebook as fb
-        from crawlers.hanoi_flood_transport.config import TOPIC_QUERIES
+        from crawlers.hanoi_flood_transport.config import ELECTRIC_BUS_QUERIES, TOPIC_QUERIES
         self.assertTrue(fb.SOURCES)
         self.assertTrue(all("query" in s for s in fb.SOURCES))
-        self.assertTrue(all(s["source_class"] == "topic_search" for s in fb.SOURCES))
-        self.assertTrue(all(s["query"] in TOPIC_QUERIES for s in fb.SOURCES))
+        self.assertTrue(all(s["source_class"] in ("topic_search", "electric_bus_search") for s in fb.SOURCES))
+        self.assertTrue(all(s["query"] in TOPIC_QUERIES + ELECTRIC_BUS_QUERIES for s in fb.SOURCES))
 
 
 if __name__ == "__main__":

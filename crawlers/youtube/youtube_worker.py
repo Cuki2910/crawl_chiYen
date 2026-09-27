@@ -13,8 +13,8 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from crawlers.youtube import crawl_youtube as yt
-from crawlers.hanoi_flood_transport.config import post_in_window, youtube_windows
-from crawlers.topics import co_thanh_pho_khac, gate_post, matched_groups
+from crawlers.hanoi_flood_transport.config import electric_bus_post_in_window, post_in_window, youtube_search_specs
+from crawlers.topics import co_thanh_pho_khac, gate_electric_bus, gate_post, matched_groups
 
 # Cửa sổ năm cố định thay vì bisection thích nghi: dedup video ID xử lý trùng lặp,
 # và search order=date trong mỗi năm đã đủ phủ. Đơn giản, ít quota lãng phí hơn.
@@ -22,23 +22,20 @@ from crawlers.topics import co_thanh_pho_khac, gate_post, matched_groups
 YEAR_START = 2005  # YouTube public launch; không đặt giới hạn lịch sử nghiệp vụ.
 
 
-def _windows():
-    return list(youtube_windows())
+def _search_specs(current_only=False, campaign="flood_transport"):
+    return [spec for spec in youtube_search_specs(current_only=current_only) if spec["topic"] == campaign]
 
 
-def seed_queue(store):
+def seed_queue(store, campaign="flood_transport"):
     """Nạp (keyword x window) vào discovery_queue nếu chưa seed."""
     if store.kv_get("youtube_seeded"):
         return
-    for keyword in yt.KEYWORDS:
-        for after, before in _windows():
-            store.enqueue("youtube", "search",
-                          {"keyword": keyword, "after": after, "before": before},
-                          priority=100)
+    for payload in _search_specs(campaign=campaign):
+        store.enqueue("youtube", "search", payload, priority=100)
     store.kv_set("youtube_seeded", True)
 
 
-def _revisit_current_year(store):
+def _revisit_current_year(store, campaign="flood_transport"):
     """Nạp lại cửa sổ năm hiện tại để bắt video mới đăng trong lúc job đang chạy.
 
     Seed ban đầu là snapshot lịch sử cố định; sau khi done, không còn task nào
@@ -46,11 +43,10 @@ def _revisit_current_year(store):
     quota search.list khi hàng đợi rỗng được kiểm tra lại mỗi vài phút.
     """
     now = datetime.now(timezone.utc)
-    after, before = list(youtube_windows(now))[-1]
     stamp = now.strftime("%Y%m%d%H")
-    for keyword in yt.KEYWORDS:
-        store.enqueue("youtube", "search", {"keyword": keyword, "after": after, "before": before},
-                      priority=50, dedup_key=f"youtube:revisit:{keyword}:{stamp}")
+    for payload in _search_specs(current_only=True, campaign=campaign):
+        store.enqueue("youtube", "search", payload, priority=50,
+                      dedup_key=f"youtube:revisit:{payload['topic']}:{payload['keyword']}:{stamp}")
 
 
 _MAX_REFRESH_RETRIES = 3  # deficit không giảm sau ngần này lần (comment API đếm nhưng không lấy được) -> ngừng re-queue.
@@ -214,13 +210,13 @@ def _drain_accepted_contexts(store, run, deadline_check, batch_id, processed_vid
     return None
 
 
-def run_once(store, run, deadline_check, batch_id):
+def run_once(store, run, deadline_check, batch_id, campaign="flood_transport"):
     """Xử lý các task search cho tới khi hết queue, hết giờ, hoặc hết quota.
 
     Trả về dict trạng thái để supervisor báo cáo.
     """
     yt.reset_counters()
-    seed_queue(store)
+    seed_queue(store, campaign)
     store.kv_set("youtube_status", "running")
     store.kv_set("youtube_revisited_this_pass", False)
     processed_videos = set(store.kv_get("youtube_processed_videos", []))
@@ -248,7 +244,7 @@ def run_once(store, run, deadline_check, batch_id):
         task = store.claim("youtube")
         if task is None:
             if not store.kv_get("youtube_revisited_this_pass"):
-                _revisit_current_year(store)
+                _revisit_current_year(store, campaign)
                 store.kv_set("youtube_revisited_this_pass", True)
                 continue
             store.kv_set("youtube_status", "queue_empty")
@@ -335,14 +331,16 @@ def run_once(store, run, deadline_check, batch_id):
                     return {"status": "quota_wait"}
                 store.log_event("yt_desc_error", "youtube", {"reason": e.reason})
         for video in videos:
-            if not post_in_window(video.get("published_at")):
+            electric_bus = payload.get("topic") == "electric_bus"
+            if not (electric_bus_post_in_window(video.get("published_at")) if electric_bus else post_in_window(video.get("published_at"))):
                 continue
             vid = video["video_id"]
             if vid in processed_videos:
                 continue
             if vid in full_descriptions:
                 video["description"] = full_descriptions[vid]
-            verdict, reason = gate_post(video.get("title", ""), video.get("description", ""))
+            gate = gate_electric_bus if electric_bus else gate_post
+            verdict, reason = gate(video.get("title", ""), video.get("description", ""))
             store.upsert_context({
                 "platform": "youtube", "context_id": vid,
                 "source_url": f"https://www.youtube.com/watch?v={vid}",
