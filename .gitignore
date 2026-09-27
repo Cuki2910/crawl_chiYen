@@ -12,24 +12,28 @@ data/outputs/*
 # before re-ignoring its contents and allowlisting specific files.
 !data/outputs/tiktok/
 data/outputs/tiktok/*
-!data/outputs/tiktok/tiktok_discovery_20260726_1715.csv
-!data/outputs/tiktok/tiktok_20260726_1737.jsonl
-!data/outputs/tiktok/tiktok_20260726_1737.csv
+!data/outputs/tiktok/tiktok_flood_discovery_20260924_2120.csv
+!data/outputs/tiktok/tiktok_flood_discovery_20260924_2241.csv
+!data/outputs/tiktok/tiktok_flood_20260924_2307.jsonl
+!data/outputs/tiktok/tiktok_flood_20260925_0900.jsonl
 
 !data/outputs/news/
 data/outputs/news/*
-!data/outputs/news/discovery_news_20260726_2049.csv
-!data/outputs/news/news_20260726_2108.jsonl
-!data/outputs/news/news_20260726_2108.csv
+!data/outputs/news/discovery_news_flood_20260924_2302.csv
+!data/outputs/news/discovery_news_flood_20260924_2304.csv
+!data/outputs/news/news_flood_20260925_1411.jsonl
+!data/outputs/news/news_flood_20260925_1734.jsonl
 
 data/inputs/*
 !data/inputs/tiktok/
 data/inputs/tiktok/*
-!data/inputs/tiktok/urls.txt
+!data/inputs/tiktok/urls_20260924_2120.csv
+!data/inputs/tiktok/urls_20260924_2241.csv
 
 !data/inputs/news/
 data/inputs/news/*
-!data/inputs/news/urls.txt
+!data/inputs/news/urls_20260924_2302.csv
+!data/inputs/news/urls_20260924_2304.csv
 
 .env
 .secrets/
