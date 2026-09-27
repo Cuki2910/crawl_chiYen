@@ -75,3 +75,11 @@ def is_on_topic_news(title, body="", source=None):
     name the News crawler's call sites expect. ``source`` accepted for
     call-site compatibility, not consulted."""
     return gate_post(title, body)
+
+
+def is_on_topic_threads(post_text, hashtags=None, source=None):
+    """Threads wrapper: post text + a plain space-joined hashtag blob, same
+    shape as is_on_topic_tiktok(). ``source`` accepted for call-site
+    compatibility, not consulted."""
+    hashtag_blob = " ".join((hashtags or []))
+    return gate_post(post_text or "", hashtag_blob)

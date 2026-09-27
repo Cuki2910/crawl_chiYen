@@ -1,6 +1,6 @@
 # Hanoi Flood Transport Crawler
 
-YouTube, Facebook, TikTok, and News (VnExpress/Thanh Nien/VietnamNet)
+YouTube, Facebook, TikTok, Threads, and News (VnExpress/Thanh Nien/VietnamNet)
 comment crawler for Hanoi flood-related transport content.
 
 ## Scope
@@ -35,10 +35,20 @@ method and orchestration style:
   100-query list (denser per-location coverage than query_gen.py's
   algorithmic pairing -- built independently before the two crawler sets
   were merged into this repo).
+- **Threads** (`crawlers/threads/`): same discover-review-crawl shape as
+  TikTok/News, reusing the same 100-query list. Threads gates logged-out
+  browsers behind a login wall almost immediately (unlike TikTok, which
+  tolerates some anonymous browsing), so it always runs against a
+  persistent, manually-logged-in browser profile -- see Setup below. Its
+  in-page selectors (`discover_threads.py`/`crawl_threads.py`) are
+  best-effort placeholders, not yet confirmed against live Threads markup;
+  verify them before an unattended run.
 
 Both pipelines' search queries derive from the same
 `crawlers/hanoi_flood_transport/keywords.py` (the 3 groups, transcribed
 from the spreadsheet), and both gate through the same `crawlers/topics.py`.
+Threads reuses the TikTok/News query list and gates through the same file
+via `is_on_topic_threads`.
 
 ## Setup
 
@@ -49,12 +59,14 @@ YOUTUBE_API_KEY=...
 FB_HANDLE_SALT=...
 TIKTOK_HANDLE_SALT=...
 NEWS_HANDLE_SALT=...
+THREADS_HANDLE_SALT=...
 ```
 
-`TIKTOK_HANDLE_SALT`/`NEWS_HANDLE_SALT` pseudonymize commenter handles for
-those two crawlers the same way `FB_HANDLE_SALT` does for Facebook --
-generate each with `python -c "import secrets; print(secrets.token_hex(16))"`,
-one per platform, never shared or committed.
+`TIKTOK_HANDLE_SALT`/`NEWS_HANDLE_SALT`/`THREADS_HANDLE_SALT` pseudonymize
+commenter handles for those crawlers the same way `FB_HANDLE_SALT` does for
+Facebook -- generate each with
+`python -c "import secrets; print(secrets.token_hex(16))"`, one per
+platform, never shared or committed.
 
 Install dependencies:
 
@@ -63,8 +75,22 @@ python -m pip install -r requirements.txt
 patchright install chromium
 ```
 
-`patchright install chromium` is needed for the TikTok crawler only (real
-browser automation); YouTube/Facebook/News don't need it.
+`patchright install chromium` is needed for the TikTok and Threads
+crawlers only (real browser automation); YouTube/Facebook/News don't need
+it.
+
+**Threads also needs a one-time manual login** before discovery/crawl will
+work -- Threads hides search results and most reply threads from
+logged-out browsers almost immediately:
+
+```powershell
+python -m crawlers.threads.threads_session
+```
+
+Log in by hand in the opened browser window; the session persists in
+`data/outputs/threads/.browser_profile` (override with `--user-data-dir`)
+for every later `discover_threads.py`/`crawl_threads.py` run. Re-run this
+if a later run stops with `SessionExpiredError`.
 
 ## Run
 
@@ -92,10 +118,20 @@ python crawlers/news/discover_news.py --since 2025-08-01 --until 2025-10-31
 python crawlers/news/crawl_news.py --url-file <reviewed url list>
 ```
 
-Both TikTok and News discovery write a candidate CSV with a `keep` column
+**Threads:**
+
+```powershell
+python crawlers/threads/discover_threads.py --headful --since 2025-08-01 --until 2025-10-31 --user-data-dir data/outputs/threads/.browser_profile
+python crawlers/threads/crawl_threads.py --url-file <reviewed url list> --headful --user-data-dir data/outputs/threads/.browser_profile --max-posts <count>
+```
+
+Requires the one-time login from Setup above. Threads discovery CSVs use
+`url` as the column name, same as TikTok.
+
+TikTok, News, and Threads discovery all write a candidate CSV with a `keep` column
 (`1`/`0`, pre-gated) -- review/override it, export the `keep=1` rows' URL
 column to a plain list, then pass that to `crawl_*.py --url-file`. ⚠️ **URL
-extraction currently has no committed script** for either platform -- every
+extraction currently has no committed script** for any of them -- every
 batch in this repo so far was extracted with an ad-hoc one-off snippet, not
 a rerunnable tool. A minimal example:
 
@@ -123,5 +159,6 @@ python -m unittest discover -s tests
 `pytest -q` runs everything, including the YouTube/Facebook tests (some
 require live API credentials in `.env`). `python -m unittest discover -s
 tests` runs the plain-`unittest` subset (currently: `test_baseline.py`,
-`test_regate_dataset.py`, `test_topic_config.py`, and
-`test_tiktok_news_crawler.py`), which needs no credentials.
+`test_regate_dataset.py`, `test_topic_config.py`,
+`test_tiktok_news_crawler.py`, and `test_threads_crawler.py`), which needs
+no credentials.
