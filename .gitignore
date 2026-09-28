@@ -45,5 +45,26 @@ data/inputs/news/*
 .env
 .secrets/
 crawl.db
-data/outputs/baseline_gate_v2/
+
+# Publish current baseline results by campaign; retain logs and snapshots locally.
+!data/outputs/baseline_gate_v2/
+data/outputs/baseline_gate_v2/*
+!data/outputs/baseline_gate_v2/flood_transport/
+data/outputs/baseline_gate_v2/flood_transport/*
+!data/outputs/baseline_gate_v2/flood_transport/crawl.db
+!data/outputs/baseline_gate_v2/flood_transport/facebook_comments.csv
+!data/outputs/baseline_gate_v2/flood_transport/facebook_post_audit.csv
+!data/outputs/baseline_gate_v2/flood_transport/final_report.md
+!data/outputs/baseline_gate_v2/flood_transport/progress.json
+!data/outputs/baseline_gate_v2/flood_transport/youtube_comments.csv
+!data/outputs/baseline_gate_v2/flood_transport/youtube_post_audit.csv
+!data/outputs/baseline_gate_v2/electric_bus/
+data/outputs/baseline_gate_v2/electric_bus/*
+!data/outputs/baseline_gate_v2/electric_bus/crawl.db
+!data/outputs/baseline_gate_v2/electric_bus/facebook_comments.csv
+!data/outputs/baseline_gate_v2/electric_bus/facebook_post_audit.csv
+!data/outputs/baseline_gate_v2/electric_bus/final_report.md
+!data/outputs/baseline_gate_v2/electric_bus/progress.json
+!data/outputs/baseline_gate_v2/electric_bus/youtube_comments.csv
+!data/outputs/baseline_gate_v2/electric_bus/youtube_post_audit.csv
 data/outputs/facebook/
