@@ -40,6 +40,32 @@ Both pipelines' search queries derive from the same
 `crawlers/hanoi_flood_transport/keywords.py` (the 3 groups, transcribed
 from the spreadsheet), and both gate through the same `crawlers/topics.py`.
 
+### Electric-bus campaign (TikTok + News)
+
+All four `crawlers/tiktok/discover_tiktok.py`, `crawlers/tiktok/crawl_tiktok.py`,
+`crawlers/news/discover_news.py`, `crawlers/news/crawl_news.py` scripts take
+a `--campaign {flood_transport,electric_bus}` flag (default
+`flood_transport`, so every existing flood command still works unchanged).
+`electric_bus` switches three things:
+- **Search queries** -> `crawlers/hanoi_flood_transport/electric_bus_queries.py`
+  (47 queries: the 30 `ELECTRIC_BUS` keyword-group terms deduped down to
+  26 unique, plus 20 broader/rephrased queries for recall). Search-side
+  only -- widening these queries does not widen the gate.
+- **Gate** -> `gate_electric_bus()` (`crawlers/topics.py`), a single-group
+  match against the original `ELECTRIC_BUS` term list in `keywords.py` --
+  accept if *any* electric-bus term is present, unlike `gate_post()`'s
+  3-group AND requirement for flood-transport. A query above can surface a
+  candidate whose text never contains one of the exact gate terms; that
+  candidate is still rejected.
+- **Output batch prefix** -> `tiktok_electric_bus_*` /
+  `news_electric_bus_*` instead of `tiktok_flood_*` / `news_flood_*`, so
+  the two topics' output files are never ambiguous (see Output locations
+  below).
+
+There is only one publication window for this campaign -- `2026-08-01`
+through crawl time -- so `--since`/`--until` only needs to be passed once,
+not run twice per platform like the flood-transport windows.
+
 ## Setup
 
 Create `.env` locally. Never commit it:
@@ -82,16 +108,25 @@ Run the two `run` commands in separate terminals for parallel campaigns. Each wr
 **TikTok:**
 
 ```powershell
-python crawlers/tiktok/discover_tiktok.py --headful --since 2025-08-01 --until 2025-10-31 --user-data-dir data/outputs/tiktok/.browser_profile
-python crawlers/tiktok/crawl_tiktok.py --url-file <reviewed url list> --headful --user-data-dir data/outputs/tiktok/.browser_profile --max-videos <count>
+python crawlers/tiktok/discover_tiktok.py --campaign flood_transport --headful --since 2025-08-01 --until 2025-10-31 --user-data-dir data/outputs/tiktok/.browser_profile
+python crawlers/tiktok/crawl_tiktok.py --campaign flood_transport --url-file <reviewed url list> --headful --user-data-dir data/outputs/tiktok/.browser_profile --max-videos <count>
+
+python crawlers/tiktok/discover_tiktok.py --campaign electric_bus --headful --since 2026-08-01 --user-data-dir data/outputs/tiktok/.browser_profile
+python crawlers/tiktok/crawl_tiktok.py --campaign electric_bus --url-file <reviewed url list> --headful --user-data-dir data/outputs/tiktok/.browser_profile --max-videos <count>
 ```
 
 **News:**
 
 ```powershell
-python crawlers/news/discover_news.py --since 2025-08-01 --until 2025-10-31
-python crawlers/news/crawl_news.py --url-file <reviewed url list>
+python crawlers/news/discover_news.py --campaign flood_transport --since 2025-08-01 --until 2025-10-31
+python crawlers/news/crawl_news.py --campaign flood_transport --url-file <reviewed url list>
+
+python crawlers/news/discover_news.py --campaign electric_bus --since 2026-08-01
+python crawlers/news/crawl_news.py --campaign electric_bus --url-file <reviewed url list>
 ```
+
+`--campaign` defaults to `flood_transport`, so it can be omitted for every
+existing flood command -- shown explicitly above for clarity.
 
 Both TikTok and News discovery write a candidate CSV with a `keep` column
 (`1`/`0`, pre-gated) -- review/override it, export the `keep=1` rows' URL
@@ -146,6 +181,13 @@ timestamped file:
   column for human review.
 - Crawl -> a JSONL: `tiktok_flood_<batch>.jsonl` or `news_flood_<batch>.jsonl`.
   One line per comment/reply record.
+- With `--campaign electric_bus`, the prefix swaps to
+  `tiktok_electric_bus_*` / `news_electric_bus_*` (discovery CSVs) and the
+  matching `*.jsonl` crawl output -- distinguishing the two topics' files
+  is automatic here, unlike the publication-window ambiguity described
+  below (which still applies within the flood-transport campaign only;
+  electric-bus has a single window, so there's nothing to disambiguate
+  there).
 
 **`<batch>` is `YYYYMMDD_HHMM` in Asia/Ho_Chi_Minh time -- it's when that
 run happened, not which publication window it targeted.** The two
@@ -178,5 +220,6 @@ python -m unittest discover -s tests
 `pytest -q` runs everything, including the YouTube/Facebook tests (some
 require live API credentials in `.env`). `python -m unittest discover -s
 tests` runs the plain-`unittest` subset (currently: `test_baseline.py`,
-`test_regate_dataset.py`, `test_topic_config.py`, and
-`test_tiktok_news_crawler.py`), which needs no credentials.
+`test_regate_dataset.py`, `test_topic_config.py`,
+`test_tiktok_news_crawler.py`, and `test_electric_bus_campaign.py`), which
+needs no credentials.
