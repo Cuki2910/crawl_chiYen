@@ -84,3 +84,20 @@ def is_on_topic_news(title, body="", source=None):
     name the News crawler's call sites expect. ``source`` accepted for
     call-site compatibility, not consulted."""
     return gate_post(title, body)
+
+
+def is_on_topic_tiktok_electric_bus(caption, hashtags, source=None):
+    """TikTok wrapper for the electric-bus campaign -- same shape as
+    is_on_topic_tiktok(), gated through gate_electric_bus() instead of
+    gate_post(). ``source`` accepted for call-site compatibility, not
+    consulted."""
+    hashtag_blob = " ".join((hashtags or []))
+    return gate_electric_bus(caption or "", hashtag_blob)
+
+
+def is_on_topic_news_electric_bus(title, body="", source=None):
+    """News wrapper for the electric-bus campaign -- same shape as
+    is_on_topic_news(), gated through gate_electric_bus() instead of
+    gate_post(). ``source`` accepted for call-site compatibility, not
+    consulted."""
+    return gate_electric_bus(title, body)

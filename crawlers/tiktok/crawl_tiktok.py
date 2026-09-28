@@ -30,7 +30,7 @@ from crawlers.common.records import (  # noqa: E402
     require_env_salt,
     salted_hash,
 )
-from crawlers.topics import is_on_topic_tiktok, matched_groups  # noqa: E402
+from crawlers.topics import is_on_topic_tiktok, is_on_topic_tiktok_electric_bus, matched_groups  # noqa: E402
 
 try:
     # Patchright carries anti-detection patches over stock Playwright (plan §9).
@@ -579,6 +579,7 @@ def crawl_video(
     batch_id_value,
     handle_salt,
     source=None,
+    gate=is_on_topic_tiktok,
 ):
     """Full per-video pipeline: navigate, build pool, rank, select, map to
     records. Returns (records, pool_size_actual, stop_reason)."""
@@ -603,7 +604,7 @@ def crawl_video(
 
     # Gate already ran at discovery time -- this is a defensive re-check
     # only, not a second gate (same convention as crawl_tiktok.py).
-    topic_verdict, topic_rule = is_on_topic_tiktok(meta["post_context"], meta["hashtags"], source=source)
+    topic_verdict, topic_rule = gate(meta["post_context"], meta["hashtags"], source=source)
     if topic_verdict != "accept":
         return [], len(pool), f"topic_reject:{topic_rule}"
 
@@ -698,8 +699,19 @@ def _positive_int(value):
     return ivalue
 
 
+CAMPAIGN_GATES = {
+    "flood_transport": is_on_topic_tiktok,
+    "electric_bus": is_on_topic_tiktok_electric_bus,
+}
+CAMPAIGN_BATCH_PREFIX = {
+    "flood_transport": "tiktok_flood",
+    "electric_bus": "tiktok_electric_bus",
+}
+
+
 def build_arg_parser():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign", choices=tuple(CAMPAIGN_GATES), default="flood_transport")
     parser.add_argument("--url-file", required=True,
                          help="Newline-delimited video URLs. Keyword discovery lives in "
                               "discover_tiktok.py, not here.")
@@ -743,8 +755,9 @@ def main(argv=None):
         print("[STOP] no URLs to crawl.")
         return
 
+    gate = CAMPAIGN_GATES[args.campaign]
     headless = bool(args.headless)  # None -> False (headful default)
-    batch = args.batch_id or batch_id("tiktok_flood", now_hcm())
+    batch = args.batch_id or batch_id(CAMPAIGN_BATCH_PREFIX[args.campaign], now_hcm())
     out_path = os.path.join(args.output_dir, f"{batch}.jsonl")
 
     stats = {"attempted": 0, "succeeded": 0, "skipped_no_comments": 0, "skipped_off_topic": 0, "skipped_error": 0}
@@ -781,6 +794,7 @@ def main(argv=None):
                     with_replies=args.with_replies,
                     batch_id_value=batch,
                     handle_salt=handle_salt,
+                    gate=gate,
                 )
             except (BlockedError, SessionExpiredError) as exc:
                 print(f"[STOP] {type(exc).__name__}: {exc}")

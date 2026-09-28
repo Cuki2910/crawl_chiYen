@@ -20,7 +20,7 @@ import urllib.error
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 from crawlers.common.records import JsonlWriter, batch_id, now_hcm, record_id, require_env_salt  # noqa: E402
-from crawlers.topics import is_on_topic_news, matched_groups  # noqa: E402
+from crawlers.topics import is_on_topic_news, is_on_topic_news_electric_bus, matched_groups  # noqa: E402
 from crawlers.news.adapters import ADAPTERS  # noqa: E402
 from crawlers.news.news_common import (  # noqa: E402
     DEFAULTS,
@@ -34,6 +34,15 @@ from crawlers.news.news_common import (  # noqa: E402
 
 OUTPUT_DIR = "data/outputs/news"
 SOURCES_VERSION = "news_flood_sources_v1_2026-09-24"
+
+CAMPAIGN_GATES = {
+    "flood_transport": is_on_topic_news,
+    "electric_bus": is_on_topic_news_electric_bus,
+}
+CAMPAIGN_BATCH_PREFIX = {
+    "flood_transport": "news_flood",
+    "electric_bus": "news_electric_bus",
+}
 
 
 def comment_record_id(article_url, comment_id):
@@ -51,6 +60,7 @@ def _resolve_outlet(url):
 
 def build_arg_parser():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign", choices=tuple(CAMPAIGN_GATES), default="flood_transport")
     parser.add_argument("--url-file", required=True,
                          help="Newline-delimited article URLs (reviewed discovery output).")
     parser.add_argument("--max-comments-per-article", type=int,
@@ -70,7 +80,7 @@ def build_arg_parser():
 
 
 def crawl_article(url, *, max_comments_per_article, with_replies, max_replies_per_comment,
-                   batch_id_value, handle_salt):
+                   batch_id_value, handle_salt, gate=is_on_topic_news):
     """Returns (records, stop_reason). stop_reason is one of:
     "no_outlet", "no_widget", "gated_out", "no_comments", "ok"."""
     _outlet_key, outlet, adapter = _resolve_outlet(url)
@@ -85,7 +95,7 @@ def crawl_article(url, *, max_comments_per_article, with_replies, max_replies_pe
     # Re-gate before crawling comments -- a safety net against a changed
     # page, not a second veto over the discovery-CSV review (a human
     # already reviewed and kept this URL by the time it reaches --url-file).
-    verdict, rule = is_on_topic_news(title, body=body, source=outlet)
+    verdict, rule = gate(title, body=body, source=outlet)
     if verdict == "reject":
         return [], "gated_out"
 
@@ -138,6 +148,7 @@ def main(argv=None):
     parser = build_arg_parser()
     args = parser.parse_args(argv)
 
+    gate = CAMPAIGN_GATES[args.campaign]
     handle_salt = require_env_salt("NEWS_HANDLE_SALT")
     urls = read_url_file(args.url_file)
     if not urls:
@@ -145,7 +156,7 @@ def main(argv=None):
         return
 
     os.makedirs(args.output_dir, exist_ok=True)
-    batch = args.batch_id or batch_id("news_flood", now_hcm())
+    batch = args.batch_id or batch_id(CAMPAIGN_BATCH_PREFIX[args.campaign], now_hcm())
     out_path = os.path.join(args.output_dir, f"{batch}.jsonl")
 
     seen_urls = set() if args.force else load_seen_urls(args.output_dir)
@@ -172,6 +183,7 @@ def main(argv=None):
                     max_replies_per_comment=args.max_replies_per_comment,
                     batch_id_value=batch,
                     handle_salt=handle_salt,
+                    gate=gate,
                 )
             except (NewsAPIError, urllib.error.URLError, OSError) as exc:
                 print(f"  [ERROR] {exc!r}")

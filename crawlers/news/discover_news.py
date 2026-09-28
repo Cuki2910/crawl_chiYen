@@ -37,12 +37,26 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 from crawlers.common.records import batch_id, now_hcm  # noqa: E402
+from crawlers.hanoi_flood_transport.electric_bus_queries import KEYWORDS as ELECTRIC_BUS_KEYWORDS  # noqa: E402
 from crawlers.hanoi_flood_transport.tiktok_news_queries import KEYWORDS  # noqa: E402
-from crawlers.topics import is_on_topic_news  # noqa: E402
+from crawlers.topics import is_on_topic_news, is_on_topic_news_electric_bus  # noqa: E402
 from crawlers.news.adapters import ADAPTERS  # noqa: E402
 from crawlers.news.news_common import DEFAULTS, OUTLETS, fetch_text  # noqa: E402
 
 OUTPUT_DIR = "data/outputs/news"
+
+CAMPAIGNS = {
+    "flood_transport": {
+        "keywords": KEYWORDS,
+        "gate": is_on_topic_news,
+        "batch_prefix": "news_flood",
+    },
+    "electric_bus": {
+        "keywords": ELECTRIC_BUS_KEYWORDS,
+        "gate": is_on_topic_news_electric_bus,
+        "batch_prefix": "news_electric_bus",
+    },
+}
 
 CSV_FIELDS = ["article_url", "publisher", "discovery_query", "title", "published_at",
               "gate_verdict", "gate_rule", "in_date_window", "has_comments_confirmed", "keep"]
@@ -94,6 +108,7 @@ def in_date_window(published_at_str, since, until):
 
 def build_arg_parser():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign", choices=tuple(CAMPAIGNS), default="flood_transport")
     parser.add_argument("--keyword", action="append", default=[],
                          help="Repeatable; defaults to the built-in flood KEYWORDS list.")
     parser.add_argument("--outlet", action="append", choices=sorted(OUTLETS), default=[],
@@ -116,11 +131,13 @@ def main(argv=None):
 
     parser = build_arg_parser()
     args = parser.parse_args(argv)
-    keywords = args.keyword or KEYWORDS
+    campaign = CAMPAIGNS[args.campaign]
+    gate = campaign["gate"]
+    keywords = args.keyword or campaign["keywords"]
     outlets = {k: OUTLETS[k] for k in args.outlet} if args.outlet else OUTLETS
 
     os.makedirs(args.output_dir, exist_ok=True)
-    batch = args.batch_id or batch_id("news_flood", now_hcm())
+    batch = args.batch_id or batch_id(campaign["batch_prefix"], now_hcm())
     csv_path = os.path.join(args.output_dir, f"discovery_{batch}.csv")
 
     seen_this_run = set()
@@ -171,7 +188,7 @@ def main(argv=None):
                     if not window_ok:
                         stats["outside_window"] += 1
 
-                    verdict, rule = is_on_topic_news(title, body=body, source=outlet)
+                    verdict, rule = gate(title, body=body, source=outlet)
                     row["gate_verdict"], row["gate_rule"] = verdict, rule
                     row["keep"] = _KEEP_FOR_VERDICT[verdict] if (ids is not None and window_ok) else "0"
                     stats[verdict] += 1
