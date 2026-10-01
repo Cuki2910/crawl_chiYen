@@ -102,6 +102,55 @@ class NormalizeReplyCardTests(unittest.TestCase):
         self.assertEqual(reply["reply_id"], "r1")
         self.assertEqual(reply["likes_count"], 5)
 
+    def test_reply_count_defaults_to_zero(self):
+        reply = crawl_threads.normalize_reply_card({"reply_id": "r1", "reply_text": "hi"})
+        self.assertEqual(reply["reply_count"], 0)
+
+    def test_reply_count_parsed(self):
+        reply = crawl_threads.normalize_reply_card({"reply_id": "r1", "reply_text": "hi", "reply_count": "3"})
+        self.assertEqual(reply["reply_count"], 3)
+
+
+class ToRecordNestingTests(unittest.TestCase):
+    def _reply(self, reply_id="r1", reply_count=0):
+        return {
+            "reply_id": reply_id, "reply_text": "noi dung", "posted_at_epoch": 0,
+            "likes_count": 0, "author_handle": "someone", "reply_count": reply_count,
+        }
+
+    def test_depth_one_reply_parents_to_post(self):
+        record = crawl_threads.to_record(
+            post_url="https://www.threads.net/post/p1", post_id="p1", post_text="post text",
+            reply=self._reply(), batch_id_value="b1", handle_salt="salt",
+            parent_id="p1", depth=1,
+        )
+        self.assertTrue(record["is_reply"])
+        self.assertEqual(record["parent_id"], "p1")
+        self.assertEqual(record["depth"], 1)
+
+    def test_nested_reply_parents_to_parent_record_id(self):
+        parent_record = crawl_threads.to_record(
+            post_url="https://www.threads.net/post/p1", post_id="p1", post_text="post text",
+            reply=self._reply(reply_id="r1", reply_count=2), batch_id_value="b1", handle_salt="salt",
+            parent_id="p1", depth=1,
+        )
+        nested_record = crawl_threads.to_record(
+            post_url="https://www.threads.net/post/p1", post_id="p1", post_text="post text",
+            reply=self._reply(reply_id="r2"), batch_id_value="b1", handle_salt="salt",
+            parent_id=parent_record["id"], depth=2,
+        )
+        self.assertEqual(nested_record["parent_id"], parent_record["id"])
+        self.assertEqual(nested_record["depth"], 2)
+        self.assertNotEqual(nested_record["id"], parent_record["id"])
+
+    def test_reply_count_carried_onto_record(self):
+        record = crawl_threads.to_record(
+            post_url="https://www.threads.net/post/p1", post_id="p1", post_text="post text",
+            reply=self._reply(reply_count=5), batch_id_value="b1", handle_salt="salt",
+            parent_id="p1", depth=1,
+        )
+        self.assertEqual(record["reply_count"], 5)
+
 
 class DedupPoolTests(unittest.TestCase):
     def test_dedups_by_reply_id(self):

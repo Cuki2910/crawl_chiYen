@@ -45,6 +45,7 @@ DEFAULTS = {
     "delay_min": 15,
     "delay_max": 45,
     "max_posts": 50,
+    "max_reply_depth": 2,
 }
 
 _POST_ID_PATTERN = re.compile(r"/post/([A-Za-z0-9_-]+)")
@@ -80,7 +81,10 @@ def _safe_int(value, default=0):
 
 def normalize_reply_card(card):
     """One raw extracted reply-card dict -> a normalized reply, or None if
-    required fields are missing."""
+    required fields are missing. ``reply_count`` is best-effort (0 when not
+    detected) -- it only gates whether crawl_post() bothers descending into
+    that reply's own sub-thread, never blocks the reply itself from being
+    recorded."""
     reply_id = card.get("reply_id") or ""
     if not reply_id:
         return None
@@ -90,6 +94,7 @@ def normalize_reply_card(card):
         "posted_at_epoch": _safe_int(card.get("posted_at_epoch")),
         "likes_count": _safe_int(card.get("likes_count")),
         "author_handle": card.get("author_handle", "") or "",
+        "reply_count": _safe_int(card.get("reply_count")),
     }
 
 
@@ -124,6 +129,8 @@ def to_record(
     topic_rule="",
     matched_groups_=(),
     posted_at="",
+    parent_id=None,
+    depth=1,
 ):
     return {
         "id": reply_record_id(post_id, reply["reply_id"]),
@@ -139,6 +146,16 @@ def to_record(
         "crawl_batch_id": batch_id_value,
         "author_hash": salted_hash(reply["author_handle"], handle_salt),
         "post_id": post_id,
+        # is_reply is always True here -- every record from this crawler is
+        # a reply to something (the root post, or another reply). depth=1
+        # means "direct reply to the root post"; depth=2+ means a reply to
+        # another reply, nested that many levels deep. parent_id is the
+        # record id of whichever reply (or the root post, via
+        # reply_record_id with the post itself) this one replied to.
+        "is_reply": True,
+        "parent_id": parent_id,
+        "depth": depth,
+        "reply_count": reply.get("reply_count", 0),
         "source_kind": source_kind,
         "source_class": source_class,
         "source_label": source_label,
@@ -174,11 +191,19 @@ _EXTRACT_REPLY_CARDS_JS = """
         if (!match) continue;
         const authorLink = c.querySelector('a[href^="/@"]');
         const timeEl = c.querySelector('time');
+        // Best-effort: Threads shows a "N replies" affordance under a
+        // reply that itself has nested replies. Selector/text match not
+        // yet confirmed against live markup -- see module docstring.
+        const replyCountEl = [...c.querySelectorAll('span, div')].find(
+            el => /^\\d+\\s*(repl(y|ies))/i.test((el.textContent || '').trim())
+        );
+        const replyCountMatch = replyCountEl ? replyCountEl.textContent.match(/\\d+/) : null;
         results.push({
             reply_id: match[1],
             reply_text: (c.innerText || '').slice(0, 2000),
             author_handle: authorLink ? (authorLink.getAttribute('href') || '').replace(/^\\/@/, '') : '',
             posted_at_iso: timeEl ? timeEl.getAttribute('datetime') : null,
+            reply_count: replyCountMatch ? replyCountMatch[0] : 0,
         });
     }
     return results;
@@ -229,7 +254,73 @@ def build_pool(page, max_rounds, stale_rounds):
     return pool, "max_rounds"
 
 
-def crawl_post(page, post_url, *, max_rounds, stale_rounds, batch_id_value, handle_salt, source=None):
+def _fetch_nested_replies(
+    page, post_id, parent_reply, parent_record_id, *,
+    depth, max_depth, max_rounds, stale_rounds, batch_id_value, handle_salt,
+    source, canonical_url, post_text, hashtags, topic_rule, posted_at_iso,
+):
+    """Navigate into ``parent_reply``'s own post page (every Threads reply
+    is itself a post at /post/<id>) and fetch its replies, tagging each
+    with parent_id=parent_record_id/depth=depth. Recurses until max_depth.
+
+    A failed navigation (dead link, block mid-descent) only drops that one
+    branch -- it doesn't raise and kill the whole crawl, except for
+    BlockedError/SessionExpiredError, which must still stop the run (same
+    convention as the rest of this module)."""
+    reply_url = f"https://www.threads.net/post/{parent_reply['reply_id']}"
+    try:
+        page.goto(reply_url, wait_until="domcontentloaded", timeout=90000)
+        page.wait_for_timeout(2000)
+        check_block_markers(page)
+    except (BlockedError, SessionExpiredError):
+        raise
+    except Exception:
+        return []
+
+    pool_dict, _stop_reason = build_pool(page, max_rounds, stale_rounds)
+    nested_pool = list(pool_dict.values())
+
+    records = []
+    for nested_reply in nested_pool:
+        record = to_record(
+            post_url=canonical_url,
+            post_id=post_id,
+            post_text=post_text,
+            reply=nested_reply,
+            batch_id_value=batch_id_value,
+            handle_salt=handle_salt,
+            source_kind=source.get("kind", ""),
+            source_class=source.get("source_class", ""),
+            source_label=source.get("label", ""),
+            discovery_query=source.get("query", ""),
+            discovery_url=source.get("url", ""),
+            hashtags=hashtags,
+            topic_rule=topic_rule,
+            matched_groups_=matched_groups(nested_reply["reply_text"]),
+            posted_at=posted_at_iso,
+            parent_id=parent_record_id,
+            depth=depth,
+        )
+        records.append(record)
+        if depth < max_depth and nested_reply.get("reply_count", 0) > 0:
+            records.extend(_fetch_nested_replies(
+                page, post_id, nested_reply, record["id"],
+                depth=depth + 1, max_depth=max_depth,
+                max_rounds=max_rounds, stale_rounds=stale_rounds,
+                batch_id_value=batch_id_value, handle_salt=handle_salt,
+                source=source, canonical_url=canonical_url, post_text=post_text,
+                hashtags=hashtags, topic_rule=topic_rule, posted_at_iso=posted_at_iso,
+            ))
+    return records
+
+
+def crawl_post(page, post_url, *, max_rounds, stale_rounds, batch_id_value, handle_salt,
+                source=None, max_reply_depth=2):
+    """max_reply_depth=1 only collects direct replies to the post (old
+    behavior); 2+ also descends into each reply's own sub-thread that many
+    levels deep. Every extra level roughly multiplies total navigations by
+    however many replies had nested replies at the level above -- keep this
+    small (2-3) unless you've confirmed the block risk is acceptable."""
     source = source or {}
     canonical_url = canonical_post_url(post_url)
     post_id = post_id_from_url(canonical_url)
@@ -258,7 +349,7 @@ def crawl_post(page, post_url, *, max_rounds, stale_rounds, batch_id_value, hand
 
     records = []
     for reply in pool:
-        records.append(to_record(
+        record = to_record(
             post_url=canonical_url,
             post_id=post_id,
             post_text=meta["post_text"],
@@ -274,7 +365,19 @@ def crawl_post(page, post_url, *, max_rounds, stale_rounds, batch_id_value, hand
             topic_rule=topic_rule,
             matched_groups_=matched_groups(reply["reply_text"]),
             posted_at=posted_at_iso,
-        ))
+            parent_id=post_id,
+            depth=1,
+        )
+        records.append(record)
+        if max_reply_depth > 1 and reply.get("reply_count", 0) > 0:
+            records.extend(_fetch_nested_replies(
+                page, post_id, reply, record["id"],
+                depth=2, max_depth=max_reply_depth,
+                max_rounds=max_rounds, stale_rounds=stale_rounds,
+                batch_id_value=batch_id_value, handle_salt=handle_salt,
+                source=source, canonical_url=canonical_url, post_text=meta["post_text"],
+                hashtags=hashtags, topic_rule=topic_rule, posted_at_iso=posted_at_iso,
+            ))
     return records, stop_reason
 
 
@@ -315,6 +418,12 @@ def build_arg_parser():
                               "discover_threads.py, not here.")
     parser.add_argument("--max-rounds", type=_positive_int, default=DEFAULTS["max_rounds"])
     parser.add_argument("--stale-rounds", type=_positive_int, default=DEFAULTS["stale_rounds"])
+    parser.add_argument("--max-reply-depth", type=_positive_int, default=DEFAULTS["max_reply_depth"],
+                         help="1 = only direct replies to the post. 2+ also descends into each "
+                              "reply's own sub-thread that many levels deep -- each extra level "
+                              "roughly multiplies navigations by how many replies had nested "
+                              "replies one level up, so keep this small unless you've confirmed "
+                              "the block risk is acceptable.")
     parser.add_argument("--delay-min", type=_positive_int, default=DEFAULTS["delay_min"])
     parser.add_argument("--delay-max", type=_positive_int, default=DEFAULTS["delay_max"])
     parser.add_argument("--headful", dest="headless", action="store_false", default=None)
@@ -363,6 +472,7 @@ def main(argv=None):
                     stale_rounds=args.stale_rounds,
                     batch_id_value=batch,
                     handle_salt=handle_salt,
+                    max_reply_depth=args.max_reply_depth,
                 )
             except (BlockedError, SessionExpiredError) as exc:
                 print(f"[STOP] {type(exc).__name__}: {exc}")
