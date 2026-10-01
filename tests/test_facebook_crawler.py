@@ -125,6 +125,19 @@ class FacebookCrawlerTests(unittest.TestCase):
                 self.assertEqual((verdict, got_reason, comments), ("reject", reason, []))
                 fetch_comments.assert_not_called()
 
+    def test_electric_bus_source_uses_its_own_gate(self):
+        source = {"source_class": "electric_bus_search"}
+        metadata = {
+            "metadata_resolved": True,
+            "post_title": "Review VinBus",
+            "post_context": "Trải nghiệm xe buýt điện",
+            "post_published_at": "2026-08-01T00:00:00+07:00",
+        }
+        with patch.object(fb, "fetch_post_metadata", return_value=metadata), \
+             patch.object(fb, "fetch_post", return_value=("body", [])):
+            _, verdict, reason, _, _ = fb.fetch_eligible_post("https://facebook.com/posts/1", source=source)
+        self.assertEqual((verdict, reason), ("accept", "electric_bus"))
+
     def test_js_has_no_broad_capture_fallback(self):
         self.assertNotIn("div[role=\"main\"]", fb._INIT_COMMENT_CAPTURE_JS)
         self.assertIn("identity(href) === targetId", fb._INIT_COMMENT_CAPTURE_JS)

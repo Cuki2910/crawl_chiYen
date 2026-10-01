@@ -22,7 +22,7 @@ if sys.stdout.encoding != "utf-8":
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from crawlers.csv_utils import load_env
-from crawlers.hanoi_flood_transport.config import TOPIC_QUERIES
+from crawlers.hanoi_flood_transport.config import ELECTRIC_BUS_QUERIES, TOPIC_QUERIES
 
 load_env()
 API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
@@ -42,8 +42,8 @@ while True:
 _key_index = 0
 BASE_URL = "https://www.googleapis.com/youtube/v3"
 
-# Single source of truth: the approved Hanoi flood-transport workbook terms.
-KEYWORDS = list(TOPIC_QUERIES)
+# All approved workbook terms. Their separate time windows live in config.py.
+KEYWORDS = list(TOPIC_QUERIES) + list(ELECTRIC_BUS_QUERIES)
 
 search_call_count = 0
 comment_page_count = 0

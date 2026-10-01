@@ -13,7 +13,7 @@ try:
 except ImportError:
     StealthySession = None
 
-PROFILE_DIR = os.path.abspath(".secrets/facebook_profile")
+PROFILE_DIR = os.path.abspath(os.getenv("FB_PROFILE_DIR", ".secrets/facebook_profile"))
 CREDENTIALS_FILE = os.path.abspath(".secrets/facebook.env")
 CHALLENGE_SHOT = os.path.abspath(".secrets/auth_challenge.png")
 NAV_TIMEOUT_MS = 90000

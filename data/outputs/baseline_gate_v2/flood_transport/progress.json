@@ -1,0 +1,21 @@
+{
+  "run_id": "baseline_20260926_134704",
+  "started_at": "2026-09-26T13:47:04.324288+00:00",
+  "deadline_at": "2026-09-27T13:47:04.324288+00:00",
+  "now": "2026-09-27T13:47:28.641089+00:00",
+  "elapsed_hours": 24.01,
+  "remaining_hours": -0.01,
+  "target_minimum": 5000,
+  "target_reached_at": "2026-09-27T11:53:03.537092+00:00",
+  "total_unique_valid": 5494,
+  "facebook_top_level": 2197,
+  "facebook_replies": 659,
+  "youtube_top_level": 1996,
+  "youtube_replies": 642,
+  "facebook_accepted": 78,
+  "facebook_rejected": 409,
+  "youtube_accepted": 570,
+  "youtube_rejected": 129,
+  "facebook_status": "stopped",
+  "youtube_status": "stopped"
+}

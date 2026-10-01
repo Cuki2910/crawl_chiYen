@@ -16,6 +16,9 @@ data/outputs/tiktok/*
 !data/outputs/tiktok/tiktok_flood_discovery_20260924_2241.csv
 !data/outputs/tiktok/tiktok_flood_20260924_2307.jsonl
 !data/outputs/tiktok/tiktok_flood_20260925_0900.jsonl
+!data/outputs/tiktok/tiktok_electric_bus_discovery_20260927_2156.csv
+!data/outputs/tiktok/tiktok_electric_bus_20260927_2309.jsonl
+!data/outputs/tiktok/tiktok_electric_bus_20260927_2314.jsonl
 
 !data/outputs/news/
 data/outputs/news/*
@@ -23,20 +26,45 @@ data/outputs/news/*
 !data/outputs/news/discovery_news_flood_20260924_2304.csv
 !data/outputs/news/news_flood_20260925_1411.jsonl
 !data/outputs/news/news_flood_20260925_1734.jsonl
+!data/outputs/news/discovery_news_electric_bus_20260927_2156.csv
+!data/outputs/news/news_electric_bus_20260928_0833.jsonl
 
 data/inputs/*
 !data/inputs/tiktok/
 data/inputs/tiktok/*
 !data/inputs/tiktok/urls_20260924_2120.csv
 !data/inputs/tiktok/urls_20260924_2241.csv
+!data/inputs/tiktok/urls_electric_bus_20260927_2156.csv
 
 !data/inputs/news/
 data/inputs/news/*
 !data/inputs/news/urls_20260924_2302.csv
 !data/inputs/news/urls_20260924_2304.csv
+!data/inputs/news/urls_electric_bus_20260927_2156.csv
 
 .env
 .secrets/
 crawl.db
-data/outputs/baseline_gate_v2/
+
+# Publish current baseline results by campaign; retain logs and snapshots locally.
+!data/outputs/baseline_gate_v2/
+data/outputs/baseline_gate_v2/*
+!data/outputs/baseline_gate_v2/flood_transport/
+data/outputs/baseline_gate_v2/flood_transport/*
+!data/outputs/baseline_gate_v2/flood_transport/crawl.db
+!data/outputs/baseline_gate_v2/flood_transport/facebook_comments.csv
+!data/outputs/baseline_gate_v2/flood_transport/facebook_post_audit.csv
+!data/outputs/baseline_gate_v2/flood_transport/final_report.md
+!data/outputs/baseline_gate_v2/flood_transport/progress.json
+!data/outputs/baseline_gate_v2/flood_transport/youtube_comments.csv
+!data/outputs/baseline_gate_v2/flood_transport/youtube_post_audit.csv
+!data/outputs/baseline_gate_v2/electric_bus/
+data/outputs/baseline_gate_v2/electric_bus/*
+!data/outputs/baseline_gate_v2/electric_bus/crawl.db
+!data/outputs/baseline_gate_v2/electric_bus/facebook_comments.csv
+!data/outputs/baseline_gate_v2/electric_bus/facebook_post_audit.csv
+!data/outputs/baseline_gate_v2/electric_bus/final_report.md
+!data/outputs/baseline_gate_v2/electric_bus/progress.json
+!data/outputs/baseline_gate_v2/electric_bus/youtube_comments.csv
+!data/outputs/baseline_gate_v2/electric_bus/youtube_post_audit.csv
 data/outputs/facebook/

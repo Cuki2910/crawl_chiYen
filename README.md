@@ -5,8 +5,8 @@ comment crawler for Hanoi flood-related transport content.
 
 ## Scope
 
-- Keyword source: `Danh mục từ khoá crawl dữ liệu.xlsx`, sheet `Ngập lụt`.
-- Ignored: sheet `Xe bus điện`.
+- Keyword sources: `Danh mục từ khoá crawl dữ liệu.xlsx`, sheets `Ngập lụt` and `Xe bus điện`.
+- Electric-bus queries run separately, one keyword at a time, from `2026-08-01` to crawl time.
 - Publication windows, Vietnam time:
   - `2025-08-01` through `2025-10-31`.
   - `2026-08-01` through crawl time.
@@ -49,6 +49,32 @@ Both pipelines' search queries derive from the same
 from the spreadsheet), and both gate through the same `crawlers/topics.py`.
 Threads reuses the TikTok/News query list and gates through the same file
 via `is_on_topic_threads`.
+
+### Electric-bus campaign (TikTok + News)
+
+All four `crawlers/tiktok/discover_tiktok.py`, `crawlers/tiktok/crawl_tiktok.py`,
+`crawlers/news/discover_news.py`, `crawlers/news/crawl_news.py` scripts take
+a `--campaign {flood_transport,electric_bus}` flag (default
+`flood_transport`, so every existing flood command still works unchanged).
+`electric_bus` switches three things:
+- **Search queries** -> `crawlers/hanoi_flood_transport/electric_bus_queries.py`
+  (47 queries: the 30 `ELECTRIC_BUS` keyword-group terms deduped down to
+  26 unique, plus 20 broader/rephrased queries for recall). Search-side
+  only -- widening these queries does not widen the gate.
+- **Gate** -> `gate_electric_bus()` (`crawlers/topics.py`), a single-group
+  match against the original `ELECTRIC_BUS` term list in `keywords.py` --
+  accept if *any* electric-bus term is present, unlike `gate_post()`'s
+  3-group AND requirement for flood-transport. A query above can surface a
+  candidate whose text never contains one of the exact gate terms; that
+  candidate is still rejected.
+- **Output batch prefix** -> `tiktok_electric_bus_*` /
+  `news_electric_bus_*` instead of `tiktok_flood_*` / `news_flood_*`, so
+  the two topics' output files are never ambiguous (see Output locations
+  below).
+
+There is only one publication window for this campaign -- `2026-08-01`
+through crawl time -- so `--since`/`--until` only needs to be passed once,
+not run twice per platform like the flood-transport windows.
 
 ## Setup
 
@@ -97,25 +123,32 @@ if a later run stops with `SessionExpiredError`.
 **YouTube + Facebook:**
 
 ```powershell
-python -m crawlers.baseline_runner run --hours 24 --target 5000 --platform all
-python -m crawlers.baseline_runner status
-python -m crawlers.baseline_runner export
+python -m crawlers.baseline_runner run --campaign flood_transport --hours 24 --target 5000 --platform all
+python -m crawlers.baseline_runner run --campaign electric_bus --hours 24 --target 5000 --platform all
+python -m crawlers.baseline_runner status --campaign electric_bus
+python -m crawlers.baseline_runner export --campaign electric_bus
 ```
 
-Run one platform with `--platform youtube` or `--platform facebook`.
+Run the two `run` commands in separate terminals for parallel campaigns. Each writes its own DB and CSV under `data/outputs/baseline_gate_v2/<campaign>/`.
 
 **TikTok:**
 
 ```powershell
-python crawlers/tiktok/discover_tiktok.py --headful --since 2025-08-01 --until 2025-10-31 --user-data-dir data/outputs/tiktok/.browser_profile
-python crawlers/tiktok/crawl_tiktok.py --url-file <reviewed url list> --headful --user-data-dir data/outputs/tiktok/.browser_profile --max-videos <count>
+python crawlers/tiktok/discover_tiktok.py --campaign flood_transport --headful --since 2025-08-01 --until 2025-10-31 --user-data-dir data/outputs/tiktok/.browser_profile
+python crawlers/tiktok/crawl_tiktok.py --campaign flood_transport --url-file <reviewed url list> --headful --user-data-dir data/outputs/tiktok/.browser_profile --max-videos <count>
+
+python crawlers/tiktok/discover_tiktok.py --campaign electric_bus --headful --since 2026-08-01 --user-data-dir data/outputs/tiktok/.browser_profile
+python crawlers/tiktok/crawl_tiktok.py --campaign electric_bus --url-file <reviewed url list> --headful --user-data-dir data/outputs/tiktok/.browser_profile --max-videos <count>
 ```
 
 **News:**
 
 ```powershell
-python crawlers/news/discover_news.py --since 2025-08-01 --until 2025-10-31
-python crawlers/news/crawl_news.py --url-file <reviewed url list>
+python crawlers/news/discover_news.py --campaign flood_transport --since 2025-08-01 --until 2025-10-31
+python crawlers/news/crawl_news.py --campaign flood_transport --url-file <reviewed url list>
+
+python crawlers/news/discover_news.py --campaign electric_bus --since 2026-08-01
+python crawlers/news/crawl_news.py --campaign electric_bus --url-file <reviewed url list>
 ```
 
 **Threads:**
@@ -126,7 +159,13 @@ python crawlers/threads/crawl_threads.py --url-file <reviewed url list> --headfu
 ```
 
 Requires the one-time login from Setup above. Threads discovery CSVs use
-`url` as the column name, same as TikTok.
+`url` as the column name, same as TikTok. Threads doesn't yet have a
+`--campaign` flag (see below) -- it's still flood-transport-only until
+that's wired up.
+
+`--campaign` defaults to `flood_transport` on TikTok/News, so it can be
+omitted for every existing flood command -- shown explicitly above for
+clarity.
 
 TikTok, News, and Threads discovery all write a candidate CSV with a `keep` column
 (`1`/`0`, pre-gated) -- review/override it, export the `keep=1` rows' URL
@@ -149,6 +188,67 @@ only the `in_date_window`/`keep` labeling differs. Getting more results
 from a specific historical window means raising `--max-per-keyword`, not
 re-running with different dates.
 
+## Output locations
+
+Everything lands under `data/outputs/`, one subdirectory per platform
+(`youtube/`, `facebook/`, `tiktok/`, `news/`). Almost all of it is
+gitignored (see `.gitignore`) -- only a handful of specific files are
+allowlisted as committed samples; everything else (browser profiles, spike
+dumps, other batches) stays local-only.
+
+**YouTube + Facebook (`baseline_runner.py`)** work differently from
+TikTok/News -- there's no per-run discovery/crawl file pair. Instead:
+- `data/outputs/baseline_gate_v2/crawl.db` -- the single running SQLite
+  store both platforms write into continuously while `baseline_runner run`
+  is active.
+- `progress.json` -- current run's live counters (`baseline_runner status`
+  regenerates it).
+- `final_report.md` -- written when a run finishes or is exported
+  (`baseline_runner export`), with the same counters as a readable summary.
+- `facebook_comments.csv` / `youtube_comments.csv` and the matching
+  `*_post_audit.csv` -- the actual exported rows, written by
+  `baseline_runner export`.
+- `data/outputs/facebook_smoke/<YYYYMMDD_HHMMSS>/` -- separate, timestamped
+  one-off smoke-test runs (`facebook_smoke.py`), not part of the main
+  pipeline's output; safe to ignore/delete.
+
+**TikTok and News (`discover_*.py` / `crawl_*.py`)** each run writes one
+timestamped file:
+- Discovery -> a CSV: `tiktok_flood_discovery_<batch>.csv` (TikTok) or
+  `discovery_news_flood_<batch>.csv` (News). One row per candidate
+  post/article, with the gate's `gate_verdict`/`gate_rule` and a `keep`
+  column for human review.
+- Crawl -> a JSONL: `tiktok_flood_<batch>.jsonl` or `news_flood_<batch>.jsonl`.
+  One line per comment/reply record.
+- With `--campaign electric_bus`, the prefix swaps to
+  `tiktok_electric_bus_*` / `news_electric_bus_*` (discovery CSVs) and the
+  matching `*.jsonl` crawl output -- distinguishing the two topics' files
+  is automatic here, unlike the publication-window ambiguity described
+  below (which still applies within the flood-transport campaign only;
+  electric-bus has a single window, so there's nothing to disambiguate
+  there).
+
+**`<batch>` is `YYYYMMDD_HHMM` in Asia/Ho_Chi_Minh time -- it's when that
+run happened, not which publication window it targeted.** The two
+publication windows (`2025-08-01`..`2025-10-31` and `2026-08-01`..now) are
+passed as `--since`/`--until` at run time but are **not** recorded in the
+output filename. Only rows inside the requested window are ever written
+(`in_date_window` filters before the CSV write), so within one platform,
+batches run in the order below -- earlier batch = first window, later
+batch = second window:
+
+| Platform | Order | Publication window | Discovery CSV | Crawl JSONL |
+|---|---|---|---|---|
+| TikTok | 1st | `2025-08-01` .. `2025-10-31` | `tiktok_flood_discovery_20260924_2120.csv` | `tiktok_flood_20260924_2307.jsonl` |
+| TikTok | 2nd | `2026-08-01` .. now | `tiktok_flood_discovery_20260924_2241.csv` | `tiktok_flood_20260925_0900.jsonl` |
+| News | 1st | `2025-08-01` .. `2025-10-31` | `discovery_news_flood_20260924_2302.csv` | `news_flood_20260925_1411.jsonl` |
+| News | 2nd | `2026-08-01` .. now | `discovery_news_flood_20260924_2304.csv` | `news_flood_20260925_1734.jsonl` |
+
+Nothing in the repo enforces or records this mapping automatically --
+future runs must be tracked the same way (note which `--since`/`--until`
+pair produced which batch file), or cross-checked against the file's own
+date column (`create_time` for TikTok, the article date column for News).
+
 ## Verification
 
 ```powershell
@@ -160,5 +260,5 @@ python -m unittest discover -s tests
 require live API credentials in `.env`). `python -m unittest discover -s
 tests` runs the plain-`unittest` subset (currently: `test_baseline.py`,
 `test_regate_dataset.py`, `test_topic_config.py`,
-`test_tiktok_news_crawler.py`, and `test_threads_crawler.py`), which needs
-no credentials.
+`test_tiktok_news_crawler.py`, `test_threads_crawler.py`, and
+`test_electric_bus_campaign.py`), which needs no credentials.

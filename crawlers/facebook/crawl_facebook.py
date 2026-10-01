@@ -23,8 +23,8 @@ if sys.stdout.encoding != "utf-8":
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from crawlers.csv_utils import flatten_record, open_csv_writer, load_env
 from crawlers.facebook.facebook_session import FacebookAuthRequiredError, _blocking_auth_js
-from crawlers.hanoi_flood_transport.config import SOURCES_VERSION as TOPIC_SOURCES_VERSION, facebook_sources, post_in_window
-from crawlers.topics import co_thanh_pho_khac, gate_post, matched_groups
+from crawlers.hanoi_flood_transport.config import SOURCES_VERSION as TOPIC_SOURCES_VERSION, electric_bus_post_in_window, facebook_sources, post_in_window
+from crawlers.topics import co_thanh_pho_khac, gate_electric_bus, gate_post, matched_groups
 
 load_env()
 
@@ -1005,21 +1005,27 @@ def fetch_post_metadata(post_url):
     return _metadata_from_response(resp, post_url)
 
 
-def gate_metadata(metadata):
+def _is_electric_bus_source(source):
+    return (source or {}).get("source_class") == "electric_bus_search"
+
+
+def gate_metadata(metadata, source=None):
     """Fail closed khi không xác định chắc body bài."""
     if not metadata.get("metadata_resolved"):
         return "reject", "metadata_unresolved"
-    return gate_post(metadata.get("post_title", ""), metadata.get("post_context", ""))
+    gate = gate_electric_bus if _is_electric_bus_source(source) else gate_post
+    return gate(metadata.get("post_title", ""), metadata.get("post_context", ""))
 
 
-def fetch_eligible_post(post_url, max_comments=MAX_COMMENTS_PER_POST):
+def fetch_eligible_post(post_url, max_comments=MAX_COMMENTS_PER_POST, source=None):
     """Metadata → gate → comments; reject tuyệt đối không gọi comment fetch."""
     metadata = fetch_post_metadata(post_url)
     if not metadata.get("post_published_at"):
         return metadata, "reject", "date_unresolved", "", []
-    if not post_in_window(metadata["post_published_at"]):
+    in_window = electric_bus_post_in_window if _is_electric_bus_source(source) else post_in_window
+    if not in_window(metadata["post_published_at"]):
         return metadata, "reject", "out_of_window", "", []
-    verdict, reason = gate_metadata(metadata)
+    verdict, reason = gate_metadata(metadata, source)
     if verdict != "accept":
         return metadata, verdict, reason, "", []
     post_context, comments = fetch_post(post_url, max_comments=max_comments, metadata=metadata)
@@ -1192,7 +1198,7 @@ def main(argv=None):
                     continue
                 seen_posts.add(identity)
                 try:
-                    metadata, verdict, topic_rule, post_context, comments = fetch_eligible_post(post_url)
+                    metadata, verdict, topic_rule, post_context, comments = fetch_eligible_post(post_url, source=source)
                     audit = {
                         "source_url": canonical_post_url(post_url), **metadata,
                         "verdict": verdict, "reason": topic_rule,
@@ -1211,7 +1217,7 @@ def main(argv=None):
                     print(f"[SKIP] post={post_url} first error={exc!r}; retry after 5s")
                     time.sleep(5)
                     try:
-                        metadata, verdict, topic_rule, post_context, comments = fetch_eligible_post(post_url)
+                        metadata, verdict, topic_rule, post_context, comments = fetch_eligible_post(post_url, source=source)
                         if verdict != "accept":
                             continue
                     except Exception as retry_exc:
