@@ -6,6 +6,7 @@ from crawlers.news import crawl_news, discover_news
 from crawlers.tiktok import crawl_tiktok, discover_tiktok
 from crawlers.topics import (
     gate_electric_bus,
+    gate_electric_bus_vietnam,
     is_on_topic_news,
     is_on_topic_news_electric_bus,
     is_on_topic_tiktok,
@@ -29,6 +30,20 @@ class ElectricBusGateTests(unittest.TestCase):
         # gate_post()'s 3-group AND requirement.
         verdict, _rule = gate_electric_bus("xe buýt điện rất êm")
         self.assertEqual(verdict, "accept")
+
+
+class ElectricBusVietnamGateTests(unittest.TestCase):
+    def test_accepts_vietnamese_text(self):
+        self.assertEqual(gate_electric_bus_vietnam("Xe buýt điện rất êm")[0], "accept")
+
+    def test_accepts_english_with_vn_brand(self):
+        self.assertEqual(gate_electric_bus_vietnam("VinBus electric bus review")[0], "accept")
+
+    def test_rejects_foreign_electric_bus(self):
+        self.assertEqual(
+            gate_electric_bus_vietnam("Electric bus launch in London", "BYD electric bus fleet"),
+            ("reject", "not_vietnam"),
+        )
 
 
 class ElectricBusQueryListTests(unittest.TestCase):

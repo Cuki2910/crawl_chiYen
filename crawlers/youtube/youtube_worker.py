@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from crawlers.youtube import crawl_youtube as yt
 from crawlers.hanoi_flood_transport.config import electric_bus_post_in_window, post_in_window, youtube_search_specs
-from crawlers.topics import co_thanh_pho_khac, gate_electric_bus, gate_post, matched_groups
+from crawlers.topics import co_thanh_pho_khac, gate_electric_bus_vietnam, gate_post, matched_groups
 
 # Cửa sổ năm cố định thay vì bisection thích nghi: dedup video ID xử lý trùng lặp,
 # và search order=date trong mỗi năm đã đủ phủ. Đơn giản, ít quota lãng phí hơn.
@@ -339,7 +339,7 @@ def run_once(store, run, deadline_check, batch_id, campaign="flood_transport"):
                 continue
             if vid in full_descriptions:
                 video["description"] = full_descriptions[vid]
-            gate = gate_electric_bus if electric_bus else gate_post
+            gate = gate_electric_bus_vietnam if electric_bus else gate_post
             verdict, reason = gate(video.get("title", ""), video.get("description", ""))
             store.upsert_context({
                 "platform": "youtube", "context_id": vid,

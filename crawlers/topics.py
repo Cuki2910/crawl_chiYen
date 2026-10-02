@@ -56,6 +56,24 @@ def gate_electric_bus(title="", body=""):
     return "accept", "electric_bus"
 
 
+_VN_EVIDENCE = re.compile(
+    r"[ăắằẳẵặấầẩẫậềếểễệồốổỗộơờớởỡợưừứửữựđảạẻẹẽỉịỏọủụỷỵỹ]|"
+    r"(?<!\w)(?:vietnam|viet nam|hanoi|ha noi|saigon|ho chi minh|vinbus|vinfast|vingroup|"
+    r"xanh sm|tp\.? ?hcm|da nang)(?!\w)",
+    re.IGNORECASE,
+)
+
+
+def gate_electric_bus_vietnam(title="", body=""):
+    """Electric-bus gate plus Vietnam evidence (Vietnamese text or VN place/brand)."""
+    verdict, reason = gate_electric_bus(title, body)
+    if verdict != "accept":
+        return verdict, reason
+    if not _VN_EVIDENCE.search(f"{_norm(title)} {_norm(body)}"):
+        return "reject", "not_vietnam"
+    return verdict, reason
+
+
 def is_relevant(title="", body=""):
     return gate_post(title, body)[0] == "accept"
 
