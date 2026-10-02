@@ -7,15 +7,15 @@
   "remaining_hours": -0.01,
   "target_minimum": 5000,
   "target_reached_at": null,
-  "total_unique_valid": 1605,
+  "total_unique_valid": 1334,
   "facebook_top_level": 669,
   "facebook_replies": 340,
   "youtube_top_level": 388,
   "youtube_replies": 208,
   "facebook_accepted": 22,
   "facebook_rejected": 564,
-  "youtube_accepted": 300,
-  "youtube_rejected": 450,
+  "youtube_accepted": 148,
+  "youtube_rejected": 602,
   "facebook_status": "stopped",
   "youtube_status": "stopped"
 }
