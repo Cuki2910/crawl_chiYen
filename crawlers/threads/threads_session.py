@@ -88,25 +88,67 @@ def launch_context(headless=False, user_data_dir=None):
             context.close()
 
 
+_LOGIN_PROMPT_TEXT_JS = """
+() => {
+    const text = (document.body ? document.body.innerText : '').slice(0, 4000);
+    return /log in|đăng nhập|continue with instagram|create new account|tạo tài khoản mới|sign up/i.test(text);
+}
+"""
+
+
 def is_logged_in(page):
-    """Best-effort check: not on a login wall after landing on the home feed."""
-    return not is_login_wall(page.url)
+    """Best-effort check: not on a login-wall URL, not on instagram.com
+    (Threads auth redirects there mid-login -- never treat that as
+    "logged in", it's the auth flow in progress), and no login/signup
+    prompt text visible on the page.
+
+    Any error reading the page (destroyed JS context from a mid-check
+    navigation, cross-origin restrictions while instagram.com is loading,
+    anything else) is treated as "not logged in yet, keep polling" rather
+    than crashing -- the login flow bounces across origins and transient
+    page states are expected, not exceptional, during this window."""
+    try:
+        url = page.url
+    except Exception:
+        return False
+    if is_login_wall(url) or "instagram.com" in url:
+        return False
+    try:
+        return not page.evaluate(_LOGIN_PROMPT_TEXT_JS)
+    except Exception:
+        return False
 
 
 def interactive_login(user_data_dir=None):
     """Open a headful browser on threads.net for a one-time manual login.
-    Run this directly: `python -m crawlers.threads.threads_session`."""
+    Run this directly: `python -m crawlers.threads.threads_session`.
+    Login redirects through instagram.com -- that's expected, keep going
+    until you land back on a logged-in threads.net page."""
     with launch_context(headless=False, user_data_dir=user_data_dir) as (page, _context):
         page.goto(f"{ROOT}/", wait_until="domcontentloaded", timeout=90000)
-        print("[THREADS] Log in by hand in the opened browser window.")
-        print("[THREADS] This script will keep polling until the login wall clears; "
+        print("[THREADS] Log in by hand in the opened browser window "
+              "(this will redirect through instagram.com -- that's expected).")
+        print("[THREADS] This script will keep polling until login is detected; "
               "close the window (Ctrl+C here) once you're done if it doesn't detect it.")
         while True:
-            page.wait_for_timeout(3000)
+            try:
+                page.wait_for_timeout(3000)
+            except Exception as exc:
+                print(f"[THREADS] page unavailable, still waiting: {exc!r}")
+                continue
             if is_logged_in(page):
-                print("THREADS_LOGIN_OK")
-                return
-            print("[THREADS] still on login wall, waiting...")
+                # One clean check isn't enough to trust given this
+                # heuristic's history -- require two consecutive clean
+                # reads a few seconds apart before declaring success.
+                page.wait_for_timeout(3000)
+                if is_logged_in(page):
+                    print("THREADS_LOGIN_OK")
+                    return
+            try:
+                status = "closed" if page.is_closed() else page.url
+            except Exception:
+                status = "unavailable"
+            print(f"[THREADS] still waiting... (current page: {status})")
 
 
 if __name__ == "__main__":

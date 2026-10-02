@@ -28,8 +28,9 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 from crawlers.common.records import iso_utc_from_epoch, now_hcm  # noqa: E402
+from crawlers.hanoi_flood_transport.electric_bus_queries import KEYWORDS as ELECTRIC_BUS_KEYWORDS  # noqa: E402
 from crawlers.hanoi_flood_transport.tiktok_news_queries import KEYWORDS  # noqa: E402
-from crawlers.topics import is_on_topic_threads  # noqa: E402
+from crawlers.topics import is_on_topic_threads, is_on_topic_threads_electric_bus  # noqa: E402
 from crawlers.threads.threads_session import (  # noqa: E402
     ROOT,
     BlockedError,
@@ -61,10 +62,10 @@ def _slugify(text):
     return text
 
 
-def _build_sources():
+def _build_sources(keywords):
     seen_labels = {}
     sources = []
-    for query in KEYWORDS:
+    for query in keywords:
         base_label = f"kw_{_slugify(query)}"
         seen_labels[base_label] = seen_labels.get(base_label, 0) + 1
         label = base_label if seen_labels[base_label] == 1 else f"{base_label}_{seen_labels[base_label]}"
@@ -72,7 +73,18 @@ def _build_sources():
     return sources
 
 
-SOURCES = _build_sources()
+CAMPAIGNS = {
+    "flood_transport": {
+        "sources": _build_sources(KEYWORDS),
+        "gate": is_on_topic_threads,
+        "batch_prefix": "threads_flood_discovery",
+    },
+    "electric_bus": {
+        "sources": _build_sources(ELECTRIC_BUS_KEYWORDS),
+        "gate": is_on_topic_threads_electric_bus,
+        "batch_prefix": "threads_electric_bus_discovery",
+    },
+}
 
 CSV_FIELDS = [
     "post_id", "url", "discovery_query", "source_label", "post_text",
@@ -229,8 +241,7 @@ def _parse_date_bound(value):
     return int(dt.timestamp())
 
 
-def _selected_sources(labels, classes):
-    sources = SOURCES
+def _selected_sources(sources, labels, classes):
     if labels:
         labels = set(labels)
         sources = [s for s in sources if s["label"] in labels]
@@ -242,6 +253,7 @@ def _selected_sources(labels, classes):
 
 def build_arg_parser():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign", choices=tuple(CAMPAIGNS), default="flood_transport")
     parser.add_argument("--source-label", action="append", default=[])
     parser.add_argument("--source-class", action="append", default=[])
     parser.add_argument("--since", type=_parse_date_bound, default=None,
@@ -263,14 +275,16 @@ def main(argv=None):
     parser = build_arg_parser()
     args = parser.parse_args(argv)
 
-    sources = _selected_sources(args.source_label, args.source_class)
+    campaign = CAMPAIGNS[args.campaign]
+    gate = campaign["gate"]
+    sources = _selected_sources(campaign["sources"], args.source_label, args.source_class)
     if not sources:
         print("[STOP] no sources match the given --source-label/--source-class filters.")
         return
 
     os.makedirs(args.output_dir, exist_ok=True)
     headless = bool(args.headless)
-    batch = args.batch_id or f"threads_flood_discovery_{now_hcm().strftime('%Y%m%d_%H%M')}"
+    batch = args.batch_id or f"{campaign['batch_prefix']}_{now_hcm().strftime('%Y%m%d_%H%M')}"
     out_path = os.path.join(args.output_dir, f"{batch}.csv")
 
     stats = {"discovered": 0, "accept": 0, "reject": 0}
@@ -312,7 +326,7 @@ def main(argv=None):
                 stats["discovered"] += 1
                 new_this_source += 1
 
-                verdict, rule = is_on_topic_threads(candidate["post_text"], candidate["hashtags"], source=source)
+                verdict, rule = gate(candidate["post_text"], candidate["hashtags"], source=source)
                 stats[verdict] = stats.get(verdict, 0) + 1
 
                 writer.writerow({

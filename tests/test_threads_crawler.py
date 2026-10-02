@@ -161,5 +161,105 @@ class DedupPoolTests(unittest.TestCase):
         self.assertEqual(merged["r1"]["reply_text"], "a")
 
 
+class RecordsFromPoolInlineChainTests(unittest.TestCase):
+    """Real-world fixture: ptea4k's comment (reply_count=1) -> ich.nek's
+    inline reply (reply_count=1) -> ptea4k's inline reply (reply_count=0).
+    Confirmed live that a reply_count==1 reply's single child is always
+    the very next card in document order -- no navigation needed. ``page``
+    is never touched for this path since no card here has reply_count>1,
+    so None is safe to pass."""
+
+    def _pool(self):
+        return [
+            {"reply_id": "r1", "reply_text": "ptea4k top", "posted_at_epoch": 0,
+             "likes_count": 0, "author_handle": "ptea4k", "reply_count": 1},
+            {"reply_id": "r2", "reply_text": "ich.nek inline child", "posted_at_epoch": 0,
+             "likes_count": 0, "author_handle": "ich.nek", "reply_count": 1},
+            {"reply_id": "r3", "reply_text": "ptea4k inline grandchild", "posted_at_epoch": 0,
+             "likes_count": 0, "author_handle": "ptea4k", "reply_count": 0},
+        ]
+
+    def _run(self, max_depth=3):
+        return crawl_threads._records_from_pool(
+            self._pool(), page=None, post_id="p1", canonical_url="https://www.threads.com/post/p1",
+            post_text="post text", hashtags=[], topic_rule="rule", posted_at_iso="",
+            batch_id_value="b1", handle_salt="salt", source={}, start_parent_id="p1",
+            start_depth=1, max_depth=max_depth, max_rounds=5, stale_rounds=2, visited={"p1"},
+        )
+
+    def test_three_records_produced(self):
+        self.assertEqual(len(self._run()), 3)
+
+    def test_depths_increment_down_the_chain(self):
+        records = self._run()
+        self.assertEqual([r["depth"] for r in records], [1, 2, 3])
+
+    def test_top_level_parents_to_post(self):
+        records = self._run()
+        self.assertEqual(records[0]["parent_id"], "p1")
+
+    def test_each_inline_child_parents_to_the_previous_record(self):
+        records = self._run()
+        self.assertEqual(records[1]["parent_id"], records[0]["id"])
+        self.assertEqual(records[2]["parent_id"], records[1]["id"])
+
+    def test_chain_stops_extending_past_max_depth(self):
+        # max_depth=2: ich.nek (depth 2) is kept, but the chain doesn't
+        # extend to a depth-3 record for r3 -- no data is lost (r3 is
+        # still emitted), but it falls back to being misattributed as a
+        # false top-level sibling (known limitation, documented in
+        # _records_from_pool's docstring: once the depth budget is
+        # exhausted mid-chain, there's no way to tell a remaining inline
+        # child apart from a genuine top-level reply).
+        records = self._run(max_depth=2)
+        self.assertEqual(len(records), 3)
+        self.assertEqual([r["depth"] for r in records], [1, 2, 1])
+        self.assertEqual(records[2]["parent_id"], "p1")
+
+    def test_unrelated_sibling_after_zero_count_reply_stays_top_level(self):
+        pool = self._pool() + [{
+            "reply_id": "r4", "reply_text": "unrelated top-level reply", "posted_at_epoch": 0,
+            "likes_count": 0, "author_handle": "someoneelse", "reply_count": 0,
+        }]
+        records = crawl_threads._records_from_pool(
+            pool, page=None, post_id="p1", canonical_url="https://www.threads.com/post/p1",
+            post_text="post text", hashtags=[], topic_rule="rule", posted_at_iso="",
+            batch_id_value="b1", handle_salt="salt", source={}, start_parent_id="p1",
+            start_depth=1, max_depth=5, max_rounds=5, stale_rounds=2, visited={"p1"},
+        )
+        self.assertEqual(records[3]["parent_id"], "p1")
+        self.assertEqual(records[3]["depth"], 1)
+
+
+class VisitedGuardTests(unittest.TestCase):
+    """The cycle guard that stops the infinite-navigation bug: a reply_id
+    already in ``visited`` is skipped entirely (no record, no navigation
+    attempt), confirmed live necessary because navigating into a reply's
+    own page can yield that same reply back as one of its own "replies"."""
+
+    def test_already_visited_reply_produces_no_record(self):
+        pool = [{"reply_id": "r1", "reply_text": "self-referencing", "posted_at_epoch": 0,
+                  "likes_count": 0, "author_handle": "someone", "reply_count": 2}]
+        records = crawl_threads._records_from_pool(
+            pool, page=None, post_id="p1", canonical_url="https://www.threads.com/post/p1",
+            post_text="post text", hashtags=[], topic_rule="rule", posted_at_iso="",
+            batch_id_value="b1", handle_salt="salt", source={}, start_parent_id="p1",
+            start_depth=1, max_depth=5, max_rounds=5, stale_rounds=2, visited={"p1", "r1"},
+        )
+        self.assertEqual(records, [])
+
+    def test_processing_a_reply_adds_it_to_visited(self):
+        pool = [{"reply_id": "r1", "reply_text": "hi", "posted_at_epoch": 0,
+                  "likes_count": 0, "author_handle": "someone", "reply_count": 0}]
+        visited = {"p1"}
+        crawl_threads._records_from_pool(
+            pool, page=None, post_id="p1", canonical_url="https://www.threads.com/post/p1",
+            post_text="post text", hashtags=[], topic_rule="rule", posted_at_iso="",
+            batch_id_value="b1", handle_salt="salt", source={}, start_parent_id="p1",
+            start_depth=1, max_depth=5, max_rounds=5, stale_rounds=2, visited=visited,
+        )
+        self.assertIn("r1", visited)
+
+
 if __name__ == "__main__":
     unittest.main()

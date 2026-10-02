@@ -28,7 +28,7 @@ from crawlers.common.records import (  # noqa: E402
     require_env_salt,
     salted_hash,
 )
-from crawlers.topics import is_on_topic_threads, matched_groups  # noqa: E402
+from crawlers.topics import is_on_topic_threads, is_on_topic_threads_electric_bus, matched_groups  # noqa: E402
 from crawlers.threads.threads_session import (  # noqa: E402
     BlockedError,
     SessionExpiredError,
@@ -40,12 +40,24 @@ OUTPUT_DIR = "data/outputs/threads"
 SOURCES_VERSION = "threads_flood_sources_v1_2026-09-27"
 
 DEFAULTS = {
-    "max_rounds": 60,
-    "stale_rounds": 5,
+    # Raised from 60/5 -- confirmed live those stopped a scroll at 139 of
+    # 275 actual top-level replies on a busy post (stale_rounds hit before
+    # reaching the bottom, not because it actually ran out of content;
+    # Threads' lazy-load can be slower than 5 consecutive scrolls'
+    # worth of patience). 200/15 costs more time on quiet posts but
+    # avoids silently truncating busy ones.
+    "max_rounds": 200,
+    "stale_rounds": 15,
     "delay_min": 15,
     "delay_max": 45,
     "max_posts": 50,
-    "max_reply_depth": 2,
+    # Effectively unbounded -- Threads reply chains can run many levels
+    # deep (confirmed live) and there's no reliable way to know the true
+    # depth in advance, so capping low just produces misattributed
+    # records once the budget runs out (see _records_from_pool's
+    # docstring). Pass --max-reply-depth explicitly to cap it for a
+    # faster/cheaper test run.
+    "max_reply_depth": 1000,
 }
 
 _POST_ID_PATTERN = re.compile(r"/post/([A-Za-z0-9_-]+)")
@@ -57,9 +69,18 @@ def extract_hashtags(text):
 
 
 def canonical_post_url(url):
+    """Strip tracking query params, keep the real post path. Preserves the
+    input's own domain rather than hardcoding one -- confirmed live, real
+    Threads post URLs use threads.com (e.g.
+    https://www.threads.com/@handle/post/<id>), not threads.net (which
+    still works for login/search navigation, but is NOT the domain post
+    permalinks resolve to). Rewriting to a hardcoded domain here was a bug:
+    it silently turned every correct threads.com URL into a threads.net
+    one that likely wouldn't resolve the same content."""
     parsed = urllib.parse.urlparse(url)
     path = re.sub(r"/+$", "", parsed.path) or "/"
-    return urllib.parse.urlunparse(("https", "www.threads.net", path, "", "", ""))
+    netloc = parsed.netloc or "www.threads.com"
+    return urllib.parse.urlunparse(("https", netloc, path, "", "", ""))
 
 
 def post_id_from_url(url):
@@ -191,19 +212,31 @@ _EXTRACT_REPLY_CARDS_JS = """
         if (!match) continue;
         const authorLink = c.querySelector('a[href^="/@"]');
         const timeEl = c.querySelector('time');
-        // Best-effort: Threads shows a "N replies" affordance under a
-        // reply that itself has nested replies. Selector/text match not
-        // yet confirmed against live markup -- see module docstring.
-        const replyCountEl = [...c.querySelectorAll('span, div')].find(
-            el => /^\\d+\\s*(repl(y|ies))/i.test((el.textContent || '').trim())
-        );
-        const replyCountMatch = replyCountEl ? replyCountEl.textContent.match(/\\d+/) : null;
+        // Confirmed live: the reply-count signal is the "Reply" action
+        // icon (an <svg><title>Reply</title></svg>, same icon used under
+        // the main post), with a sibling element holding the bare number
+        // (no "replies" word in the text at all -- the old text-pattern
+        // guess never matched). Scoped to this icon's immediate parent
+        // div so it doesn't pick up the like/repost/share counts sitting
+        // next to it in the same action row.
+        let replyCount = 0;
+        for (const svg of c.querySelectorAll('svg')) {
+            const titleEl = svg.querySelector('title');
+            if (!titleEl || titleEl.textContent.trim().toLowerCase() !== 'reply') continue;
+            const container = svg.closest('div');
+            if (!container) break;
+            const numEl = [...container.querySelectorAll('span, div')].find(
+                el => /^\\d+$/.test((el.textContent || '').trim())
+            );
+            if (numEl) replyCount = numEl.textContent.trim();
+            break;
+        }
         results.push({
             reply_id: match[1],
             reply_text: (c.innerText || '').slice(0, 2000),
             author_handle: authorLink ? (authorLink.getAttribute('href') || '').replace(/^\\/@/, '') : '',
             posted_at_iso: timeEl ? timeEl.getAttribute('datetime') : null,
-            reply_count: replyCountMatch ? replyCountMatch[0] : 0,
+            reply_count: replyCount,
         });
     }
     return results;
@@ -254,22 +287,37 @@ def build_pool(page, max_rounds, stale_rounds):
     return pool, "max_rounds"
 
 
+def _reply_url(reply):
+    """Every Threads reply is itself a post at /@<handle>/post/<id>
+    (confirmed live via real discovery output -- domain is threads.com,
+    not threads.net)."""
+    handle = reply.get("author_handle") or ""
+    if handle:
+        return f"https://www.threads.com/@{handle}/post/{reply['reply_id']}"
+    # No handle captured for this reply -- fall back to the bare
+    # /post/<id> form. Unconfirmed whether Threads resolves this without
+    # the @handle prefix; if nested descent silently yields nothing for
+    # replies missing a handle, this fallback is why.
+    return f"https://www.threads.com/post/{reply['reply_id']}"
+
+
 def _fetch_nested_replies(
     page, post_id, parent_reply, parent_record_id, *,
     depth, max_depth, max_rounds, stale_rounds, batch_id_value, handle_salt,
-    source, canonical_url, post_text, hashtags, topic_rule, posted_at_iso,
+    source, canonical_url, post_text, hashtags, topic_rule, posted_at_iso, visited,
 ):
-    """Navigate into ``parent_reply``'s own post page (every Threads reply
-    is itself a post at /post/<id>) and fetch its replies, tagging each
-    with parent_id=parent_record_id/depth=depth. Recurses until max_depth.
+    """Navigate into ``parent_reply``'s own post page and fetch its
+    replies. Only called for reply_count >= 2 -- those aren't rendered on
+    the current page at all until clicked (unlike reply_count == 1, whose
+    single child renders inline and is handled by _records_from_pool
+    without navigation).
 
     A failed navigation (dead link, block mid-descent) only drops that one
     branch -- it doesn't raise and kill the whole crawl, except for
     BlockedError/SessionExpiredError, which must still stop the run (same
     convention as the rest of this module)."""
-    reply_url = f"https://www.threads.net/post/{parent_reply['reply_id']}"
     try:
-        page.goto(reply_url, wait_until="domcontentloaded", timeout=90000)
+        page.goto(_reply_url(parent_reply), wait_until="domcontentloaded", timeout=90000)
         page.wait_for_timeout(2000)
         check_block_markers(page)
     except (BlockedError, SessionExpiredError):
@@ -280,13 +328,66 @@ def _fetch_nested_replies(
     pool_dict, _stop_reason = build_pool(page, max_rounds, stale_rounds)
     nested_pool = list(pool_dict.values())
 
+    return _records_from_pool(
+        nested_pool, page=page, post_id=post_id, canonical_url=canonical_url,
+        post_text=post_text, hashtags=hashtags, topic_rule=topic_rule,
+        posted_at_iso=posted_at_iso, batch_id_value=batch_id_value, handle_salt=handle_salt,
+        source=source, start_parent_id=parent_record_id, start_depth=depth,
+        max_depth=max_depth, max_rounds=max_rounds, stale_rounds=stale_rounds, visited=visited,
+    )
+
+
+def _records_from_pool(
+    pool, *, page, post_id, canonical_url, post_text, hashtags, topic_rule, posted_at_iso,
+    batch_id_value, handle_salt, source, start_parent_id, start_depth, max_depth,
+    max_rounds, stale_rounds, visited,
+):
+    """Walk a flat, document-ordered reply pool (one page's worth, from
+    build_pool) and emit records with correct parent_id/depth.
+
+    Confirmed live: a reply with reply_count == 1 has its single child
+    rendered INLINE as the very next card in the same pool, in document
+    order -- no navigation needed, just attach it to the reply that
+    precedes it and continue the chain (which can itself have
+    reply_count == 1 and so on, arbitrarily deep). reply_count >= 2 is
+    NOT rendered inline at all -- only resolvable via _fetch_nested_replies
+    navigating to that reply's own page. Without this distinction, the
+    inline chain members get flattened into the pool looking like ordinary
+    top-level siblings with no way to tell them apart -- there is no
+    reliable DOM/class signal for "this card is an inline child" otherwise
+    (confirmed live: the only class differences between chain members are
+    arbitrary per-card atomic-CSS hashes, not a stable nesting marker).
+
+    ``visited`` is a set of reply_ids already processed anywhere in this
+    post's crawl, shared across every recursive call (mutated in place).
+    Confirmed live this is necessary, not just defensive: navigating into
+    a reply's own page can yield that SAME reply back as one of its own
+    "replies" (the extraction's assumption that the page's first
+    data-pressable-container is always the main post and safe to skip
+    breaks on at least some page layouts -- a pinned post is the one
+    confirmed case so far), which without this guard becomes an infinite
+    navigate-to-self loop once max_reply_depth stopped being a low enough
+    cap to mask it."""
     records = []
-    for nested_reply in nested_pool:
+    expect_inline_child = False
+    chain_parent_id, chain_depth = start_parent_id, start_depth
+    for reply in pool:
+        reply_id = reply.get("reply_id")
+        if reply_id in visited:
+            expect_inline_child = False
+            continue
+        visited.add(reply_id)
+
+        if expect_inline_child:
+            parent_id, depth = chain_parent_id, chain_depth
+        else:
+            parent_id, depth = start_parent_id, start_depth
+
         record = to_record(
             post_url=canonical_url,
             post_id=post_id,
             post_text=post_text,
-            reply=nested_reply,
+            reply=reply,
             batch_id_value=batch_id_value,
             handle_salt=handle_salt,
             source_kind=source.get("kind", ""),
@@ -296,31 +397,38 @@ def _fetch_nested_replies(
             discovery_url=source.get("url", ""),
             hashtags=hashtags,
             topic_rule=topic_rule,
-            matched_groups_=matched_groups(nested_reply["reply_text"]),
+            matched_groups_=matched_groups(reply["reply_text"]),
             posted_at=posted_at_iso,
-            parent_id=parent_record_id,
+            parent_id=parent_id,
             depth=depth,
         )
         records.append(record)
-        if depth < max_depth and nested_reply.get("reply_count", 0) > 0:
-            records.extend(_fetch_nested_replies(
-                page, post_id, nested_reply, record["id"],
-                depth=depth + 1, max_depth=max_depth,
-                max_rounds=max_rounds, stale_rounds=stale_rounds,
-                batch_id_value=batch_id_value, handle_salt=handle_salt,
-                source=source, canonical_url=canonical_url, post_text=post_text,
-                hashtags=hashtags, topic_rule=topic_rule, posted_at_iso=posted_at_iso,
-            ))
+
+        count = reply.get("reply_count", 0)
+        if count == 1 and depth < max_depth:
+            expect_inline_child = True
+            chain_parent_id, chain_depth = record["id"], depth + 1
+        else:
+            expect_inline_child = False
+            if count > 1 and depth < max_depth:
+                records.extend(_fetch_nested_replies(
+                    page, post_id, reply, record["id"],
+                    depth=depth + 1, max_depth=max_depth,
+                    max_rounds=max_rounds, stale_rounds=stale_rounds,
+                    batch_id_value=batch_id_value, handle_salt=handle_salt,
+                    source=source, canonical_url=canonical_url, post_text=post_text,
+                    hashtags=hashtags, topic_rule=topic_rule, posted_at_iso=posted_at_iso,
+                    visited=visited,
+                ))
     return records
 
 
 def crawl_post(page, post_url, *, max_rounds, stale_rounds, batch_id_value, handle_salt,
-                source=None, max_reply_depth=2):
+                source=None, max_reply_depth=DEFAULTS["max_reply_depth"], gate=is_on_topic_threads):
     """max_reply_depth=1 only collects direct replies to the post (old
     behavior); 2+ also descends into each reply's own sub-thread that many
-    levels deep. Every extra level roughly multiplies total navigations by
-    however many replies had nested replies at the level above -- keep this
-    small (2-3) unless you've confirmed the block risk is acceptable."""
+    levels deep -- see DEFAULTS["max_reply_depth"] and build_arg_parser()'s
+    --max-reply-depth help for why the default is effectively unbounded."""
     source = source or {}
     canonical_url = canonical_post_url(post_url)
     post_id = post_id_from_url(canonical_url)
@@ -334,7 +442,7 @@ def crawl_post(page, post_url, *, max_rounds, stale_rounds, batch_id_value, hand
 
     # Gate already ran at discovery time -- this is a defensive re-check
     # only, not a second gate (same convention as crawl_tiktok.py).
-    topic_verdict, topic_rule = is_on_topic_threads(meta["post_text"], hashtags, source=source)
+    topic_verdict, topic_rule = gate(meta["post_text"], hashtags, source=source)
     if topic_verdict != "accept":
         return [], f"topic_reject:{topic_rule}"
 
@@ -347,37 +455,13 @@ def crawl_post(page, post_url, *, max_rounds, stale_rounds, batch_id_value, hand
         datetime.fromtimestamp(meta["posted_at_epoch"]).isoformat() if meta["posted_at_epoch"] else ""
     )
 
-    records = []
-    for reply in pool:
-        record = to_record(
-            post_url=canonical_url,
-            post_id=post_id,
-            post_text=meta["post_text"],
-            reply=reply,
-            batch_id_value=batch_id_value,
-            handle_salt=handle_salt,
-            source_kind=source.get("kind", ""),
-            source_class=source.get("source_class", ""),
-            source_label=source.get("label", ""),
-            discovery_query=source.get("query", ""),
-            discovery_url=source.get("url", ""),
-            hashtags=hashtags,
-            topic_rule=topic_rule,
-            matched_groups_=matched_groups(reply["reply_text"]),
-            posted_at=posted_at_iso,
-            parent_id=post_id,
-            depth=1,
-        )
-        records.append(record)
-        if max_reply_depth > 1 and reply.get("reply_count", 0) > 0:
-            records.extend(_fetch_nested_replies(
-                page, post_id, reply, record["id"],
-                depth=2, max_depth=max_reply_depth,
-                max_rounds=max_rounds, stale_rounds=stale_rounds,
-                batch_id_value=batch_id_value, handle_salt=handle_salt,
-                source=source, canonical_url=canonical_url, post_text=meta["post_text"],
-                hashtags=hashtags, topic_rule=topic_rule, posted_at_iso=posted_at_iso,
-            ))
+    records = _records_from_pool(
+        pool, page=page, post_id=post_id, canonical_url=canonical_url,
+        post_text=meta["post_text"], hashtags=hashtags, topic_rule=topic_rule,
+        posted_at_iso=posted_at_iso, batch_id_value=batch_id_value, handle_salt=handle_salt,
+        source=source, start_parent_id=post_id, start_depth=1, max_depth=max_reply_depth,
+        max_rounds=max_rounds, stale_rounds=stale_rounds, visited={post_id},
+    )
     return records, stop_reason
 
 
@@ -411,8 +495,19 @@ def _positive_int(value):
     return ivalue
 
 
+CAMPAIGN_GATES = {
+    "flood_transport": is_on_topic_threads,
+    "electric_bus": is_on_topic_threads_electric_bus,
+}
+CAMPAIGN_BATCH_PREFIX = {
+    "flood_transport": "threads_flood",
+    "electric_bus": "threads_electric_bus",
+}
+
+
 def build_arg_parser():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign", choices=tuple(CAMPAIGN_GATES), default="flood_transport")
     parser.add_argument("--url-file", required=True,
                          help="Newline-delimited post URLs. Discovery lives in "
                               "discover_threads.py, not here.")
@@ -420,10 +515,13 @@ def build_arg_parser():
     parser.add_argument("--stale-rounds", type=_positive_int, default=DEFAULTS["stale_rounds"])
     parser.add_argument("--max-reply-depth", type=_positive_int, default=DEFAULTS["max_reply_depth"],
                          help="1 = only direct replies to the post. 2+ also descends into each "
-                              "reply's own sub-thread that many levels deep -- each extra level "
-                              "roughly multiplies navigations by how many replies had nested "
-                              "replies one level up, so keep this small unless you've confirmed "
-                              "the block risk is acceptable.")
+                              "reply's own sub-thread that many levels deep. Defaults to "
+                              "effectively unbounded (1000) -- reply_count==1 chains are "
+                              "resolved from the already-fetched page with no extra cost, "
+                              "only reply_count>=2 branches cost an extra navigation each, so "
+                              "capping this low mainly just produces misattributed records "
+                              "once the budget runs out rather than saving much work. Lower "
+                              "it for a faster/cheaper test run.")
     parser.add_argument("--delay-min", type=_positive_int, default=DEFAULTS["delay_min"])
     parser.add_argument("--delay-max", type=_positive_int, default=DEFAULTS["delay_max"])
     parser.add_argument("--headful", dest="headless", action="store_false", default=None)
@@ -448,8 +546,9 @@ def main(argv=None):
         print("[STOP] no URLs to crawl.")
         return
 
+    gate = CAMPAIGN_GATES[args.campaign]
     headless = bool(args.headless)
-    batch = args.batch_id or batch_id("threads_flood", now_hcm())
+    batch = args.batch_id or batch_id(CAMPAIGN_BATCH_PREFIX[args.campaign], now_hcm())
     out_path = os.path.join(args.output_dir, f"{batch}.jsonl")
 
     stats = {"attempted": 0, "succeeded": 0, "skipped_no_replies": 0, "skipped_off_topic": 0, "skipped_error": 0}
@@ -473,6 +572,7 @@ def main(argv=None):
                     batch_id_value=batch,
                     handle_salt=handle_salt,
                     max_reply_depth=args.max_reply_depth,
+                    gate=gate,
                 )
             except (BlockedError, SessionExpiredError) as exc:
                 print(f"[STOP] {type(exc).__name__}: {exc}")
