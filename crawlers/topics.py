@@ -104,6 +104,14 @@ def is_on_topic_news(title, body="", source=None):
     return gate_post(title, body)
 
 
+def is_on_topic_threads(post_text, hashtags=None, source=None):
+    """Threads wrapper: post text + a plain space-joined hashtag blob, same
+    shape as is_on_topic_tiktok(). ``source`` accepted for call-site
+    compatibility, not consulted."""
+    hashtag_blob = " ".join((hashtags or []))
+    return gate_post(post_text or "", hashtag_blob)
+
+
 def is_on_topic_tiktok_electric_bus(caption, hashtags, source=None):
     """TikTok wrapper for the electric-bus campaign -- same shape as
     is_on_topic_tiktok(), gated through gate_electric_bus() instead of
@@ -119,3 +127,12 @@ def is_on_topic_news_electric_bus(title, body="", source=None):
     gate_post(). ``source`` accepted for call-site compatibility, not
     consulted."""
     return gate_electric_bus(title, body)
+
+
+def is_on_topic_threads_electric_bus(post_text, hashtags=None, source=None):
+    """Threads wrapper for the electric-bus campaign -- same shape as
+    is_on_topic_threads(), gated through gate_electric_bus() instead of
+    gate_post(). ``source`` accepted for call-site compatibility, not
+    consulted."""
+    hashtag_blob = " ".join((hashtags or []))
+    return gate_electric_bus(post_text or "", hashtag_blob)
