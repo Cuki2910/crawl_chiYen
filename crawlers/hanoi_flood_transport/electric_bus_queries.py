@@ -15,8 +15,14 @@ duplicate entries), followed by 20 broader/rephrased queries (routes,
 fares, comparisons, complaints/praise, VinBus branding), followed by a
 further 20 queries targeting customer-satisfaction/experience language
 specifically (service quality, reliability, complaint/praise polarity,
-recommendation-worthiness) -- all widening recall beyond the gate's
-exact wording, never the gate itself.
+recommendation-worthiness), followed by a small set of Hanoi/HCMC city
+queries -- Vietnam's two biggest electric-bus deployments, so the ones
+most likely to surface genuine Vietnamese customer content -- added
+alongside gate_electric_bus_vietnam() (crawlers/topics.py) to counter
+generic English terms like "electric bus"/"e-bus" pulling in foreign
+(non-Vietnam) results; the earlier queries already skew Hanoi-heavy,
+this set balances in HCMC coverage specifically. All widening recall
+beyond the gate's exact wording, never the gate itself.
 """
 
 from crawlers.hanoi_flood_transport.keywords import literal_terms
@@ -69,6 +75,16 @@ _SATISFACTION_QUERIES = (
     "xe buýt điện so với xe máy",
 )
 
+_CITY_QUERIES = (
+    "xe buýt điện TPHCM",
+    "xe buýt điện Sài Gòn",
+    "xe buýt điện Hồ Chí Minh",
+    "VinBus TPHCM",
+    "VinBus Sài Gòn",
+    "VinBus Hồ Chí Minh",
+    "VinBus Hà Nội",
+)
+
 
 def _dedup_preserve_order(terms):
     seen, out = set(), []
@@ -80,4 +96,6 @@ def _dedup_preserve_order(terms):
     return out
 
 
-KEYWORDS = tuple(_dedup_preserve_order(_BASE_TERMS + _EXPANDED_QUERIES + _SATISFACTION_QUERIES))
+KEYWORDS = tuple(_dedup_preserve_order(
+    _BASE_TERMS + _EXPANDED_QUERIES + _SATISFACTION_QUERIES + _CITY_QUERIES
+))

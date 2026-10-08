@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from crawlers.csv_utils import flatten_record, open_csv_writer, load_env
 from crawlers.facebook.facebook_session import FacebookAuthRequiredError, _blocking_auth_js
 from crawlers.hanoi_flood_transport.config import SOURCES_VERSION as TOPIC_SOURCES_VERSION, electric_bus_post_in_window, facebook_sources, post_in_window
-from crawlers.topics import co_thanh_pho_khac, gate_electric_bus, gate_post, matched_groups
+from crawlers.topics import co_thanh_pho_khac, gate_electric_bus_vietnam, gate_post, matched_groups
 
 load_env()
 
@@ -1013,7 +1013,7 @@ def gate_metadata(metadata, source=None):
     """Fail closed khi không xác định chắc body bài."""
     if not metadata.get("metadata_resolved"):
         return "reject", "metadata_unresolved"
-    gate = gate_electric_bus if _is_electric_bus_source(source) else gate_post
+    gate = gate_electric_bus_vietnam if _is_electric_bus_source(source) else gate_post
     return gate(metadata.get("post_title", ""), metadata.get("post_context", ""))
 
 

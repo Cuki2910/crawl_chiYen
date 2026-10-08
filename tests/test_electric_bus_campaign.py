@@ -9,6 +9,7 @@ from crawlers.topics import (
     gate_electric_bus_vietnam,
     is_on_topic_news,
     is_on_topic_news_electric_bus,
+    is_on_topic_threads_electric_bus,
     is_on_topic_tiktok,
     is_on_topic_tiktok_electric_bus,
 )
@@ -56,6 +57,45 @@ class ElectricBusQueryListTests(unittest.TestCase):
         # non-empty and distinct from the flood keyword list.
         self.assertGreater(len(ELECTRIC_BUS_KEYWORDS), 30)
         self.assertNotEqual(set(ELECTRIC_BUS_KEYWORDS), set(FLOOD_KEYWORDS))
+
+    def test_includes_both_hanoi_and_hcmc_city_queries(self):
+        # Vietnam's two biggest electric-bus deployments -- added alongside
+        # gate_electric_bus_vietnam() to counter generic English terms
+        # ("electric bus"/"e-bus") pulling in foreign results.
+        blob = " ".join(ELECTRIC_BUS_KEYWORDS).lower()
+        self.assertIn("hà nội", blob)
+        self.assertTrue("hồ chí minh" in blob or "tphcm" in blob or "sài gòn" in blob)
+
+
+class ElectricBusPlatformVietnamGateTests(unittest.TestCase):
+    """TikTok/News/Threads electric-bus wrappers all gate through
+    gate_electric_bus_vietnam() now, same as YouTube -- confirms the
+    swap actually took effect at each wrapper, not just at the base gate
+    function."""
+
+    def test_tiktok_rejects_foreign_content(self):
+        verdict, rule = is_on_topic_tiktok_electric_bus("Electric bus launch in Uganda", ["#kampala"])
+        self.assertEqual((verdict, rule), ("reject", "not_vietnam"))
+
+    def test_tiktok_accepts_vietnam_content(self):
+        verdict, _rule = is_on_topic_tiktok_electric_bus("VinBus Hà Nội rất êm", [])
+        self.assertEqual(verdict, "accept")
+
+    def test_news_rejects_foreign_content(self):
+        verdict, rule = is_on_topic_news_electric_bus("Electric bus fleet in London", "BYD electric buses")
+        self.assertEqual((verdict, rule), ("reject", "not_vietnam"))
+
+    def test_news_accepts_vietnam_content(self):
+        verdict, _rule = is_on_topic_news_electric_bus("Xe buýt điện VinFast ra mắt", "nội dung bài báo")
+        self.assertEqual(verdict, "accept")
+
+    def test_threads_rejects_foreign_content(self):
+        verdict, rule = is_on_topic_threads_electric_bus("Electric bus in Argentina", [])
+        self.assertEqual((verdict, rule), ("reject", "not_vietnam"))
+
+    def test_threads_accepts_vietnam_content(self):
+        verdict, _rule = is_on_topic_threads_electric_bus("Trải nghiệm đi VinBus hôm nay", [])
+        self.assertEqual(verdict, "accept")
 
 
 class TiktokCampaignWiringTests(unittest.TestCase):

@@ -19,6 +19,8 @@ data/outputs/tiktok/*
 !data/outputs/tiktok/tiktok_electric_bus_discovery_20260927_2156.csv
 !data/outputs/tiktok/tiktok_electric_bus_20260927_2309.jsonl
 !data/outputs/tiktok/tiktok_electric_bus_20260927_2314.jsonl
+!data/outputs/tiktok/tiktok_electric_bus_discovery_20261008_0004.csv
+!data/outputs/tiktok/tiktok_electric_bus_20261008_1059.jsonl
 
 !data/outputs/news/
 data/outputs/news/*
@@ -40,6 +42,7 @@ data/inputs/tiktok/*
 !data/inputs/tiktok/urls_20260924_2120.csv
 !data/inputs/tiktok/urls_20260924_2241.csv
 !data/inputs/tiktok/urls_electric_bus_20260927_2156.csv
+!data/inputs/tiktok/urls_electric_bus_20261008_0004.csv
 
 !data/inputs/news/
 data/inputs/news/*

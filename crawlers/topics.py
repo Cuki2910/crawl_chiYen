@@ -114,25 +114,28 @@ def is_on_topic_threads(post_text, hashtags=None, source=None):
 
 def is_on_topic_tiktok_electric_bus(caption, hashtags, source=None):
     """TikTok wrapper for the electric-bus campaign -- same shape as
-    is_on_topic_tiktok(), gated through gate_electric_bus() instead of
-    gate_post(). ``source`` accepted for call-site compatibility, not
-    consulted."""
+    is_on_topic_tiktok(), gated through gate_electric_bus_vietnam()
+    (electric-bus term match plus Vietnam evidence, same gate the
+    YouTube electric-bus campaign uses) instead of gate_post().
+    ``source`` accepted for call-site compatibility, not consulted."""
     hashtag_blob = " ".join((hashtags or []))
-    return gate_electric_bus(caption or "", hashtag_blob)
+    return gate_electric_bus_vietnam(caption or "", hashtag_blob)
 
 
 def is_on_topic_news_electric_bus(title, body="", source=None):
     """News wrapper for the electric-bus campaign -- same shape as
-    is_on_topic_news(), gated through gate_electric_bus() instead of
-    gate_post(). ``source`` accepted for call-site compatibility, not
-    consulted."""
-    return gate_electric_bus(title, body)
+    is_on_topic_news(), gated through gate_electric_bus_vietnam()
+    (electric-bus term match plus Vietnam evidence, same gate the
+    YouTube electric-bus campaign uses) instead of gate_post().
+    ``source`` accepted for call-site compatibility, not consulted."""
+    return gate_electric_bus_vietnam(title, body)
 
 
 def is_on_topic_threads_electric_bus(post_text, hashtags=None, source=None):
     """Threads wrapper for the electric-bus campaign -- same shape as
-    is_on_topic_threads(), gated through gate_electric_bus() instead of
-    gate_post(). ``source`` accepted for call-site compatibility, not
-    consulted."""
+    is_on_topic_threads(), gated through gate_electric_bus_vietnam()
+    (electric-bus term match plus Vietnam evidence, same gate the
+    YouTube electric-bus campaign uses) instead of gate_post().
+    ``source`` accepted for call-site compatibility, not consulted."""
     hashtag_blob = " ".join((hashtags or []))
-    return gate_electric_bus(post_text or "", hashtag_blob)
+    return gate_electric_bus_vietnam(post_text or "", hashtag_blob)
