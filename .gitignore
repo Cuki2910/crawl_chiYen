@@ -30,11 +30,13 @@ data/outputs/news/*
 !data/outputs/news/news_flood_20260925_1734.jsonl
 !data/outputs/news/discovery_news_electric_bus_20260927_2156.csv
 !data/outputs/news/news_electric_bus_20260928_0833.jsonl
+!data/outputs/news/discovery_news_electric_bus_20261008_1630.csv
 
 !data/outputs/threads/
 data/outputs/threads/*
 !data/outputs/threads/threads_electric_bus_discovery_20261001_2329.csv
 !data/outputs/threads/threads_electric_bus_20261002_1604.jsonl
+!data/outputs/threads/threads_electric_bus_discovery_20261008_1630.csv
 
 data/inputs/*
 !data/inputs/tiktok/
